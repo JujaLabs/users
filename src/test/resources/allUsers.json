@@ -1,0 +1,11 @@
+[
+  {
+    "uuid":"AAAA123","firstName":"Vasya","lastName":"Ivanoff", "email":"vasya@mail.ru","gmail":"vasya@gmail.com","slack":"vasya","skype":"vasya.ivanoff","linkedin":"linkedin/vasya","facebook":"facebook/vasya","twitter":"twitter/vasya"
+  },
+  {
+    "uuid":"AAAA456","firstName":"Kolya","lastName":"Sidoroff", "email":"kolya@mail.ru","gmail":"kolya@gmail.com","slack":"kolya","skype":"kolya.sidoroff","linkedin":"linkedin/kolya","facebook":"facebook/kolya","twitter":"twitter/kolya"
+  },
+  {
+    "uuid":"AAAA789","firstName":"Lena","lastName":"Petrova", "email":"lena@mail.ru","gmail":"lena@gmail.com","slack":"lena","skype":"lena.petrova","linkedin":"linkedin/lena","facebook":"facebook/lena","twitter":"twitter/lena"
+  }
+]

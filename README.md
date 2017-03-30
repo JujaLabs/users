@@ -1,0 +1,1 @@
+This is Users Microservice, that implements REST API for accessing users, stored in X2CRM.
