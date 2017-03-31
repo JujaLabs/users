@@ -121,7 +121,6 @@ public class UserRepositoryTest {
 
     @Test
     public void searchUserBySlackTest() throws URISyntaxException, IOException {
-
         URI uri = UserRepositoryTest.class.getClassLoader().getResource("vasya.json").toURI();
         String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
 

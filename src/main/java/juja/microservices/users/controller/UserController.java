@@ -39,10 +39,9 @@ public class UserController {
     @RequestMapping(value = "/users/search", method = RequestMethod.GET, produces = "application/json" )
     @ResponseBody
     public ResponseEntity<?> searchUser(@Validated UserSearchRequest request){
-        //List<User> users = userService.searchUser(request);
-        //logger.info("Search for users by: {} completed", request.toString());
-        //return ResponseEntity.ok(users);
-        return ResponseEntity.ok("dfds");
+        List<User> users = userService.searchUser(request);
+        logger.info("Search for users by: {} completed", request.toString());
+        return ResponseEntity.ok(users);
     }
 
 

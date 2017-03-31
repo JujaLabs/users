@@ -36,8 +36,7 @@ public class UserService {
 
     public List<User> searchUser(UserSearchRequest request) {
 
-        //List<User> users = repository.getUsersByParameters(request);
-        List<User> users = new ArrayList<>();
+        List<User> users = repository.getUsersByParameters(request.toMap());
         if (users.size() == 0) {
             throw new UserException("No users found by your request!");
         }
