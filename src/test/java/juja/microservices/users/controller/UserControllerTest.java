@@ -74,7 +74,7 @@ public class UserControllerTest {
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        assertThatJson(result).isEqualTo(users);
+        assertThatJson(result).isEqualTo(vasyaUser);
 
     }
 }
