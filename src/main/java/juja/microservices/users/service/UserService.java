@@ -6,6 +6,7 @@ import juja.microservices.users.exceptions.UserException;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public class UserService {
     private final UserRepository repository;
 
     @Inject
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository) {
         this.repository = userRepository;
     }
 
@@ -32,7 +33,7 @@ public class UserService {
         return users;
     }
 
-    public List<User> searchUser(Map<String,String> parameters) {
+    public List<User> searchUser(Map<String, String> parameters) {
 
         List<User> users = repository.getUsersByParameters(parameters);
         if (users.size() == 0) {
@@ -40,4 +41,15 @@ public class UserService {
         }
         return users;
     }
+
+    public User searchUser(String uuid) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("uuid", uuid);
+        List<User> users = repository.getUsersByParameters(parameters);
+        if (users.size() == 0) {
+            throw new UserException("No users found by your request!");
+        }
+        return users.get(0);
+    }
+
 }

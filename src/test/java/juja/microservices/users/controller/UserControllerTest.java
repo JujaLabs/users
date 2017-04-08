@@ -1,6 +1,7 @@
 package juja.microservices.users.controller;
 
 import juja.microservices.users.entity.User;
+import juja.microservices.users.exceptions.UserException;
 import juja.microservices.users.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,5 +77,18 @@ public class UserControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertThatJson(result).isEqualTo(users);
 
+    }
+
+    @Test
+    public void searchUserByUuid() throws Exception {
+        User user = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
+                "linkedin/vasya", "facebook/vasya", "twitter/vasya");
+        when(service.searchUser("AAAA123")).thenReturn(user);
+        String result = mockMvc.perform(get("/users/AAAA123")
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertThatJson(result).isEqualTo(user);
     }
 }
