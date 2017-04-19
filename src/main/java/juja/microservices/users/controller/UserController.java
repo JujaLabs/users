@@ -19,26 +19,25 @@ public class UserController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
-    public UserController(UserService userService){
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "/users", method = RequestMethod.GET, produces = "application/json" )
+    @RequestMapping(value = "/users", params = {"_page", "_limit"}, method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public ResponseEntity<?> getAllUsers(){
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<?> getAllUsers(@RequestParam("_page") int limit, @RequestParam("_limit") int page) {
+        List<User> users = userService.getAllUsers(page, limit);
         logger.info("Successfully completed GET all users");
         return ResponseEntity.ok(users);
     }
 
-    @RequestMapping(value = "/users/search", method = RequestMethod.GET, produces = "application/json" )
+    @RequestMapping(value = "/users/search", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public ResponseEntity<?> searchUser(@RequestParam Map<String, String> param){
+    public ResponseEntity<?> searchUser(@RequestParam Map<String, String> param) {
         List<User> users = userService.searchUser(param);
         logger.info("Search for users by: {} completed", param.toString());
         return ResponseEntity.ok(users);
     }
-
 
 
 }
