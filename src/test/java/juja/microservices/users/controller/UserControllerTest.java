@@ -1,6 +1,7 @@
 package juja.microservices.users.controller;
 
 import juja.microservices.users.entity.User;
+import juja.microservices.users.entity.UserSearchRequest;
 import juja.microservices.users.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,8 +52,8 @@ public class UserControllerTest {
         List<User> users = new ArrayList<>();
         users.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
                 "linkedin/vasya", "facebook/vasya", "twitter/vasya"));
-        when(service.getAllUsers(0,20)).thenReturn(users);
-        String result = mockMvc.perform(get("/users?_page=0&_limit=20")
+        when(service.getAllUsers(1,1)).thenReturn(users);
+        String result = mockMvc.perform(get("/users?_page=1&_limit=1")
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
@@ -65,16 +66,16 @@ public class UserControllerTest {
         List<User> users = new ArrayList<>();
         users.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
                 "linkedin/vasya", "facebook/vasya", "twitter/vasya"));
-        Map params = new HashMap<String,String>();
-        params.put("email","vasya@mail.ru");
-        when(service.searchUser(params)).thenReturn(users);
+        UserSearchRequest request = new UserSearchRequest();
+        request.email = "vasya@mail.ru";
+        when(service.searchUser(request)).thenReturn(users);
         String result = mockMvc.perform(get("/users/search")
                 .param("email","vasya@mail.ru")
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        assertThatJson(result).isEqualTo(users);
+        assertThatJson(result).isEqualTo(vasyaUser);
 
     }
 }
