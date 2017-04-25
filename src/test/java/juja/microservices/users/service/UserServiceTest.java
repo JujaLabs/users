@@ -55,4 +55,16 @@ public class UserServiceTest {
         List<User> actualUser = service.searchUser(request);
         assertEquals(expectedUsers, actualUser);
     }
+
+    @Test
+    public void searchUserByUuid() throws Exception {
+        List<User> expectedUsers = new ArrayList<>();
+        User expectedUser = mock(User.class);
+        expectedUsers.add(expectedUser);
+        Map params = new HashMap<String, String>();
+        params.put("uuid", "AAA123");
+        when(repository.getUsersByParameters(params)).thenReturn(expectedUsers);
+        User actualUser = service.searchUser("AAA123");
+        assertEquals(expectedUser, actualUser);
+    }
 }

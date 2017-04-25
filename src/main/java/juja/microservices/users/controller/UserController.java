@@ -45,4 +45,12 @@ public class UserController {
     }
 
 
+    @RequestMapping(value = "/users/{uuid}", method = RequestMethod.GET, produces = "application/json" )
+    @ResponseBody
+    public ResponseEntity<?> searchUserByUuid(@PathVariable("uuid") String uuid){
+        User user = userService.searchUser(uuid);
+        logger.info("Search for users by: {} completed", user.toString());
+        return ResponseEntity.ok(user);
+    }
+
 }

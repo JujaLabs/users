@@ -1,6 +1,7 @@
 package juja.microservices.users.controller;
 
 import juja.microservices.users.entity.User;
+import juja.microservices.users.exceptions.UserException;
 import juja.microservices.users.entity.UserSearchRequest;
 import juja.microservices.users.service.UserService;
 import org.junit.Test;
@@ -66,16 +67,43 @@ public class UserControllerTest {
         List<User> users = new ArrayList<>();
         users.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
                 "linkedin/vasya", "facebook/vasya", "twitter/vasya"));
+
         UserSearchRequest request = new UserSearchRequest();
         request.email = "vasya@mail.ru";
         when(service.searchUser(request)).thenReturn(users);
         String result = mockMvc.perform(get("/users/search")
-                .param("email","vasya@mail.ru")
+                .param("email", "vasya@mail.ru")
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         assertThatJson(result).isEqualTo(vasyaUser);
 
+    }
+
+    @Test
+    public void searchUserByUuid() throws Exception {
+        User user = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
+                "linkedin/vasya", "facebook/vasya", "twitter/vasya");
+        when(service.searchUser("AAAA123")).thenReturn(user);
+        String result = mockMvc.perform(get("/users/AAAA123")
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertThatJson(result).isEqualTo(user);
+    }
+
+    @Test
+    public void shouldThrowBadRequestIfNonExistentUuid() throws Exception {
+        when(service.searchUser("nonExistentUuid")).thenThrow(new UserException("No users found by your request!"));
+        String result = mockMvc.perform(get("/users/nonExistentUuid")
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+        assertThatJson("{\"httpStatus\":400,\"internalErrorCode\":0,\"clientMessage\":\"Oops something went wrong :(\"," +
+                "\"developerMessage\":\"General exception for this service\",\"exceptionMessage\":\"No users found by your request!\"," +
+                "\"detailErrors\":[]}").isEqualTo(result);
     }
 }
