@@ -1,6 +1,7 @@
 package juja.microservices.users.dao;
 
 
+
 import juja.microservices.users.entity.User;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -25,7 +26,6 @@ import java.util.Map;
 @Repository
 public class CRMUserRepository implements UserRepository{
 
-    //TODO: read credentials from file (or something better) and remove this test account
     private final String x2_user = "apiuser";
     private final String x2_apikey = "password";
     private final String X2_BASE_URL = "http://127.0.0.1/x2engine/index.php/api2/";

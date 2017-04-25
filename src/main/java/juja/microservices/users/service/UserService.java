@@ -2,11 +2,13 @@ package juja.microservices.users.service;
 
 import juja.microservices.users.dao.UserRepository;
 import juja.microservices.users.entity.User;
+import juja.microservices.users.entity.UserSearchRequest;
 import juja.microservices.users.exceptions.UserException;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,9 +35,9 @@ public class UserService {
         return users;
     }
 
-    public List<User> searchUser(Map<String, String> parameters) {
 
-        List<User> users = repository.getUsersByParameters(parameters);
+    public List<User> searchUser(UserSearchRequest request) {
+        List<User> users = repository.getUsersByParameters(request.toMap());
         if (users.size() == 0) {
             throw new UserException("No users found by your request!");
         }

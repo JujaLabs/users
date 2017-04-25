@@ -1,7 +1,9 @@
 package juja.microservices.users.service;
 
 import juja.microservices.users.dao.UserRepository;
+import juja.microservices.users.dao.UserRepositoryTest;
 import juja.microservices.users.entity.User;
+import juja.microservices.users.entity.UserSearchRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -47,10 +49,10 @@ public class UserServiceTest {
     public void searchUserByEmailTest() throws Exception {
         List<User> expectedUsers = new ArrayList<>();
         expectedUsers.add(mock(User.class));
-        Map params = new HashMap<String, String>();
-        params.put("email", "vasya@mail.ru");
-        when(repository.getUsersByParameters(params)).thenReturn(expectedUsers);
-        List<User> actualUser = service.searchUser(params);
+        UserSearchRequest request = new UserSearchRequest();
+        request.email = "vasya@mail.ru";
+        when(repository.getUsersByParameters(request.toMap())).thenReturn(expectedUsers);
+        List<User> actualUser = service.searchUser(request);
         assertEquals(expectedUsers, actualUser);
     }
 
