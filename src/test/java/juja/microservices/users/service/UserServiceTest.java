@@ -41,7 +41,7 @@ public class UserServiceTest {
         List<User> expectedList = new ArrayList<>();
         expectedList.add(mock(User.class));
         when(repository.getAllUsers()).thenReturn(expectedList);
-        List<User> actualList = service.getAllUsers();
+        List<User> actualList = service.getAllUsers(0,20);
         assertEquals(expectedList, actualList);
     }
 
