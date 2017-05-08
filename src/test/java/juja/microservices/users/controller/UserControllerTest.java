@@ -115,11 +115,15 @@ public class UserControllerTest {
         users.add(new User("AAAA321", "Bob", "Smith", "bob@mail.com", "bob@gmail.com", "slack.bob", "bob1999",
                 "linkedin/bob", "facebook/bob", "twitter/bob"));
 
-        List<String> expectedSlackNamesList = new ArrayList<>();
-        expectedSlackNamesList.add("slack.vasya");
-        expectedSlackNamesList.add("slack.bob");
+        List<UserSearchRequest> expectedRequests = new ArrayList<>();
+        UserSearchRequest request = new UserSearchRequest();
+        request.setSlack("slack.vasya");
+        expectedRequests.add(request);
+        UserSearchRequest request2 = new UserSearchRequest();
+        request2.setSlack("slack.bob");
+        expectedRequests.add(request2);
 
-        when(service.searchUserWithOr(expectedSlackNamesList, "slack")).thenReturn(users);
+        when(service.searchUserWithOr(expectedRequests)).thenReturn(users);
         String result = mockMvc.perform(get("/users/uuidBySlack")
                 .param("slack", "slack.vasya, slack.bob")
                 .contentType(APPLICATION_JSON_UTF8))

@@ -55,16 +55,10 @@ public class UserService {
         return users.get(0);
     }
 
-    public List<User> searchUserWithOr(List<String> values, String parameterName) {
+    public List<User> searchUserWithOr(List<UserSearchRequest> requests) {
         List<User> result = new ArrayList<>();
-        for (String value : values) {// todo better use one query for read user's list
-            Map<String, String> parameters = new HashMap();
-            parameters.put(parameterName, value);
-            List<User> users = repository.getUsersByParameters(parameters);
-            if (users.size() == 0) {
-                throw new UserException(String.format("Do not user found with: '%s %s'", parameterName, value));
-            }
-            result.addAll(users);
+        for (UserSearchRequest request : requests) {// todo better - use one query for read user's list
+             result.addAll(searchUser(request));
         }
         return result;
     }

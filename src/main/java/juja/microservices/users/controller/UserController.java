@@ -59,7 +59,13 @@ public class UserController {
     @RequestMapping(value = "/users/uuidBySlack", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public ResponseEntity<?> searchUuidBySlack(@RequestParam("slack") List<String> slacknames){
-        List<User> users = userService.searchUserWithOr(slacknames, "slack");
+        List<UserSearchRequest> requests = new ArrayList<>();
+        for (String slackname : slacknames) {
+            UserSearchRequest request = new UserSearchRequest();
+            request.setSlack(slackname);
+            requests.add(request);
+        }
+        List<User> users = userService.searchUserWithOr(requests);
         logger.info("Search for users by:{} {} completed", "slack", slacknames.toString());
         Map<String, String> response = new HashMap<>();
         for (User user : users) {
@@ -67,6 +73,4 @@ public class UserController {
         }
         return ResponseEntity.ok(response);
     }
-
-
 }
