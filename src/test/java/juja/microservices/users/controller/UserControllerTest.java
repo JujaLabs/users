@@ -106,4 +106,26 @@ public class UserControllerTest {
                 "\"developerMessage\":\"General exception for this service\",\"exceptionMessage\":\"No users found by your request!\"," +
                 "\"detailErrors\":[]}").isEqualTo(result);
     }
+
+    @Test
+    public void searchUuidBySlack() throws Exception {
+        List<User> users = new ArrayList<>();
+        users.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "slack.vasya", "vasya.ivanoff",
+                "linkedin/vasya", "facebook/vasya", "twitter/vasya"));
+        users.add(new User("AAAA321", "Bob", "Smith", "bob@mail.com", "bob@gmail.com", "slack.bob", "bob1999",
+                "linkedin/bob", "facebook/bob", "twitter/bob"));
+
+        List<String> expectedSlackNamesList = new ArrayList<>();
+        expectedSlackNamesList.add("slack.vasya");
+        expectedSlackNamesList.add("slack.bob");
+
+        when(service.searchUserWithOr(expectedSlackNamesList, "slack")).thenReturn(users);
+        String result = mockMvc.perform(get("/users/uuidBySlack")
+                .param("slack", "slack.vasya, slack.bob")
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertThatJson(result).isEqualTo("{\"AAAA123\":\"slack.vasya\",\"AAAA321\":\"slack.bob\"}");
+    }
 }
