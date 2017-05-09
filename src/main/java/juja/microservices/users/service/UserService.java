@@ -55,4 +55,11 @@ public class UserService {
         return users.get(0);
     }
 
+    public List<User> searchUserWithOr(List<UserSearchRequest> requests) {
+        List<User> result = new ArrayList<>();
+        for (UserSearchRequest request : requests) {// todo better - use one query for read user's list
+             result.addAll(searchUser(request));
+        }
+        return result;
+    }
 }

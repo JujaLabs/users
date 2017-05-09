@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,4 +55,22 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+
+    @RequestMapping(value = "/users/uuidBySlack", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<?> searchUuidBySlack(@RequestParam("slack") List<String> slacknames){
+        List<UserSearchRequest> requests = new ArrayList<>();
+        for (String slackname : slacknames) {
+            UserSearchRequest request = new UserSearchRequest();
+            request.setSlack(slackname);
+            requests.add(request);
+        }
+        List<User> users = userService.searchUserWithOr(requests);
+        logger.info("Search for users by:{} {} completed", "slack", slacknames.toString());
+        Map<String, String> response = new HashMap<>();
+        for (User user : users) {
+            response.put(user.getUuid(), user.getSlack());
+        }
+        return ResponseEntity.ok(response);
+    }
 }

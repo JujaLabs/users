@@ -4,6 +4,7 @@ import juja.microservices.users.dao.UserRepository;
 import juja.microservices.users.dao.UserRepositoryTest;
 import juja.microservices.users.entity.User;
 import juja.microservices.users.entity.UserSearchRequest;
+import org.eclipse.jetty.server.Authentication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -41,7 +42,7 @@ public class UserServiceTest {
         List<User> expectedList = new ArrayList<>();
         expectedList.add(mock(User.class));
         when(repository.getAllUsers()).thenReturn(expectedList);
-        List<User> actualList = service.getAllUsers(0,20);
+        List<User> actualList = service.getAllUsers(0, 20);
         assertEquals(expectedList, actualList);
     }
 
@@ -66,5 +67,30 @@ public class UserServiceTest {
         when(repository.getUsersByParameters(params)).thenReturn(expectedUsers);
         User actualUser = service.searchUser("AAA123");
         assertEquals(expectedUser, actualUser);
+    }
+
+    @Test
+    public void searchUserWithOr() throws Exception {
+        List<User> expectedUsers1 = new ArrayList<>();
+        expectedUsers1.add(mock(User.class));
+        List<User> expectedUsers2 = new ArrayList<>();
+        expectedUsers2.add(mock(User.class));
+        List<User> expectedResult = new ArrayList<>();
+        expectedResult.addAll(expectedUsers1);
+        expectedResult.addAll(expectedUsers2);
+
+        List<UserSearchRequest> requests = new ArrayList<>();
+        UserSearchRequest request = new UserSearchRequest();
+        request.slack = "vasya.slack";
+        requests.add(request);
+        UserSearchRequest request2 = new UserSearchRequest();
+        request2.slack = "bob.slack";
+        requests.add(request2);
+
+        when(repository.getUsersByParameters(request.toMap())).thenReturn(expectedUsers1);
+        when(repository.getUsersByParameters(request2.toMap())).thenReturn(expectedUsers2);
+
+        List<User> actualResult = service.searchUserWithOr(requests);
+        assertEquals(expectedResult, actualResult);
     }
 }
