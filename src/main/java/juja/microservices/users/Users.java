@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestTemplate;
 
-
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
  */
