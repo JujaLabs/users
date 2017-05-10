@@ -2,7 +2,7 @@ package juja.microservices.users.controller;
 
 import juja.microservices.users.entity.UserDTO;
 import juja.microservices.users.entity.UsersSlackRequest;
-import juja.microservices.users.entity.UsersNameRequest;
+import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class UserController {
 
     @PostMapping("/nameByUuid")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDTO> getUsersNameByUuid(@RequestBody UsersNameRequest request){
+    public List<UserDTO> getUsersNameByUuid(@RequestBody UsersUuidRequest request){
         //this UserDTO should have fields: uuid, name
         List<UserDTO> users = userService.getUsersNameByUuid(request);
         logger.info("Get users name by uuid completed: ", users.toString());

@@ -1,7 +1,7 @@
 package juja.microservices.users.controller;
 
 import juja.microservices.users.entity.UserDTO;
-import juja.microservices.users.entity.UsersNameRequest;
+import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.entity.UsersSlackRequest;
 import juja.microservices.users.service.UserService;
 import org.junit.Test;
@@ -90,7 +90,7 @@ public class UserControllerTest {
         users.add(new UserDTO("AAAA456", null, null, "ivan"));
         String jsonRequest = "{\"uuid\":[\"AAAA123\",\"AAAA456\"]}";
 
-        when(service.getUsersNameByUuid(any(UsersNameRequest.class))).thenReturn(users);
+        when(service.getUsersNameByUuid(any(UsersUuidRequest.class))).thenReturn(users);
 
         String result = mockMvc.perform(post("/users/nameByUuid")
                 .contentType(APPLICATION_JSON_UTF8)

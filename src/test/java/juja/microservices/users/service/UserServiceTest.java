@@ -3,7 +3,7 @@ package juja.microservices.users.service;
 import juja.microservices.users.dao.UserRepository;
 import juja.microservices.users.entity.User;
 import juja.microservices.users.entity.UserDTO;
-import juja.microservices.users.entity.UsersNameRequest;
+import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.entity.UsersSlackRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,7 +79,7 @@ public class UserServiceTest {
         List<String> uuids = new ArrayList<>();
         uuids.add("AAAA123");
         uuids.add("AAAA456");
-        UsersNameRequest request = new UsersNameRequest(uuids);
+        UsersUuidRequest request = new UsersUuidRequest(uuids);
 
         when(repository.getUserByUuid(request.getUuid().get(0))).thenReturn(user1);
         when(repository.getUserByUuid(request.getUuid().get(1))).thenReturn(user2);

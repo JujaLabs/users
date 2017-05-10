@@ -4,7 +4,7 @@ import juja.microservices.users.dao.UserRepository;
 import juja.microservices.users.entity.User;
 import juja.microservices.users.entity.UserDTO;
 import juja.microservices.users.entity.UsersSlackRequest;
-import juja.microservices.users.entity.UsersNameRequest;
+import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.exceptions.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +58,7 @@ public class UserService {
         return new UserDTO(user.getUuid(), user.getSlack(), null, null);
     }
 
-    public List<UserDTO> getUsersNameByUuid(UsersNameRequest request) {
+    public List<UserDTO> getUsersNameByUuid(UsersUuidRequest request) {
         List<User> users = request.getUuid().stream()
                 .map(repository::getUserByUuid)
                 .collect(Collectors.toList());

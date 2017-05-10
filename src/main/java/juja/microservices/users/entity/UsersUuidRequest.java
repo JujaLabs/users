@@ -12,13 +12,13 @@ import java.util.List;
  */
 
 @Getter
-public class UsersNameRequest {
+public class UsersUuidRequest {
 
     @NotEmpty
     private List<String> uuid;
 
     @JsonCreator
-    public UsersNameRequest(@JsonProperty("uuid") List<String> uuid) {
+    public UsersUuidRequest(@JsonProperty("uuid") List<String> uuid) {
         this.uuid = uuid;
     }
 }
