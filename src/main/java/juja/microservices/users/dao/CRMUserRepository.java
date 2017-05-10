@@ -68,7 +68,7 @@ public class CRMUserRepository implements UserRepository{
                 .path("Contacts")
                 .queryParam("c_isStudent","1")
                 .queryParam("c_slack", slack);
-
+        //TODO убрать дублирование
         URI targetUrl= uriComponentsBuilder
                 .build()
                 .toUri();
@@ -80,9 +80,37 @@ public class CRMUserRepository implements UserRepository{
         List<User> users = (ArrayList)response.getBody();
         if (users.size() == 0) {
             throw new UserException("No users found by your request!");
-        } else if (users.size() > 1) {
+        }
+        if (users.size() > 1) {
             throw new UserException("More than one user found with the same slack name");
         }
         return users.get(0);
+    }
+
+    @Override
+    public User getUserByUuid(String uuid) {
+        UriComponentsBuilder uriComponentsBuilder= UriComponentsBuilder.fromUriString(X2_BASE_URL)
+                .path("Contacts")
+                .queryParam("c_isStudent","1")
+                .queryParam("c_uuid", uuid);
+
+        List<User> users = getUsers(uriComponentsBuilder);
+        return users.get(0);
+    }
+
+    private List<User> getUsers(UriComponentsBuilder uriComponentsBuilder) {
+        URI targetUrl= uriComponentsBuilder
+                .build()
+                .toUri();
+
+        ResponseEntity<List<User>> response = restTemplate.exchange(targetUrl, HttpMethod.GET,
+                new HttpEntity<>(createHeaders(x2_user, x2_apikey)),
+                new ParameterizedTypeReference<List<User>>() {});
+
+        List<User> users = (ArrayList)response.getBody();
+        if (users.size() == 0) {
+            throw new UserException("No users found by your request!");
+        }
+        return users;
     }
 }
