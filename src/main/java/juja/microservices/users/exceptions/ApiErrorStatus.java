@@ -1,6 +1,5 @@
 package juja.microservices.users.exceptions;
 
-
 public enum ApiErrorStatus {
     USER_EXCEPTION(
             0,

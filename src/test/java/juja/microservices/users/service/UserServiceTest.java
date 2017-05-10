@@ -1,10 +1,9 @@
 package juja.microservices.users.service;
 
 import juja.microservices.users.dao.UserRepository;
-import juja.microservices.users.dao.UserRepositoryTest;
 import juja.microservices.users.entity.User;
-import juja.microservices.users.entity.UserSearchRequest;
-import org.eclipse.jetty.server.Authentication;
+import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersSlackRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,20 +12,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
-
 
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
+ * @author Olga Kulykova
  */
-
-
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserService.class)
 public class UserServiceTest {
@@ -39,58 +33,35 @@ public class UserServiceTest {
 
     @Test
     public void getUserAllUsersTest() throws Exception {
-        List<User> expectedList = new ArrayList<>();
-        expectedList.add(mock(User.class));
-        when(repository.getAllUsers()).thenReturn(expectedList);
-        List<User> actualList = service.getAllUsers(0, 20);
-        assertEquals(expectedList, actualList);
+        List<UserDTO> expected = new ArrayList<>();
+        expected.add(new UserDTO("AAAA123", "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+        List<User> users = new ArrayList<>();
+        users.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
+                "linkedin/vasya", "facebook/vasya", "twitter/vasya"));
+        when(repository.getAllUsers()).thenReturn(users);
+        List<UserDTO> actual = service.getAllUsers();
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void searchUserByEmailTest() throws Exception {
-        List<User> expectedUsers = new ArrayList<>();
-        expectedUsers.add(mock(User.class));
-        UserSearchRequest request = new UserSearchRequest();
-        request.email = "vasya@mail.ru";
-        when(repository.getUsersByParameters(request.toMap())).thenReturn(expectedUsers);
-        List<User> actualUser = service.searchUser(request);
-        assertEquals(expectedUsers, actualUser);
-    }
+    public void getUsersUuidBySlack() throws Exception {
+        User user1 = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
+                "linkedin/vasya", "facebook/vasya", "twitter/vasya");
+        User user2 = new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff",
+                "linkedin/kolya", "facebook/kolya", "twitter/kolya");
+        List<UserDTO> expected = new ArrayList<>();
+        expected.add(new UserDTO("AAAA123", "vasya", null, null));
+        expected.add(new UserDTO("AAAA456", "kolya", null, null));
 
-    @Test
-    public void searchUserByUuid() throws Exception {
-        List<User> expectedUsers = new ArrayList<>();
-        User expectedUser = mock(User.class);
-        expectedUsers.add(expectedUser);
-        Map params = new HashMap<String, String>();
-        params.put("uuid", "AAA123");
-        when(repository.getUsersByParameters(params)).thenReturn(expectedUsers);
-        User actualUser = service.searchUser("AAA123");
-        assertEquals(expectedUser, actualUser);
-    }
+        List<String> slackNames = new ArrayList<>();
+        slackNames.add("vasya");
+        slackNames.add("ivan");
+        UsersSlackRequest request = new UsersSlackRequest(slackNames);
 
-    @Test
-    public void searchUserWithOr() throws Exception {
-        List<User> expectedUsers1 = new ArrayList<>();
-        expectedUsers1.add(mock(User.class));
-        List<User> expectedUsers2 = new ArrayList<>();
-        expectedUsers2.add(mock(User.class));
-        List<User> expectedResult = new ArrayList<>();
-        expectedResult.addAll(expectedUsers1);
-        expectedResult.addAll(expectedUsers2);
+        when(repository.getUserBySlack(request.getSlackNames().get(0))).thenReturn(user1);
+        when(repository.getUserBySlack(request.getSlackNames().get(1))).thenReturn(user2);
 
-        List<UserSearchRequest> requests = new ArrayList<>();
-        UserSearchRequest request = new UserSearchRequest();
-        request.slack = "vasya.slack";
-        requests.add(request);
-        UserSearchRequest request2 = new UserSearchRequest();
-        request2.slack = "bob.slack";
-        requests.add(request2);
-
-        when(repository.getUsersByParameters(request.toMap())).thenReturn(expectedUsers1);
-        when(repository.getUsersByParameters(request2.toMap())).thenReturn(expectedUsers2);
-
-        List<User> actualResult = service.searchUserWithOr(requests);
-        assertEquals(expectedResult, actualResult);
+        List<UserDTO> actual = service.getUsersUuidBySlack(request);
+        assertEquals(expected, actual);
     }
 }

@@ -1,25 +1,23 @@
 package juja.microservices.users.controller;
 
-
-import juja.microservices.users.entity.User;
-import juja.microservices.users.entity.UserSearchRequest;
+import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersSlackRequest;
 import juja.microservices.users.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ *@author Olga Kulykova
+ */
 @RestController
 @Validated
+@RequestMapping(value = "/users", produces = "application/json", consumes = "application/json")
 public class UserController {
 
     private final UserService userService;
@@ -30,47 +28,32 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "/users", params = {"_page", "_limit"}, method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<?> getAllUsers(@RequestParam("_page") int limit, @RequestParam("_limit") int page) {
-        List<User> users = userService.getAllUsers(page, limit);
-        logger.info("Successfully completed GET all users");
-        return ResponseEntity.ok(users);
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDTO> getAllUsers() {
+        //this UserDTO should have fields: uuid, slack, skype, name
+        List<UserDTO> users = userService.getAllUsers();
+        logger.info("Successfully completed GET all users. List of users: ", users.toString());
+        return users;
     }
 
-    @RequestMapping(value = "/users/search", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<?> searchUser(@Validated UserSearchRequest request){
-        List<User> users = userService.searchUser(request);
-        logger.info("Search for users by: {} completed", request.toString());
-        return ResponseEntity.ok(users);
-    }
+    //todo Uncomment and implement all chain of this endpoint
+    /*@PostMapping("/nameByUuid")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDTO> getUsersNameByUuid(@RequestBody UsersUuidRequest request){
+        //this UserDTO should have fields: uuid, name
+        List<UserDTO> users = userService.getUsersNameByUuid(request);
+        logger.info("Get users name by uuid completed: ", users.toString());
+        return users;
+    }*/
 
 
-    @RequestMapping(value = "/users/{uuid}", method = RequestMethod.GET, produces = "application/json" )
-    @ResponseBody
-    public ResponseEntity<?> searchUserByUuid(@PathVariable("uuid") String uuid){
-        User user = userService.searchUser(uuid);
-        logger.info("Search for users by: {} completed", user.toString());
-        return ResponseEntity.ok(user);
-    }
-
-
-    @RequestMapping(value = "/users/uuidBySlack", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<?> searchUuidBySlack(@RequestParam("slack") List<String> slacknames){
-        List<UserSearchRequest> requests = new ArrayList<>();
-        for (String slackname : slacknames) {
-            UserSearchRequest request = new UserSearchRequest();
-            request.setSlack(slackname);
-            requests.add(request);
-        }
-        List<User> users = userService.searchUserWithOr(requests);
-        logger.info("Search for users by:{} {} completed", "slack", slacknames.toString());
-        Map<String, String> response = new HashMap<>();
-        for (User user : users) {
-            response.put(user.getUuid(), user.getSlack());
-        }
-        return ResponseEntity.ok(response);
+    @PostMapping("/uuidBySlack")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDTO> getUsersUuidBySlack(@RequestBody UsersSlackRequest request){
+        //this UserDTO should have fields: uuid, slack
+        List<UserDTO> users = userService.getUsersUuidBySlack(request);
+        logger.info("Get users uuid by slack completed: ", users.toString());
+        return users;
     }
 }
