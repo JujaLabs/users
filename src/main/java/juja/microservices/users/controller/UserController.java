@@ -28,8 +28,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getAllUsers() {
         //this UserDTO should have fields: uuid, slack, skype, name
@@ -39,8 +38,7 @@ public class UserController {
     }
 
     //todo Uncomment and implement all chain of this endpoint
-    /*@RequestMapping(value = "/nameByUuid", method = RequestMethod.POST)
-    @ResponseBody
+    /*@PostMapping("/nameByUuid")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getUsersNameByUuid(@RequestBody UsersUuidRequest request){
         //this UserDTO should have fields: uuid, name
@@ -50,8 +48,7 @@ public class UserController {
     }*/
 
 
-    @RequestMapping(value = "/uuidBySlack", method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping("/uuidBySlack")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getUsersUuidBySlack(@RequestBody UsersSlackRequest request){
         //this UserDTO should have fields: uuid, slack

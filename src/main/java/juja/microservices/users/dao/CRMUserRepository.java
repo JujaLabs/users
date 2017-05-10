@@ -77,7 +77,7 @@ public class CRMUserRepository implements UserRepository{
                 new HttpEntity<>(createHeaders(x2_user, x2_apikey)),
                 new ParameterizedTypeReference<List<User>>() {});
 
-        ArrayList<User> users = (ArrayList)response.getBody();
+        List<User> users = (ArrayList)response.getBody();
         if (users.size() == 0) {
             throw new UserException("No users found by your request!");
         } else if (users.size() > 1) {
