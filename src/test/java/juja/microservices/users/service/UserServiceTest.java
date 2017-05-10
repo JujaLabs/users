@@ -3,6 +3,7 @@ package juja.microservices.users.service;
 import juja.microservices.users.dao.UserRepository;
 import juja.microservices.users.entity.User;
 import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersNameRequest;
 import juja.microservices.users.entity.UsersSlackRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +63,28 @@ public class UserServiceTest {
         when(repository.getUserBySlack(request.getSlackNames().get(1))).thenReturn(user2);
 
         List<UserDTO> actual = service.getUsersUuidBySlack(request);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getUsersNameByUuid() throws Exception {
+        User user1 = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
+                "linkedin/vasya", "facebook/vasya", "twitter/vasya");
+        User user2 = new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff",
+                "linkedin/kolya", "facebook/kolya", "twitter/kolya");
+        List<UserDTO> expected = new ArrayList<>();
+        expected.add(new UserDTO("AAAA123", null, null, "Ivanoff Vasya"));
+        expected.add(new UserDTO("AAAA456", null, null, "Sidoroff Kolya"));
+
+        List<String> uuids = new ArrayList<>();
+        uuids.add("AAAA123");
+        uuids.add("AAAA456");
+        UsersNameRequest request = new UsersNameRequest(uuids);
+
+        when(repository.getUserByUuid(request.getUuid().get(0))).thenReturn(user1);
+        when(repository.getUserByUuid(request.getUuid().get(1))).thenReturn(user2);
+
+        List<UserDTO> actual = service.getUsersNameByUuid(request);
         assertEquals(expected, actual);
     }
 }

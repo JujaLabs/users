@@ -68,19 +68,8 @@ public class CRMUserRepository implements UserRepository{
                 .path("Contacts")
                 .queryParam("c_isStudent","1")
                 .queryParam("c_slack", slack);
-        //TODO убрать дублирование
-        URI targetUrl= uriComponentsBuilder
-                .build()
-                .toUri();
 
-        ResponseEntity<List<User>> response = restTemplate.exchange(targetUrl, HttpMethod.GET,
-                new HttpEntity<>(createHeaders(x2_user, x2_apikey)),
-                new ParameterizedTypeReference<List<User>>() {});
-
-        List<User> users = (ArrayList)response.getBody();
-        if (users.size() == 0) {
-            throw new UserException("No users found by your request!");
-        }
+        List<User> users = getUsers(uriComponentsBuilder);
         if (users.size() > 1) {
             throw new UserException("More than one user found with the same slack name");
         }

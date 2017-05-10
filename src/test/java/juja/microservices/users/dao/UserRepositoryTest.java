@@ -88,4 +88,21 @@ public class UserRepositoryTest {
         mockServer.verify();
         assertThat(result, is(expected));
     }
+
+    @Test
+    public void searchUserByUuidTest() throws URISyntaxException, IOException {
+        URI uri = UserRepositoryTest.class.getClassLoader().getResource("vasya.json").toURI();
+        String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
+        User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
+                "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
+
+        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_uuid=AAAA123"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
+
+        User result = crmUserRepository.getUserByUuid("AAAA123");
+        mockServer.verify();
+        assertThat(result, is(expected));
+    }
 }
