@@ -39,7 +39,7 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UserException.class)
-    public ResponseEntity<ApiErrorMessage> handleGamificationException(UserException ex) {
+    public ResponseEntity<ApiErrorMessage> handleUserException(UserException ex) {
         ApiErrorMessage message =
                 ApiErrorMessage.builder(ApiErrorStatus.USER_EXCEPTION)
                         .httpStatus(HttpStatus.BAD_REQUEST.value())

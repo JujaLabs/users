@@ -48,7 +48,7 @@ public class UserService {
         List<User> users = request.getSlackNames().stream()
                 .map(repository::getUserBySlack)
                 .collect(Collectors.toList());
-        logger.debug("List of users: ", users.toString());
+        logger.debug("List of users: {}", users.toString());
         return users.stream()
                 .map(this::convertGetUuidBySlackDto)
                 .collect(Collectors.toList());
