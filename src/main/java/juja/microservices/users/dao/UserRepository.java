@@ -11,4 +11,5 @@ import java.util.List;
 public interface UserRepository {
     List<User> getAllUsers();
     User getUserBySlack(String slack);
+    User getUserByUuid(String uuid);
 }

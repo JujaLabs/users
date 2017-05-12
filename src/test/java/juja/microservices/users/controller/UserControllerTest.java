@@ -1,6 +1,7 @@
 package juja.microservices.users.controller;
 
 import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.entity.UsersSlackRequest;
 import juja.microservices.users.service.UserService;
 import org.junit.Test;
@@ -71,6 +72,27 @@ public class UserControllerTest {
         when(service.getUsersUuidBySlack(any(UsersSlackRequest.class))).thenReturn(users);
 
         String result = mockMvc.perform(post("/users/uuidBySlack")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertThatJson(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void getUsersNameByUuidShouldReturnOk() throws Exception {
+        String expected =
+                "[{\"uuid\":\"AAAA123\",\"name\":\"vasya\"}," +
+                " {\"uuid\":\"AAAA456\",\"name\":\"ivan\"}]";
+        List<UserDTO> users = new ArrayList<>();
+        users.add(new UserDTO("AAAA123", null, null, "vasya"));
+        users.add(new UserDTO("AAAA456", null, null, "ivan"));
+        String jsonRequest = "{\"uuid\":[\"AAAA123\",\"AAAA456\"]}";
+
+        when(service.getUsersNameByUuid(any(UsersUuidRequest.class))).thenReturn(users);
+
+        String result = mockMvc.perform(post("/users/nameByUuid")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
