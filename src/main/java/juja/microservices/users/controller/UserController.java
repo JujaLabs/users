@@ -1,5 +1,6 @@
 package juja.microservices.users.controller;
 
+import juja.microservices.users.entity.Keeper;
 import juja.microservices.users.entity.UserDTO;
 import juja.microservices.users.entity.UsersSlackRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
@@ -55,5 +56,13 @@ public class UserController {
         List<UserDTO> users = userService.getUsersUuidBySlack(request);
         logger.info("Get users uuid by slack completed: ", users.toString());
         return users;
+    }
+
+    @GetMapping("/activeKeepers")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Keeper> getActiveKeepers() {
+        List<Keeper> keepers = userService.getActiveKeepers();
+        logger.info("Successfully completed GET all active keepers. List of keepers: ", keepers.toString());
+        return keepers;
     }
 }

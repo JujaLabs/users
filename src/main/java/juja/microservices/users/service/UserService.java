@@ -1,10 +1,7 @@
 package juja.microservices.users.service;
 
 import juja.microservices.users.dao.UserRepository;
-import juja.microservices.users.entity.User;
-import juja.microservices.users.entity.UserDTO;
-import juja.microservices.users.entity.UsersSlackRequest;
-import juja.microservices.users.entity.UsersUuidRequest;
+import juja.microservices.users.entity.*;
 import juja.microservices.users.exceptions.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,5 +67,13 @@ public class UserService {
 
     private UserDTO convertGetNameByUuid(User user) {
         return new UserDTO(user.getUuid(), null,null, user.getFullName());
+    }
+
+    public List<Keeper> getActiveKeepers() {
+        List<Keeper> keepers = repository.getActiveKeepers();
+        if (keepers.size() == 0) {
+            throw new UserException("No active keepers found by your request!");
+        }
+        return keepers;
     }
 }
