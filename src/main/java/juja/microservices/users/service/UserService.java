@@ -72,7 +72,9 @@ public class UserService {
     public List<Keeper> getActiveKeepers() {
         List<Keeper> keepers = repository.getActiveKeepers();
         if (keepers.size() == 0) {
-            throw new UserException("No active keepers found by your request!");
+            String message = "No active keepers found by your request!";
+            logger.info(message);
+            throw new UserException(message);
         }
         return keepers;
     }

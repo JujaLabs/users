@@ -1,5 +1,6 @@
 package juja.microservices.users.dao;
 
+import juja.microservices.users.entity.Keeper;
 import juja.microservices.users.entity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,4 +106,25 @@ public class UserRepositoryTest {
         mockServer.verify();
         assertThat(result, is(expected));
     }
+
+    @Test
+    public void getActiveKeepersCRMUserRepositoryTest() throws URISyntaxException, IOException {
+        URI uri = UserRepositoryTest.class.getClassLoader().getResource("keepers.json").toURI();
+        String keepers = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
+        List<Keeper> expected = new ArrayList<>();
+        expected.add(new Keeper("AAAA123", "description1", "Ivanoff"));
+        expected.add(new Keeper("AAAA456", "description2", "Sidoroff"));
+        expected.add(new Keeper("AAAA123", "description3", "Petrova"));
+
+        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Keepers?c_isActive=1"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(keepers, MediaType.APPLICATION_JSON));
+
+        List<Keeper> result = crmUserRepository.getActiveKeepers();
+
+        mockServer.verify();
+        assertThat(result, is(expected));
+    }
+
 }
