@@ -105,6 +105,6 @@ public class UserServiceTest {
     public void getActiveKeepersNoActiveKeepersTest() throws Exception {
 
         when(repository.getActiveKeepers()).thenReturn(new ArrayList<>());
-        List<Keeper> actual = service.getActiveKeepers();
+        service.getActiveKeepers();
     }
 }
