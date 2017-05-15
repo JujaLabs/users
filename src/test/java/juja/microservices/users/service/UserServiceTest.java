@@ -101,15 +101,10 @@ public class UserServiceTest {
         assertEquals(expected, actual);
     }
 
-    @Test
+    @Test(expected = UserException.class)
     public void getActiveKeepersNoActiveKeepersTest() throws Exception {
 
         when(repository.getActiveKeepers()).thenReturn(new ArrayList<>());
-        try {
-            List<Keeper> actual = service.getActiveKeepers();
-            fail();
-        } catch (UserException e) {
-            assertEquals("No active keepers found by your request!", e.getMessage());
-        }
+        List<Keeper> actual = service.getActiveKeepers();
     }
 }
