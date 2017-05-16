@@ -1,17 +1,21 @@
 package juja.microservices.integration;
 
 import juja.microservices.users.dao.UserRepository;
+import juja.microservices.users.dao.UserRepositoryTest;
+import juja.microservices.users.entity.Keeper;
 import juja.microservices.users.entity.User;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
@@ -28,6 +32,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     private static final String USERS_URL = "/users";
     private static final String NAME_BY_UUID_URL = "/users/nameByUuid";
     private static final String UUID_BY_SLACK_URL = "/users/uuidBySlack";
+    private static final String ACTIVE_KEEPERS_URL = "/users/activeKeepers";
 
     private MockMvc mockMvc;
 
@@ -110,5 +115,27 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
         assertThatJson(result).isEqualTo(expected);
     }
 
+    @Test
+    public void getActiveKeepers() throws Exception {
 
+        //given
+        List<Keeper> keepers = new ArrayList<>();
+        keepers.add(new Keeper("AAAA123", "description1", "Ivanoff"));
+        keepers.add(new Keeper("AAAA456", "description2", "Sidoroff"));
+        keepers.add(new Keeper("AAAA123", "description3", "Petrova"));
+
+        URI uri = UserRepositoryTest.class.getClassLoader().getResource("keepers.json").toURI();
+        String expected = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
+        //when
+        when(repository.getActiveKeepers()).thenReturn(keepers);
+        String result = mockMvc.perform(get(ACTIVE_KEEPERS_URL)
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        //then
+        assertThatJson(result).isEqualTo(expected);
+    }
 }

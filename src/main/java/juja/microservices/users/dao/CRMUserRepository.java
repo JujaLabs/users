@@ -1,5 +1,6 @@
 package juja.microservices.users.dao;
 
+import juja.microservices.users.entity.Keeper;
 import juja.microservices.users.entity.User;
 import juja.microservices.users.exceptions.UserException;
 import org.slf4j.Logger;
@@ -108,5 +109,20 @@ public class CRMUserRepository implements UserRepository {
         }
         logger.debug("Founded user {}", users.get(0));
         return users.get(0);
+    }
+
+    @Override
+    public List<Keeper> getActiveKeepers() {
+        URI targetUrl = UriComponentsBuilder.fromUriString(X2_BASE_URL)
+                .path("Keepers")
+                .queryParam("c_isActive", "1")
+                .build()
+                .toUri();
+
+        ResponseEntity<List<Keeper>> response = restTemplate.exchange(targetUrl, HttpMethod.GET,
+                new HttpEntity<>(createHeaders(x2_user, x2_apikey)),
+                new ParameterizedTypeReference<List<Keeper>>() {});
+
+        return response.getBody();
     }
 }

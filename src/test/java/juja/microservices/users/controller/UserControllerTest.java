@@ -1,5 +1,6 @@
 package juja.microservices.users.controller;
 
+import juja.microservices.users.entity.Keeper;
 import juja.microservices.users.entity.UserDTO;
 import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.entity.UsersSlackRequest;
@@ -55,7 +56,6 @@ public class UserControllerTest {
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        System.out.println(result);
         assertThatJson(result).isEqualTo(expected);
     }
 
@@ -95,6 +95,25 @@ public class UserControllerTest {
         String result = mockMvc.perform(post("/users/nameByUuid")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertThatJson(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void getActiveKeepersShouldReturnOk() throws Exception {
+        String expected =
+                "[{\"uuid\":\"AAAA123\",\"description\":\"description1\",\"from\":\"vasya.ivanoff\"}," +
+                " {\"uuid\":\"AAAA456\",\"description\":\"description2\",\"from\":\"ivan.vasilieff\"}]";
+        List<Keeper> keepers = new ArrayList<>();
+        keepers.add(new Keeper("AAAA123", "description1", "vasya.ivanoff"));
+        keepers.add(new Keeper("AAAA456", "description2", "ivan.vasilieff"));
+
+        when(service.getActiveKeepers()).thenReturn(keepers);
+
+        String result = mockMvc.perform(get("/users/activeKeepers")
+                .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();

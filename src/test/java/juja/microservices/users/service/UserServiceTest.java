@@ -1,10 +1,8 @@
 package juja.microservices.users.service;
 
 import juja.microservices.users.dao.UserRepository;
-import juja.microservices.users.entity.User;
-import juja.microservices.users.entity.UserDTO;
-import juja.microservices.users.entity.UsersUuidRequest;
-import juja.microservices.users.entity.UsersSlackRequest;
+import juja.microservices.users.entity.*;
+import juja.microservices.users.exceptions.UserException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 /**
@@ -86,5 +85,26 @@ public class UserServiceTest {
 
         List<UserDTO> actual = service.getUsersNameByUuid(request);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getActiveKeepersTest() throws Exception {
+
+        List<Keeper> keepers = new ArrayList<>();
+        keepers.add(new Keeper("AAAA123", "description1", "Ivanoff"));
+        keepers.add(new Keeper("AAAA456", "description2", "Sidoroff"));
+        keepers.add(new Keeper("AAAA123", "description3", "Petrova"));
+
+        List<Keeper> expected = keepers;
+        when(repository.getActiveKeepers()).thenReturn(keepers);
+        List<Keeper> actual = service.getActiveKeepers();
+        assertEquals(expected, actual);
+    }
+
+    @Test(expected = UserException.class)
+    public void getActiveKeepersNoActiveKeepersTest() throws Exception {
+
+        when(repository.getActiveKeepers()).thenReturn(new ArrayList<>());
+        service.getActiveKeepers();
     }
 }
