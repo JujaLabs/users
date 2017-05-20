@@ -1,6 +1,7 @@
 package juja.microservices.users.dao;
 
 import juja.microservices.users.entity.Keeper;
+import juja.microservices.users.entity.KeeperCRM;
 import juja.microservices.users.entity.User;
 import juja.microservices.users.exceptions.UserException;
 import org.slf4j.Logger;
@@ -119,10 +120,29 @@ public class CRMUserRepository implements UserRepository {
                 .build()
                 .toUri();
 
-        ResponseEntity<List<Keeper>> response = restTemplate.exchange(targetUrl, HttpMethod.GET,
+        ResponseEntity<List<KeeperCRM>> response = restTemplate.exchange(targetUrl, HttpMethod.GET,
                 new HttpEntity<>(createHeaders(x2_user, x2_apikey)),
-                new ParameterizedTypeReference<List<Keeper>>() {});
+                new ParameterizedTypeReference<List<KeeperCRM>>() {});
 
-        return response.getBody();
+        List<KeeperCRM> keepersCRM = response.getBody();
+        List<Keeper> keepers = new ArrayList<>(keepersCRM.size());
+
+        for(KeeperCRM keeperCRM : keepersCRM) {
+            int index = keeperCRM.getContactAndId().lastIndexOf("_");
+            User user = getUserById(keeperCRM.getContactAndId().substring(index + 1));
+
+            keepers.add(new Keeper(user.getUuid(), keeperCRM.getDescription(), keeperCRM.getFrom()));
+        }
+        return keepers;
+    }
+
+    @Override
+    public User getUserById(String id) {
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(X2_BASE_URL)
+                .path("Contacts")
+                .queryParam("c_isStudent", "1")
+                .queryParam("id", id);
+
+        return getUser(uriComponentsBuilder);
     }
 }
