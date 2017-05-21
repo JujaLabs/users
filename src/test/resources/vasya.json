@@ -1,5 +1,5 @@
 [
   {
-    "uuid":"AAAA123","firstName":"Vasya","lastName":"Ivanoff", "email":"vasya@mail.ru","gmail":"vasya@gmail.com","slack":"vasya","skype":"vasya.ivanoff","linkedin":"linkedin/vasya","facebook":"facebook/vasya","twitter":"twitter/vasya"
+    "uuid":"AAAA123","id":"123","firstName":"Vasya","lastName":"Ivanoff", "email":"vasya@mail.ru","gmail":"vasya@gmail.com","slack":"vasya","skype":"vasya.ivanoff","linkedin":"linkedin/vasya","facebook":"facebook/vasya","twitter":"twitter/vasya"
   }
 ]

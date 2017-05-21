@@ -141,7 +141,7 @@ public class CRMUserRepository implements UserRepository {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(X2_BASE_URL)
                 .path("Contacts")
                 .queryParam("c_isStudent", "1")
-                .queryParam("id", id);
+                .queryParam("c_id", id);
 
         return getUser(uriComponentsBuilder);
     }
