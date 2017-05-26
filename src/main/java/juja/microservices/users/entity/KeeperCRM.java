@@ -13,15 +13,15 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class KeeperCRM {
 
-    private String contactAndId;
+    private String contact;  // Consists of name and id (example: "John Smitn_123")
     private String description;
     private String from;
 
     @JsonCreator
-    public KeeperCRM(@JsonProperty("c_contact") String nameWithId,
+    public KeeperCRM(@JsonProperty("c_contact") String contact,
                      @JsonProperty("c_description") String description,
                      @JsonProperty("c_from") String from) {
-        this.contactAndId = nameWithId;
+        this.contact = contact;
         this.description = description;
         this.from = from;
     }

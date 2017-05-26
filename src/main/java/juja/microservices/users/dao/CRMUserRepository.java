@@ -134,8 +134,8 @@ public class CRMUserRepository implements UserRepository {
     }
 
     private Keeper getKeeper(KeeperCRM keeperCRM) {
-        int index = keeperCRM.getContactAndId().lastIndexOf("_");
-        User user = getUserById(keeperCRM.getContactAndId().substring(index + 1));
+        int index = keeperCRM.getContact().lastIndexOf("_");
+        User user = getUserById(keeperCRM.getContact().substring(index + 1));
 
         return new Keeper(user.getUuid(), keeperCRM.getDescription(), keeperCRM.getFrom());
     }
