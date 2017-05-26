@@ -128,12 +128,16 @@ public class CRMUserRepository implements UserRepository {
         List<Keeper> keepers = new ArrayList<>(keepersCRM.size());
 
         for(KeeperCRM keeperCRM : keepersCRM) {
-            int index = keeperCRM.getContactAndId().lastIndexOf("_");
-            User user = getUserById(keeperCRM.getContactAndId().substring(index + 1));
-
-            keepers.add(new Keeper(user.getUuid(), keeperCRM.getDescription(), keeperCRM.getFrom()));
+            keepers.add(getKeeper(keeperCRM));
         }
         return keepers;
+    }
+
+    private Keeper getKeeper(KeeperCRM keeperCRM) {
+        int index = keeperCRM.getContactAndId().lastIndexOf("_");
+        User user = getUserById(keeperCRM.getContactAndId().substring(index + 1));
+
+        return new Keeper(user.getUuid(), keeperCRM.getDescription(), keeperCRM.getFrom());
     }
 
     @Override

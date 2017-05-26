@@ -52,8 +52,7 @@ public class UserRepositoryTest {
 
     @Test
     public void getAllUsersCRMUserRepositoryTest() throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource("allUsers.json").toURI();
-        String allUsers = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String allUsers = jsonFromFile("allUsers.json");
 
         List<User> expected = new ArrayList<>();
         expected.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
@@ -75,8 +74,7 @@ public class UserRepositoryTest {
 
     @Test
     public void searchUserBySlackTest() throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource("vasya.json").toURI();
-        String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String mockUser = jsonFromFile("vasya.json");
 
         User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
                 "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
@@ -92,8 +90,7 @@ public class UserRepositoryTest {
 
     @Test
     public void searchUserByUuidTest() throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource("vasya.json").toURI();
-        String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String mockUser = jsonFromFile("vasya.json");
 
         User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
                 "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
@@ -109,8 +106,7 @@ public class UserRepositoryTest {
 
     @Test
     public void getActiveKeepersCRMUserRepositoryTest() throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource("keepersCRM.json").toURI();
-        String keepersCRM = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String keepersCRM = jsonFromFile("keepersCRM.json");
 
         mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Keepers?c_isActive=1"))
                 .andExpect(method(HttpMethod.GET))
@@ -132,8 +128,7 @@ public class UserRepositoryTest {
     }
 
     private void mockUser(String userJson, String userId) throws URISyntaxException, IOException {
-        URI uri;
-        uri = UserRepositoryTest.class.getClassLoader().getResource(userJson).toURI();
+        URI uri = UserRepositoryTest.class.getClassLoader().getResource(userJson).toURI();
         String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
 
         mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_id=" + userId))
@@ -143,8 +138,7 @@ public class UserRepositoryTest {
 
     @Test
     public void searchUserByIdTest() throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource("vasya.json").toURI();
-        String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String mockUser = jsonFromFile("vasya.json");
 
         User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
         "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
@@ -156,6 +150,11 @@ public class UserRepositoryTest {
         User result = crmUserRepository.getUserById("123");
         mockServer.verify();
         assertThat(result, is(expected));
+    }
+
+    private String jsonFromFile(String file) throws URISyntaxException, IOException {
+        URI uri = UserRepositoryTest.class.getClassLoader().getResource(file).toURI();
+        return new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
     }
 
 }

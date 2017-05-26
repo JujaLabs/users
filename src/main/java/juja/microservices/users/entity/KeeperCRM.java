@@ -18,10 +18,10 @@ public class KeeperCRM {
     private String from;
 
     @JsonCreator
-    public KeeperCRM(@JsonProperty("c_contact") String contactAndId,
+    public KeeperCRM(@JsonProperty("c_contact") String nameWithId,
                      @JsonProperty("c_description") String description,
                      @JsonProperty("c_from") String from) {
-        this.contactAndId = contactAndId;
+        this.contactAndId = nameWithId;
         this.description = description;
         this.from = from;
     }
