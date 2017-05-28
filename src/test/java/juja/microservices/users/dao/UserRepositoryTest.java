@@ -52,8 +52,7 @@ public class UserRepositoryTest {
 
     @Test
     public void getAllUsersCRMUserRepositoryTest() throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource("allUsers.json").toURI();
-        String allUsers = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String allUsers = jsonFromFile("allUsers.json");
 
         List<User> expected = new ArrayList<>();
         expected.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
@@ -75,8 +74,7 @@ public class UserRepositoryTest {
 
     @Test
     public void searchUserBySlackTest() throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource("vasya.json").toURI();
-        String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String mockUser = jsonFromFile("vasya.json");
 
         User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
                 "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
@@ -92,8 +90,7 @@ public class UserRepositoryTest {
 
     @Test
     public void searchUserByUuidTest() throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource("vasya.json").toURI();
-        String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+        String mockUser = jsonFromFile("vasya.json");
 
         User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
                 "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
@@ -109,22 +106,55 @@ public class UserRepositoryTest {
 
     @Test
     public void getActiveKeepersCRMUserRepositoryTest() throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource("keepers.json").toURI();
-        String keepers = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
-
-        List<Keeper> expected = new ArrayList<>();
-        expected.add(new Keeper("AAAA123", "description1", "Ivanoff"));
-        expected.add(new Keeper("AAAA456", "description2", "Sidoroff"));
-        expected.add(new Keeper("AAAA123", "description3", "Petrova"));
+        String keepersCRM = jsonFromFile("keepersCRM.json");
 
         mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Keepers?c_isActive=1"))
                 .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(keepers, MediaType.APPLICATION_JSON));
+                .andRespond(withSuccess(keepersCRM, MediaType.APPLICATION_JSON));
+
+        mockUser("vasya.json", "123");
+        mockUser("kolya.json", "456");
+        mockUser("vasya.json", "123");
+
+        List<Keeper> expected = new ArrayList<>();
+        expected.add(new Keeper("AAAA123", "codejoy keeper", "Ivanoff"));
+        expected.add(new Keeper("AAAA456", "interview keeper", "Sidoroff"));
+        expected.add(new Keeper("AAAA123", "gamification keeper", "Petrova"));
 
         List<Keeper> result = crmUserRepository.getActiveKeepers();
 
         mockServer.verify();
         assertThat(result, is(expected));
+    }
+
+    private void mockUser(String userJson, String userId) throws URISyntaxException, IOException {
+        URI uri = UserRepositoryTest.class.getClassLoader().getResource(userJson).toURI();
+        String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+
+        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_id=" + userId))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void searchUserByIdTest() throws URISyntaxException, IOException {
+        String mockUser = jsonFromFile("vasya.json");
+
+        User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
+        "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
+
+        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_id=123"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
+
+        User result = crmUserRepository.getUserById("123");
+        mockServer.verify();
+        assertThat(result, is(expected));
+    }
+
+    private String jsonFromFile(String file) throws URISyntaxException, IOException {
+        URI uri = UserRepositoryTest.class.getClassLoader().getResource(file).toURI();
+        return new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
     }
 
 }

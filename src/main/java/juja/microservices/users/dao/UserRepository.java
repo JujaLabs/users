@@ -13,6 +13,7 @@ public interface UserRepository {
     List<User> getAllUsers();
     User getUserBySlack(String slack);
     User getUserByUuid(String uuid);
+    User getUserById(String id);
 
     List<Keeper> getActiveKeepers();
 }
