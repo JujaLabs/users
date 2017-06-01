@@ -34,6 +34,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     private static final String NAME_BY_UUID_URL = "/users/nameByUuid";
     private static final String UUID_BY_SLACK_URL = "/users/uuidBySlack";
     private static final String ACTIVE_KEEPERS_URL = "/users/activeKeepers";
+    private static final String Fake_URL = "/fake";
 
     private MockMvc mockMvc;
 
@@ -150,6 +151,15 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isMethodNotAllowed());
 
+    }
+
+    @Test
+    public void getUsersUuidBySlackNotFound() throws Exception {
+
+        //when
+        mockMvc.perform(get(Fake_URL)
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isNotFound());
     }
 
     @Test
