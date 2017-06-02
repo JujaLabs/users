@@ -6,6 +6,7 @@ import juja.microservices.users.exceptions.UserException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -47,6 +48,15 @@ public class UserRepositoryTest {
 
     private MockRestServiceServer mockServer;
 
+    @Value("${x2.baseUrl}")
+    private String x2BaseUrl;
+
+    @Value("${x2.contactsUrl}")
+    private String x2ContactsUrl;
+
+    @Value("${x2.keepersUrl}")
+    private String x2KeepersUrl;
+
     @Before
     public void setup() {
         mockServer = MockRestServiceServer.bindTo(restTemplate).build();
@@ -64,7 +74,7 @@ public class UserRepositoryTest {
         expected.add(new User("AAAA789", "Lena", "Petrova", "lena@mail.ru", "lena@gmail.com", "lena", "lena.petrova",
                 "linkedin/lena", "facebook/lena", "twitter/lena"));
 
-        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1"))
+        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(allUsers, MediaType.APPLICATION_JSON));
 
@@ -81,7 +91,7 @@ public class UserRepositoryTest {
         User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
                 "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
 
-        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_slack=vasya"))
+        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_slack=vasya"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
 
@@ -97,7 +107,7 @@ public class UserRepositoryTest {
         User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
                 "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
 
-        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_uuid=AAAA123"))
+        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_uuid=AAAA123"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
 
@@ -110,7 +120,7 @@ public class UserRepositoryTest {
     public void getActiveKeepersCRMUserRepositoryTest() throws URISyntaxException, IOException {
         String keepersCRM = jsonFromFile("keepersCRM.json");
 
-        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Keepers?c_isActive=1"))
+        mockServer.expect(requestTo(x2BaseUrl + x2KeepersUrl+"?c_isActive=1"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(keepersCRM, MediaType.APPLICATION_JSON));
 
@@ -133,7 +143,7 @@ public class UserRepositoryTest {
         URI uri = UserRepositoryTest.class.getClassLoader().getResource(userJson).toURI();
         String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
 
-        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_id=" + userId))
+        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_id=" + userId))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
     }
@@ -145,7 +155,7 @@ public class UserRepositoryTest {
         User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
         "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
 
-        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_id=123"))
+        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_id=123"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
 
@@ -158,7 +168,7 @@ public class UserRepositoryTest {
     public void searchUnexistedUserByUuidTest() throws URISyntaxException, IOException {
         //given
         String mockUser = "[]";
-        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_id=123"))
+        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_id=123"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
 
@@ -173,7 +183,7 @@ public class UserRepositoryTest {
     public void searchDuplicateUserByUuidTest() throws URISyntaxException, IOException {
         //given
         String mockUser = jsonFromFile("duplicateUser.json");;
-        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_id=123"))
+        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_id=123"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
 
