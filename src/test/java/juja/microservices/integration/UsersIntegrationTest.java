@@ -21,6 +21,7 @@ import java.util.*;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -33,6 +34,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     private static final String NAME_BY_UUID_URL = "/users/nameByUuid";
     private static final String UUID_BY_SLACK_URL = "/users/uuidBySlack";
     private static final String ACTIVE_KEEPERS_URL = "/users/activeKeepers";
+    private static final String Fake_URL = "/fake";
 
     private MockMvc mockMvc;
 
@@ -113,6 +115,51 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
 
         //then
         assertThatJson(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void getUsersUuidBySlackUnsupportedMediaType() throws Exception {
+
+        //when
+        mockMvc.perform(post(UUID_BY_SLACK_URL)
+                .contentType(APPLICATION_PDF))
+                .andExpect(status().isUnsupportedMediaType());
+    }
+
+    @Test
+    public void getUsersUuidBySlackBadRequest() throws Exception {
+
+        //given
+        String jsonRequest = "{\"slackkkkNames\":[\"vasya\"]}";
+
+        //when
+        mockMvc.perform(post(UUID_BY_SLACK_URL)
+                .content(jsonRequest)
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getUsersUuidBySlackMethodNotAllowed() throws Exception {
+
+        //given
+        String jsonRequest = "{\"slackNames\":[\"vasya\"]}";
+
+        //when
+        mockMvc.perform(get(UUID_BY_SLACK_URL)
+                .content(jsonRequest)
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isMethodNotAllowed());
+
+    }
+
+    @Test
+    public void getUsersUuidBySlackNotFound() throws Exception {
+
+        //when
+        mockMvc.perform(get(Fake_URL)
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isNotFound());
     }
 
     @Test

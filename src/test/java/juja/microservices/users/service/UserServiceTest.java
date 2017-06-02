@@ -87,6 +87,13 @@ public class UserServiceTest {
         assertEquals(expected, actual);
     }
 
+    @Test(expected = UserException.class)
+    public void getAllUsersEmptyListTest() throws Exception {
+        when(repository.getAllUsers()).thenReturn(new ArrayList<>());
+        service.getAllUsers();
+        fail();
+    }
+
     @Test
     public void getActiveKeepersTest() throws Exception {
 

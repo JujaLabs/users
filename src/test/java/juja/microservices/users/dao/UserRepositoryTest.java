@@ -2,6 +2,7 @@ package juja.microservices.users.dao;
 
 import juja.microservices.users.entity.Keeper;
 import juja.microservices.users.entity.User;
+import juja.microservices.users.exceptions.UserException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -150,6 +152,36 @@ public class UserRepositoryTest {
         User result = crmUserRepository.getUserById("123");
         mockServer.verify();
         assertThat(result, is(expected));
+    }
+
+    @Test(expected = UserException.class)
+    public void searchUnexistedUserByUuidTest() throws URISyntaxException, IOException {
+        //given
+        String mockUser = "[]";
+        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_id=123"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
+
+        //when
+        User result = crmUserRepository.getUserById("123");
+
+        //then
+        fail();
+    }
+
+    @Test(expected = UserException.class)
+    public void searchDuplicateUserByUuidTest() throws URISyntaxException, IOException {
+        //given
+        String mockUser = jsonFromFile("duplicateUser.json");;
+        mockServer.expect(requestTo("http://127.0.0.1/x2engine/index.php/api2/Contacts?c_isStudent=1&c_id=123"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
+
+        //when
+        User result = crmUserRepository.getUserById("123");
+
+        //then
+        fail();
     }
 
     private String jsonFromFile(String file) throws URISyntaxException, IOException {

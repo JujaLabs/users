@@ -24,7 +24,7 @@ public class User {
     private String twitter;
 
     public String getFullName() {
-        if (this.lastName.contains("@") || "".equals(this.lastName) || this.lastName == null) {
+        if (this.lastName == null || this.lastName.contains("@") || "".equals(this.lastName)) {
             return this.firstName;
         }
         return this.lastName + " " + this.firstName;
