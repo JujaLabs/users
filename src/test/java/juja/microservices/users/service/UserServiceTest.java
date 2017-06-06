@@ -36,8 +36,7 @@ public class UserServiceTest {
         List<UserDTO> expected = new ArrayList<>();
         expected.add(new UserDTO("AAAA123", "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
         List<User> users = new ArrayList<>();
-        users.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
-                "linkedin/vasya", "facebook/vasya", "twitter/vasya"));
+        users.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff"));
         when(repository.getAllUsers()).thenReturn(users);
         List<UserDTO> actual = service.getAllUsers();
         assertEquals(expected, actual);
@@ -45,10 +44,8 @@ public class UserServiceTest {
 
     @Test
     public void getUsersUuidBySlack() throws Exception {
-        User user1 = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
-                "linkedin/vasya", "facebook/vasya", "twitter/vasya");
-        User user2 = new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff",
-                "linkedin/kolya", "facebook/kolya", "twitter/kolya");
+        User user1 = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
+        User user2 = new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
         List<UserDTO> expected = new ArrayList<>();
         expected.add(new UserDTO("AAAA123", "vasya", null, null));
         expected.add(new UserDTO("AAAA456", "kolya", null, null));
@@ -67,10 +64,8 @@ public class UserServiceTest {
 
     @Test
     public void getUsersNameByUuid() throws Exception {
-        User user1 = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
-                "linkedin/vasya", "facebook/vasya", "twitter/vasya");
-        User user2 = new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff",
-                "linkedin/kolya", "facebook/kolya", "twitter/kolya");
+        User user1 = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
+        User user2 = new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
         List<UserDTO> expected = new ArrayList<>();
         expected.add(new UserDTO("AAAA123", null, null, "Ivanoff Vasya"));
         expected.add(new UserDTO("AAAA456", null, null, "Sidoroff Kolya"));

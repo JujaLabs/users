@@ -52,8 +52,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
         //given
         List<User> users = new ArrayList<>();
         User user = new User("AAAA123", "Vasya","Ivanoff", "vasya@mail.ru",
-                "vasya@gmail.com","vasya","vasya.ivanoff",
-                "linkedin/vasya","facebook/vasya","twitter/vasya");
+                "vasya@gmail.com","vasya","vasya.ivanoff");
         users.add(user);
         String expected =
                 "[{\"uuid\":\"AAAA123\",\"name\":\"Ivanoff Vasya\",\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
@@ -75,8 +74,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
 
         //given
         User user = new User("AAAA123", "Vasya","Ivanoff", "vasya@mail.ru",
-                "vasya@gmail.com","vasya","vasya.ivanoff",
-                "linkedin/vasya","facebook/vasya","twitter/vasya");
+                "vasya@gmail.com","vasya","vasya.ivanoff");
         String jsonRequest = "{\"uuid\":[\"AAAA123\"]}";
         String expected =
                 "[{\"uuid\":\"AAAA123\",\"name\":\"Ivanoff Vasya\"}]";
@@ -98,8 +96,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     public void getUsersUuidBySlack() throws Exception {
         //given
         User user = new User("AAAA123", "Vasya","Ivanoff", "vasya@mail.ru",
-                "vasya@gmail.com","vasya","vasya.ivanoff",
-                "linkedin/vasya","facebook/vasya","twitter/vasya");
+                "vasya@gmail.com","vasya","vasya.ivanoff");
         String jsonRequest = "{\"slackNames\":[\"vasya\"]}";
         String expected =
                 "[{\"uuid\":\"AAAA123\",\"slack\":\"vasya\"}]";
