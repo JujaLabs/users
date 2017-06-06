@@ -67,12 +67,9 @@ public class UserRepositoryTest {
         String allUsers = jsonFromFile("allUsers.json");
 
         List<User> expected = new ArrayList<>();
-        expected.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
-                        "linkedin/vasya", "facebook/vasya", "twitter/vasya"));
-        expected.add(new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff",
-                "linkedin/kolya", "facebook/kolya", "twitter/kolya"));
-        expected.add(new User("AAAA789", "Lena", "Petrova", "lena@mail.ru", "lena@gmail.com", "lena", "lena.petrova",
-                "linkedin/lena", "facebook/lena", "twitter/lena"));
+        expected.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff"));
+        expected.add(new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff"));
+        expected.add(new User("AAAA789", "Lena", "Petrova", "lena@mail.ru", "lena@gmail.com", "lena", "lena.petrova"));
 
         mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1"))
                 .andExpect(method(HttpMethod.GET))
@@ -89,7 +86,7 @@ public class UserRepositoryTest {
         String mockUser = jsonFromFile("vasya.json");
 
         User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
-                "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
+                "vasya.ivanoff");
 
         mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_slack=vasya"))
                 .andExpect(method(HttpMethod.GET))
@@ -105,7 +102,7 @@ public class UserRepositoryTest {
         String mockUser = jsonFromFile("vasya.json");
 
         User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
-                "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
+                "vasya.ivanoff");
 
         mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_uuid=AAAA123"))
                 .andExpect(method(HttpMethod.GET))
@@ -148,21 +145,6 @@ public class UserRepositoryTest {
                 .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
     }
 
-    @Test
-    public void searchUserByIdTest() throws URISyntaxException, IOException {
-        String mockUser = jsonFromFile("vasya.json");
-
-        User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
-        "vasya.ivanoff", "linkedin/vasya", "facebook/vasya", "twitter/vasya");
-
-        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_id=123"))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
-
-        User result = crmUserRepository.getUserById("123");
-        mockServer.verify();
-        assertThat(result, is(expected));
-    }
 
     @Test(expected = UserException.class)
     public void searchUnexistedUserByUuidTest() throws URISyntaxException, IOException {

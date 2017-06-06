@@ -11,35 +11,39 @@ public class UserTest {
         String expectedUuid = "uuid";
         String expectedFirstName = "firstName";
         String expectedLastName = "lastName";
-        String expectedEmail = "email";
         String expectedGmail = "gmail";
         String expectedSlack = "slack";
         String expectedSkype = "skype";
-        String expectedLinkedin = "linkedin";
-        String expectedFacebook = "facebook";
-        String expectedTwitter = "twitter";
+
 
         User user = new User("uuid", "firstName", "lastName", "email", "gmail",
-                "slack", "skype", "linkedin", "facebook", "twitter");
+                "slack", "skype");
 
         assertNotNull(user);
         assertEquals(expectedUuid, user.getUuid());
         assertEquals(expectedFirstName, user.getFirstName());
         assertEquals(expectedLastName, user.getLastName());
-        assertEquals(expectedEmail, user.getEmail());
-        assertEquals(expectedGmail, user.getGmail());
+        assertEquals(expectedGmail, user.getEmail());
         assertEquals(expectedSlack, user.getSlack());
         assertEquals(expectedSkype, user.getSkype());
-        assertEquals(expectedLinkedin, user.getLinkedin());
-        assertEquals(expectedFacebook, user.getFacebook());
-        assertEquals(expectedTwitter, user.getTwitter());
+    }
+
+
+    @Test
+    public void shouldReturnEmailWhenGmailIsNull(){
+
+        String expectedEmail = "email";
+        User user = new User("uuid", "firstName", "lastName", expectedEmail, null,
+                "slack", "skype");
+
+        assertEquals(expectedEmail, user.getEmail());
     }
 
     @Test
     public void getFullNameTest() {
         String expectedFullName = "lastName firstName";
         User user = new User("uuid", "firstName", "lastName", "email", "gmail",
-                "slack", "skype", "linkedin", "facebook", "twitter");
+                "slack", "skype");
         assertEquals(expectedFullName, user.getFullName());
     }
 
@@ -47,7 +51,7 @@ public class UserTest {
     public void getFullNameWithNullLastNameTest() {
         String expectedFullName = "firstName";
         User user = new User("uuid", "firstName", null, "email", "gmail",
-                "slack", "skype", "linkedin", "facebook", "twitter");
+                "slack", "skype");
         assertEquals(expectedFullName, user.getFullName());
     }
 
@@ -55,7 +59,7 @@ public class UserTest {
     public void getFullNameWithEmptyLastNameTest() {
         String expectedFullName = "firstName";
         User user = new User("uuid", "firstName", "", "email", "gmail",
-                "slack", "skype", "linkedin", "facebook", "twitter");
+                "slack", "skype");
         assertEquals(expectedFullName, user.getFullName());
     }
 
@@ -63,7 +67,7 @@ public class UserTest {
     public void getFullNameWithEmailInLastNameTest() {
         String expectedFullName = "firstName";
         User user = new User("uuid", "firstName", "user@mail.com", "email", "gmail",
-                "slack", "skype", "linkedin", "facebook", "twitter");
+                "slack", "skype");
         assertEquals(expectedFullName, user.getFullName());
     }
 }
