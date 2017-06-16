@@ -69,22 +69,26 @@ public class CRMUserRepository implements UserRepository {
 
     @Override
     public List<User> getAllUsers() {
+        logger.debug("Preparing target URI for response to database");
         URI targetUrl = UriComponentsBuilder.fromUriString(x2BaseUrl)
                 .path(x2ContactsUrl)
                 .queryParam("c_isStudent", "1")
                 .build()
                 .toUri();
 
+        logger.debug("Send response to database");
         ResponseEntity<List<User>> response = restTemplate.exchange(targetUrl, HttpMethod.GET,
                 new HttpEntity<>(createHeaders(x2User, x2Password)),
                 new ParameterizedTypeReference<List<User>>() {
                 });
 
+        logger.debug("Received data from database: {}", response.getBody());
         return response.getBody();
     }
 
     @Override
     public User getUserBySlack(String slack) {
+        logger.debug("Preparing uriComponentsBuilder for response to database");
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(x2BaseUrl)
                 .path(x2ContactsUrl)
                 .queryParam("c_isStudent", "1")
@@ -95,6 +99,7 @@ public class CRMUserRepository implements UserRepository {
 
     @Override
     public User getUserByUuid(String uuid) {
+        logger.debug("Preparing uriComponentsBuilder for response to database");
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(x2BaseUrl)
                 .path(x2ContactsUrl)
                 .queryParam("c_isStudent", "1")
@@ -104,16 +109,18 @@ public class CRMUserRepository implements UserRepository {
     }
 
     private User getUser(UriComponentsBuilder uriComponentsBuilder) {
+        logger.debug("Preparing target URL for response to database");
         URI targetUrl = uriComponentsBuilder
                 .build()
                 .toUri();
-
+        logger.debug("Send response to database");
         ResponseEntity<List<User>> response = restTemplate.exchange(targetUrl, HttpMethod.GET,
                 new HttpEntity<>(createHeaders(x2User, x2Password)),
                 new ParameterizedTypeReference<List<User>>() {
                 });
 
         List<User> users = response.getBody();
+        logger.debug("Received data from database: {}", users);
         if (users.size() == 0) {
             String message = "No users found by your request!";
             logger.info(message);
@@ -123,29 +130,33 @@ public class CRMUserRepository implements UserRepository {
             logger.warn(message);
             throw new UserException(message);
         }
-        logger.debug("Founded user {}", users.get(0));
+
         return users.get(0);
     }
 
     @Override
     public List<Keeper> getActiveKeepers() {
+        logger.debug("Preparing target URL for response to database");
         URI targetUrl = UriComponentsBuilder.fromUriString(x2BaseUrl)
                 .path(x2KeepersUrl)
                 .queryParam("c_isActive", "1")
                 .build()
                 .toUri();
 
+        logger.debug("Send response to database");
         ResponseEntity<List<KeeperCRM>> response = restTemplate.exchange(targetUrl, HttpMethod.GET,
                 new HttpEntity<>(createHeaders(x2User, x2Password)),
                 new ParameterizedTypeReference<List<KeeperCRM>>() {
                 });
 
         List<KeeperCRM> keepersCRM = response.getBody();
+        logger.debug("Received data from database: {}", keepersCRM);
         List<Keeper> keepers = new ArrayList<>(keepersCRM.size());
-
+        logger.debug("Converting keepers data");
         for (KeeperCRM keeperCRM : keepersCRM) {
             keepers.add(getKeeper(keeperCRM));
         }
+
         return keepers;
     }
 

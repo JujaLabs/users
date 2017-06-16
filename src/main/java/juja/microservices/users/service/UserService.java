@@ -28,7 +28,9 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUsers() {
+        logger.debug("Send request to repository: get all users");
         List<User> users = repository.getAllUsers();
+        logger.debug("Received users list from repository, size = {}", users.size());
         if (users.size() == 0) {
             throw new UserException("No users found by your request!");
         }
@@ -42,6 +44,7 @@ public class UserService {
     }
 
     public List<UserDTO> getUsersUuidBySlack(UsersSlackRequest request) {
+        logger.debug("Send request to repository: get uuid by slack name");
         List<User> users = request.getSlackNames().stream()
                 .map(repository::getUserBySlack)
                 .collect(Collectors.toList());
@@ -56,6 +59,7 @@ public class UserService {
     }
 
     public List<UserDTO> getUsersNameByUuid(UsersUuidRequest request) {
+        logger.debug("Send request to repository: get user bu uuid");
         List<User> users = request.getUuid().stream()
                 .map(repository::getUserByUuid)
                 .collect(Collectors.toList());
@@ -70,7 +74,9 @@ public class UserService {
     }
 
     public List<Keeper> getActiveKeepers() {
+        logger.debug("Send request to repository: get active keepers");
         List<Keeper> keepers = repository.getActiveKeepers();
+        logger.debug("Received keepers list from repository, size = {}", keepers.size());
         if (keepers.size() == 0) {
             String message = "No active keepers found by your request!";
             logger.info(message);
