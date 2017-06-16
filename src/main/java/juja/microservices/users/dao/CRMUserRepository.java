@@ -130,7 +130,7 @@ public class CRMUserRepository implements UserRepository {
             logger.warn(message);
             throw new UserException(message);
         }
-
+        logger.debug("Founded user {}", users.get(0));
         return users.get(0);
     }
 
