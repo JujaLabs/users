@@ -12,7 +12,7 @@
         </layout>
     </appender>
     <appender name="RollingFile-Appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/logfile.log</file>
+        <file>${LOG_PATH}/users.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${LOG_ARCHIVE}/logfile.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>1MB</maxFileSize>
