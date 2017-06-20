@@ -34,8 +34,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getAllUsers() {
         //this UserDTO should have fields: uuid, slack, skype, name
+        logger.debug("Received get all users request");
+
         List<UserDTO> users = userService.getAllUsers();
-        logger.info("Successfully completed GET all users. List of users: {}", users.toString());
+
+        logger.info("Successfully completed GET all users. Sent {} records", users.size());
+        logger.debug("Sent users: [{}]", users.toString());
         return users;
     }
 
@@ -43,8 +47,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getUsersNameByUuid(@RequestBody UsersUuidRequest request){
         //this UserDTO should have fields: uuid, name
+        logger.debug("Received get users name by uuid request. Requested uuid: {}", request.getUuid());
+
         List<UserDTO> users = userService.getUsersNameByUuid(request);
-        logger.info("Get users name by uuid completed: {}", users.toString());
+
+        logger.info("Get users name by uuid request processed. Transmitted {} records", users.size());
+        logger.debug("Sent users: [{}]", users.toString());
         return users;
     }
 
@@ -53,16 +61,24 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getUsersUuidBySlack(@RequestBody UsersSlackRequest request){
         //this UserDTO should have fields: uuid, slack
+        logger.debug("Received get users uuid by slack name request. Requested slack names: {}", request.getSlackNames());
+
         List<UserDTO> users = userService.getUsersUuidBySlack(request);
-        logger.info("Get users uuid by slack completed: {}", users.toString());
+
+        logger.info("Get users uuid by slack name completed. Transmitted {} records", users.size());
+        logger.debug("Sent users: [{}]", users.toString());
         return users;
     }
 
     @GetMapping("/activeKeepers")
     @ResponseStatus(HttpStatus.OK)
     public List<Keeper> getActiveKeepers() {
+        logger.debug("Received get active keeper request");
+
         List<Keeper> keepers = userService.getActiveKeepers();
-        logger.info("Successfully completed GET all active keepers. List of keepers: {}", keepers.toString());
+
+        logger.info("Successfully completed GET all active keepers. Transmitted {} records", keepers.size());
+        logger.debug("Sent keepers: [{}]", keepers.toString());
         return keepers;
     }
 }

@@ -28,13 +28,22 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUsers() {
+        logger.debug("Send get all users request to repository");
         List<User> users = repository.getAllUsers();
         if (users.size() == 0) {
+            logger.warn("No users found. Received empty list from repository.");
             throw new UserException("No users found by your request!");
         }
-        return users.stream()
+        logger.debug("Received user list from repository: {}", users.toString());
+
+        logger.debug("Converting received user list to userDTO list");
+        List<UserDTO> result = users.stream()
                 .map(this::convertGetAllUsersDto)
                 .collect(Collectors.toList());
+        logger.debug("All users converted: {}", result.toString());
+
+        logger.info("Founded {} users", result.size());
+        return  result;
     }
 
     private UserDTO convertGetAllUsersDto(User user) {
@@ -42,13 +51,21 @@ public class UserService {
     }
 
     public List<UserDTO> getUsersUuidBySlack(UsersSlackRequest request) {
+        logger.debug("Sending get uuid by slack name request to repository");
+        logger.debug("Sent slack names: {}", request.getSlackNames());
         List<User> users = request.getSlackNames().stream()
                 .map(repository::getUserBySlack)
                 .collect(Collectors.toList());
-        logger.debug("List of users: {}", users.toString());
-        return users.stream()
+        logger.debug("Received response from repository: {}", users.toString());
+
+        logger.debug("Converting received user list to userDTO list");
+        List<UserDTO> result =users.stream()
                 .map(this::convertGetUuidBySlackDto)
                 .collect(Collectors.toList());
+        logger.debug("All users converted: {}", result.toString());
+
+        logger.info("Founded {} users", result.size());
+        return result;
     }
 
     private UserDTO convertGetUuidBySlackDto(User user) {
@@ -56,13 +73,21 @@ public class UserService {
     }
 
     public List<UserDTO> getUsersNameByUuid(UsersUuidRequest request) {
+        logger.debug("Sending get user bu uuid request to repository");
+        logger.debug("Sent uuid: {}", request.getUuid());
         List<User> users = request.getUuid().stream()
                 .map(repository::getUserByUuid)
                 .collect(Collectors.toList());
-        logger.debug("List of names: {}", users.toString());
-        return users.stream()
+        logger.debug("Received response from repository: {}", users.toString());
+
+        logger.debug("Converting received user list to userDTO list");
+        List<UserDTO> result = users.stream()
                 .map(this::convertGetNameByUuid)
                 .collect(Collectors.toList());
+        logger.debug("All users converted: {}", result.toString());
+
+        logger.info("Founded {} users", result.size());
+        return result;
     }
 
     private UserDTO convertGetNameByUuid(User user) {
@@ -70,12 +95,16 @@ public class UserService {
     }
 
     public List<Keeper> getActiveKeepers() {
-        List<Keeper> keepers = repository.getActiveKeepers();
-        if (keepers.size() == 0) {
-            String message = "No active keepers found by your request!";
-            logger.info(message);
+        logger.debug("Send get active keepers request to repository");
+        List<Keeper> result = repository.getActiveKeepers();
+
+        if (result.size() == 0) {
+            String message = "No any active keepers founded";
+            logger.warn(message);
             throw new UserException(message);
         }
-        return keepers;
+        logger.debug("Received keepers list from repository: {}", result.toString());
+        logger.info("Founded {} keepers", result.size());
+        return result;
     }
 }
