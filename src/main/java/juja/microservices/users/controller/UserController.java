@@ -34,7 +34,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getAllUsers() {
         //this UserDTO should have fields: uuid, slack, skype, name
-        logger.info("Received get all users request");
+        logger.debug("Received get all users request");
 
         List<UserDTO> users = userService.getAllUsers();
 
@@ -47,8 +47,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getUsersNameByUuid(@RequestBody UsersUuidRequest request){
         //this UserDTO should have fields: uuid, name
-        logger.info("Received get users name by uuid request.");
-        logger.debug("Requested uuid: {}", request.getUuid());
+        logger.debug("Received get users name by uuid request. Requested uuid: {}", request.getUuid());
 
         List<UserDTO> users = userService.getUsersNameByUuid(request);
 
@@ -62,8 +61,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getUsersUuidBySlack(@RequestBody UsersSlackRequest request){
         //this UserDTO should have fields: uuid, slack
-        logger.info("Received get users uuid by slack name request.");
-        logger.debug("Requested slack names: {}", request.getSlackNames());
+        logger.debug("Received get users uuid by slack name request. Requested slack names: {}", request.getSlackNames());
 
         List<UserDTO> users = userService.getUsersUuidBySlack(request);
 
@@ -75,7 +73,7 @@ public class UserController {
     @GetMapping("/activeKeepers")
     @ResponseStatus(HttpStatus.OK)
     public List<Keeper> getActiveKeepers() {
-        logger.info("Received get active keeper request");
+        logger.debug("Received get active keeper request");
 
         List<Keeper> keepers = userService.getActiveKeepers();
 

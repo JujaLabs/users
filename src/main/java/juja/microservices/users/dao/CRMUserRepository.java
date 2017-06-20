@@ -114,8 +114,7 @@ public class CRMUserRepository implements UserRepository {
         URI targetUrl = uriComponentsBuilder
                 .build()
                 .toUri();
-        logger.debug("Prepared target URL for response to CRM: {}", targetUrl.toString());
-        logger.debug("Send response to CRM");
+        logger.debug("Send response to CRM, target URL: {}", targetUrl.toString());
         ResponseEntity<List<User>> response = restTemplate.exchange(targetUrl, HttpMethod.GET,
                 new HttpEntity<>(createHeaders(x2User, x2Password)),
                 new ParameterizedTypeReference<List<User>>() {
@@ -126,7 +125,7 @@ public class CRMUserRepository implements UserRepository {
 
         if (users.size() == 0) {
             String message = "No users found by your request!";
-            logger.info(message);
+            logger.warn(message);
             throw new UserException(message);
         } else if (users.size() > 1) {
             String message = "More than one user found with the same unique field";
@@ -145,8 +144,7 @@ public class CRMUserRepository implements UserRepository {
                 .queryParam("c_isActive", "1")
                 .build()
                 .toUri();
-        logger.debug("Prepared target URL for response to CRM: {}", targetUrl.toString());
-        logger.debug("Send response to CRM");
+        logger.debug("Send response to CRM, target URL: {}", targetUrl.toString());
         ResponseEntity<List<KeeperCRM>> response = restTemplate.exchange(targetUrl, HttpMethod.GET,
                 new HttpEntity<>(createHeaders(x2User, x2Password)),
                 new ParameterizedTypeReference<List<KeeperCRM>>() {
