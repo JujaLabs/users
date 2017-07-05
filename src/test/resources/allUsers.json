@@ -1,11 +1,11 @@
 [
   {
-    "uuid":"AAAA123","id":"123","firstName":"Vasya","lastName":"Ivanoff", "email":"vasya@mail.ru","gmail":"vasya@gmail.com","slack":"vasya","skype":"vasya.ivanoff","linkedin":"linkedin/vasya","facebook":"facebook/vasya","twitter":"twitter/vasya"
+    "c_uuid":"AAAA123","id":"123","firstName":"Vasya","lastName":"Ivanoff", "email":"vasya@mail.ru","c_gmail":"vasya@gmail.com","c_slack":"vasya","skype":"vasya.ivanoff"
   },
   {
-    "uuid":"AAAA456","id":"456","firstName":"Kolya","lastName":"Sidoroff", "email":"kolya@mail.ru","gmail":"kolya@gmail.com","slack":"kolya","skype":"kolya.sidoroff","linkedin":"linkedin/kolya","facebook":"facebook/kolya","twitter":"twitter/kolya"
+    "c_uuid":"AAAA456","id":"456","firstName":"Kolya","lastName":"Sidoroff", "email":"kolya@mail.ru","c_gmail":"kolya@gmail.com","c_slack":"kolya","skype":"kolya.sidoroff"
   },
   {
-    "uuid":"AAAA789","id":"789","firstName":"Lena","lastName":"Petrova", "email":"lena@mail.ru","gmail":"lena@gmail.com","slack":"lena","skype":"lena.petrova","linkedin":"linkedin/lena","facebook":"facebook/lena","twitter":"twitter/lena"
+    "c_uuid":"AAAA789","id":"789","firstName":"Lena","lastName":"Petrova", "email":"lena@mail.ru","c_gmail":"lena@gmail.com","c_slack":"lena","skype":"lena.petrova"
   }
 ]
