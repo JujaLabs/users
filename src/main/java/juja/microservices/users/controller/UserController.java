@@ -19,7 +19,7 @@ import java.util.List;
  */
 @RestController
 @Validated
-@RequestMapping(value = "/users", produces = "application/json", consumes = "application/json")
+@RequestMapping(value = "/users/v1", produces = "application/json", consumes = "application/json")
 public class UserController {
 
     private final UserService userService;
