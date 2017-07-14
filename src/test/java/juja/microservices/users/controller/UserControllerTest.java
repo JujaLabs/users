@@ -51,7 +51,7 @@ public class UserControllerTest {
 
         when(service.getAllUsers()).thenReturn(users);
 
-        String result = mockMvc.perform(get("/users")
+        String result = mockMvc.perform(get("/v1/users")
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
@@ -71,7 +71,7 @@ public class UserControllerTest {
 
         when(service.getUsersUuidBySlack(any(UsersSlackRequest.class))).thenReturn(users);
 
-        String result = mockMvc.perform(post("/users/uuidBySlack")
+        String result = mockMvc.perform(post("/v1/users/uuidBySlack")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -92,7 +92,7 @@ public class UserControllerTest {
 
         when(service.getUsersNameByUuid(any(UsersUuidRequest.class))).thenReturn(users);
 
-        String result = mockMvc.perform(post("/users/nameByUuid")
+        String result = mockMvc.perform(post("/v1/users/nameByUuid")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -112,7 +112,7 @@ public class UserControllerTest {
 
         when(service.getActiveKeepers()).thenReturn(keepers);
 
-        String result = mockMvc.perform(get("/users/activeKeepers")
+        String result = mockMvc.perform(get("/v1/users/activeKeepers")
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
