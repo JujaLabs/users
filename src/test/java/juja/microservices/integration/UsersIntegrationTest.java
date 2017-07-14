@@ -30,10 +30,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 public class UsersIntegrationTest extends BaseIntegrationTest{
 
-    private static final String USERS_URL = "/users";
-    private static final String NAME_BY_UUID_URL = "/users/nameByUuid";
-    private static final String UUID_BY_SLACK_URL = "/users/uuidBySlack";
-    private static final String ACTIVE_KEEPERS_URL = "/users/activeKeepers";
+    private static final String USERS_URL = "/v1/users";
+    private static final String NAME_BY_UUID_URL = "/v1/users/nameByUuid";
+    private static final String UUID_BY_SLACK_URL = "/v1/users/uuidBySlack";
+    private static final String ACTIVE_KEEPERS_URL = "/v1/users/activeKeepers";
     private static final String Fake_URL = "/fake";
 
     private MockMvc mockMvc;
