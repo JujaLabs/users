@@ -66,7 +66,7 @@ public class UserService {
                     .collect(Collectors.toList());
         } catch (NullPointerException e) {
             logger.warn("Users" + request.getSlackNames() + "isn't found. Received empty list from repository.");
-            throw new UserException("User" + request.getSlackNames() + "found by your request!");
+            throw new UserException("User" + request.getSlackNames() + "isn't found by your request!");
         }
         logger.debug("All users converted: {}", result.toString());
 
