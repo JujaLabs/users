@@ -59,9 +59,15 @@ public class UserService {
         logger.debug("Received response from repository: {}", users.toString());
 
         logger.debug("Converting received user list to userDTO list");
-        List<UserDTO> result =users.stream()
-                .map(this::convertGetUuidBySlackDto)
-                .collect(Collectors.toList());
+        List<UserDTO> result;
+        try {
+            result = users.stream()
+                    .map(this::convertGetUuidBySlackDto)
+                    .collect(Collectors.toList());
+        } catch (NullPointerException e) {
+            logger.warn("Users" + request.getSlackNames() + "isn't found. Received empty list from repository.");
+            throw new UserException("User" + request.getSlackNames() + "found by your request!");
+        }
         logger.debug("All users converted: {}", result.toString());
 
         logger.info("Founded {} users", result.size());
