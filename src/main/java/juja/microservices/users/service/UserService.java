@@ -65,7 +65,7 @@ public class UserService {
                     .map(this::convertGetUuidBySlackDto)
                     .collect(Collectors.toList());
         } catch (NullPointerException e) {
-            logger.warn("Users" + request.getSlackNames() + "isn't found. Received empty list from repository.");
+            logger.warn("Users" + request.getSlackNames() + "weren't found. Received empty list from repository.");
             throw new UserException("Users " + request.getSlackNames() + " weren't found by your request!");
         }
         logger.debug("All users converted: {}", result.toString());
