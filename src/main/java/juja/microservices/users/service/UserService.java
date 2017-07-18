@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
  * @author Denis Tantsev (dtantsev@gmail.com)
  * @author Olga Kulykova
  */
-
 @Service
 public class UserService {
 
@@ -92,19 +91,5 @@ public class UserService {
 
     private UserDTO convertGetNameByUuid(User user) {
         return new UserDTO(user.getUuid(), null,null, user.getFullName());
-    }
-
-    public List<Keeper> getActiveKeepers() {
-        logger.debug("Send get active keepers request to repository");
-        List<Keeper> result = repository.getActiveKeepers();
-
-        if (result.size() == 0) {
-            String message = "No any active keepers founded";
-            logger.warn(message);
-            throw new UserException(message);
-        }
-        logger.debug("Received keepers list from repository: {}", result.toString());
-        logger.info("Founded {} keepers", result.size());
-        return result;
     }
 }

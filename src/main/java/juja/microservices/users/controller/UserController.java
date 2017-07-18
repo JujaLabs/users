@@ -1,6 +1,5 @@
 package juja.microservices.users.controller;
 
-import juja.microservices.users.entity.Keeper;
 import juja.microservices.users.entity.UserDTO;
 import juja.microservices.users.entity.UsersSlackRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
@@ -56,7 +55,6 @@ public class UserController {
         return users;
     }
 
-
     @PostMapping("/uuidBySlack")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getUsersUuidBySlack(@RequestBody UsersSlackRequest request){
@@ -68,17 +66,5 @@ public class UserController {
         logger.info("Get users uuid by slack name completed. Transmitted {} records", users.size());
         logger.debug("Sent users: [{}]", users.toString());
         return users;
-    }
-
-    @GetMapping("/activeKeepers")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Keeper> getActiveKeepers() {
-        logger.debug("Received get active keeper request");
-
-        List<Keeper> keepers = userService.getActiveKeepers();
-
-        logger.info("Successfully completed GET all active keepers. Transmitted {} records", keepers.size());
-        logger.debug("Sent keepers: [{}]", keepers.toString());
-        return keepers;
     }
 }

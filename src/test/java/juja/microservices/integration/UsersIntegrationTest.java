@@ -1,8 +1,6 @@
 package juja.microservices.integration;
 
 import juja.microservices.users.dao.UserRepository;
-import juja.microservices.users.dao.UserRepositoryTest;
-import juja.microservices.users.entity.Keeper;
 import juja.microservices.users.entity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,10 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
@@ -33,7 +27,6 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     private static final String USERS_URL = "/v1/users";
     private static final String NAME_BY_UUID_URL = "/v1/users/nameByUuid";
     private static final String UUID_BY_SLACK_URL = "/v1/users/uuidBySlack";
-    private static final String ACTIVE_KEEPERS_URL = "/v1/users/activeKeepers";
     private static final String Fake_URL = "/fake";
 
     private MockMvc mockMvc;
@@ -48,7 +41,6 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
 
     @Test
     public void getAllUsers() throws Exception {
-
         //given
         List<User> users = new ArrayList<>();
         User user = new User("AAAA123", "Vasya","Ivanoff", "vasya@mail.ru",
@@ -71,7 +63,6 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
 
     @Test
     public void getUserNameByUuid() throws Exception {
-
         //given
         User user = new User("AAAA123", "Vasya","Ivanoff", "vasya@mail.ru",
                 "vasya@gmail.com","vasya","vasya.ivanoff");
@@ -116,7 +107,6 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
 
     @Test
     public void getUsersUuidBySlackUnsupportedMediaType() throws Exception {
-
         //when
         mockMvc.perform(post(UUID_BY_SLACK_URL)
                 .contentType(APPLICATION_PDF))
@@ -125,7 +115,6 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
 
     @Test
     public void getUsersUuidBySlackBadRequest() throws Exception {
-
         //given
         String jsonRequest = "{\"slackkkkNames\":[\"vasya\"]}";
 
@@ -138,7 +127,6 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
 
     @Test
     public void getUsersUuidBySlackMethodNotAllowed() throws Exception {
-
         //given
         String jsonRequest = "{\"slackNames\":[\"vasya\"]}";
 
@@ -152,34 +140,9 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
 
     @Test
     public void getUsersUuidBySlackNotFound() throws Exception {
-
         //when
         mockMvc.perform(get(Fake_URL)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void getActiveKeepers() throws Exception {
-
-        //given
-        List<Keeper> keepers = new ArrayList<>();
-        keepers.add(new Keeper("AAAA123", "description1", "Ivanoff"));
-        keepers.add(new Keeper("AAAA456", "description2", "Sidoroff"));
-        keepers.add(new Keeper("AAAA123", "description3", "Petrova"));
-
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource("keepers.json").toURI();
-        String expected = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
-
-        //when
-        when(repository.getActiveKeepers()).thenReturn(keepers);
-        String result = mockMvc.perform(get(ACTIVE_KEEPERS_URL)
-                .contentType(APPLICATION_JSON_UTF8))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        //then
-        assertThatJson(result).isEqualTo(expected);
     }
 }

@@ -1,6 +1,5 @@
 package juja.microservices.users.dao;
 
-import juja.microservices.users.entity.Keeper;
 import juja.microservices.users.entity.User;
 
 import java.util.List;
@@ -14,6 +13,4 @@ public interface UserRepository {
     User getUserBySlack(String slack);
     User getUserByUuid(String uuid);
     User getUserById(String id);
-
-    List<Keeper> getActiveKeepers();
 }
