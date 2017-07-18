@@ -1,7 +1,5 @@
 package juja.microservices.users.dao;
 
-import juja.microservices.users.entity.Keeper;
-import juja.microservices.users.entity.KeeperCRM;
 import juja.microservices.users.entity.User;
 import juja.microservices.users.exceptions.UserException;
 import org.slf4j.Logger;
@@ -19,7 +17,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.inject.Inject;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -41,9 +38,6 @@ public class CRMUserRepository implements UserRepository {
 
     @Value("${x2.contactsUrl}")
     private String x2ContactsUrl;
-
-    @Value("${x2.keepersUrl}")
-    private String x2KeepersUrl;
 
     private final RestTemplate restTemplate;
 
@@ -110,7 +104,6 @@ public class CRMUserRepository implements UserRepository {
     }
 
     private User getUser(UriComponentsBuilder uriComponentsBuilder) {
-
         URI targetUrl = uriComponentsBuilder
                 .build()
                 .toUri();
@@ -134,39 +127,6 @@ public class CRMUserRepository implements UserRepository {
         }
         logger.debug("Founded user {}", users.get(0));
         return users.get(0);
-    }
-
-    @Override
-    public List<Keeper> getActiveKeepers() {
-
-        URI targetUrl = UriComponentsBuilder.fromUriString(x2BaseUrl)
-                .path(x2KeepersUrl)
-                .queryParam("c_isActive", "1")
-                .build()
-                .toUri();
-        logger.debug("Send response to CRM, target URL: {}", targetUrl.toString());
-        ResponseEntity<List<KeeperCRM>> response = restTemplate.exchange(targetUrl, HttpMethod.GET,
-                new HttpEntity<>(createHeaders(x2User, x2Password)),
-                new ParameterizedTypeReference<List<KeeperCRM>>() {
-                });
-
-        List<KeeperCRM> keepersCRM = response.getBody();
-        logger.debug("Received data from CRM: {}", keepersCRM);
-        List<Keeper> keepers = new ArrayList<>(keepersCRM.size());
-        logger.debug("Converting keeper CRM data");
-        for (KeeperCRM keeperCRM : keepersCRM) {
-            keepers.add(getKeeper(keeperCRM));
-        }
-        logger.debug("All keeper CRM data converted;");
-
-        return keepers;
-    }
-
-    private Keeper getKeeper(KeeperCRM keeperCRM) {
-        int index = keeperCRM.getContact().lastIndexOf("_");
-        User user = getUserById(keeperCRM.getContact().substring(index + 1));
-
-        return new Keeper(user.getUuid(), keeperCRM.getDescription(), keeperCRM.getFrom());
     }
 
     @Override

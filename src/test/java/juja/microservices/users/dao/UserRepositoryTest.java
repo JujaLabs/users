@@ -1,6 +1,5 @@
 package juja.microservices.users.dao;
 
-import juja.microservices.users.entity.Keeper;
 import juja.microservices.users.entity.User;
 import juja.microservices.users.exceptions.UserException;
 import org.junit.Before;
@@ -35,7 +34,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
  * @author Denis Tantsev (dtantsev@gmail.com)
  * @author Olga Kulykova
  */
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserRepositoryTest {
@@ -53,9 +51,6 @@ public class UserRepositoryTest {
 
     @Value("${x2.contactsUrl}")
     private String x2ContactsUrl;
-
-    @Value("${x2.keepersUrl}")
-    private String x2KeepersUrl;
 
     @Before
     public void setup() {
@@ -113,39 +108,6 @@ public class UserRepositoryTest {
         assertThat(result, is(expected));
     }
 
-    @Test
-    public void getActiveKeepersCRMUserRepositoryTest() throws URISyntaxException, IOException {
-        String keepersCRM = jsonFromFile("keepersCRM.json");
-
-        mockServer.expect(requestTo(x2BaseUrl + x2KeepersUrl+"?c_isActive=1"))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(keepersCRM, MediaType.APPLICATION_JSON));
-
-        mockUser("vasya.json", "123");
-        mockUser("kolya.json", "456");
-        mockUser("vasya.json", "123");
-
-        List<Keeper> expected = new ArrayList<>();
-        expected.add(new Keeper("AAAA123", "codejoy keeper", "Ivanoff"));
-        expected.add(new Keeper("AAAA456", "interview keeper", "Sidoroff"));
-        expected.add(new Keeper("AAAA123", "gamification keeper", "Petrova"));
-
-        List<Keeper> result = crmUserRepository.getActiveKeepers();
-
-        mockServer.verify();
-        assertThat(result, is(expected));
-    }
-
-    private void mockUser(String userJson, String userId) throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource(userJson).toURI();
-        String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
-
-        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_id=" + userId))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
-    }
-
-
     @Test(expected = UserException.class)
     public void searchUnexistedUserByUuidTest() throws URISyntaxException, IOException {
         //given
@@ -164,7 +126,7 @@ public class UserRepositoryTest {
     @Test(expected = UserException.class)
     public void searchDuplicateUserByUuidTest() throws URISyntaxException, IOException {
         //given
-        String mockUser = jsonFromFile("duplicateUser.json");;
+        String mockUser = jsonFromFile("duplicateUser.json");
         mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_id=123"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
@@ -180,5 +142,4 @@ public class UserRepositoryTest {
         URI uri = UserRepositoryTest.class.getClassLoader().getResource(file).toURI();
         return new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
     }
-
 }

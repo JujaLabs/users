@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
@@ -14,7 +13,6 @@ import org.springframework.web.filter.CorsFilter;
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
  */
-
 @SpringBootApplication
 public class Users {
 
@@ -46,4 +44,3 @@ public class Users {
         SpringApplication.run(Users.class, args);
     }
 }
-

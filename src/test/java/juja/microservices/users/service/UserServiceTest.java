@@ -88,25 +88,4 @@ public class UserServiceTest {
         service.getAllUsers();
         fail();
     }
-
-    @Test
-    public void getActiveKeepersTest() throws Exception {
-
-        List<Keeper> keepers = new ArrayList<>();
-        keepers.add(new Keeper("AAAA123", "description1", "Ivanoff"));
-        keepers.add(new Keeper("AAAA456", "description2", "Sidoroff"));
-        keepers.add(new Keeper("AAAA123", "description3", "Petrova"));
-
-        List<Keeper> expected = keepers;
-        when(repository.getActiveKeepers()).thenReturn(keepers);
-        List<Keeper> actual = service.getActiveKeepers();
-        assertEquals(expected, actual);
-    }
-
-    @Test(expected = UserException.class)
-    public void getActiveKeepersNoActiveKeepersTest() throws Exception {
-
-        when(repository.getActiveKeepers()).thenReturn(new ArrayList<>());
-        service.getActiveKeepers();
-    }
 }
