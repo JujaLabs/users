@@ -1,36 +1,56 @@
 package juja.microservices.users.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
  * @author Olga Kulykova
+ * @author Vadim Dyachenko
  */
 
+@Entity
+@Table(name = "USERS")
 @Data
 @AllArgsConstructor
 public class User {
-    @JsonProperty("c_uuid")
-    private String uuid;
-    @JsonProperty("firstName")
-    private String firstName;
-    @JsonProperty("lastName")
-    private String lastName;
-    @Getter(AccessLevel.NONE)
-    @JsonProperty("email")
-    private String email;
-    @Getter(AccessLevel.NONE)
-    @JsonProperty("c_gmail")
-    private String gmail;
-    @JsonProperty("c_slack")
-    private String slack;
-    @JsonProperty("skype")
-    private String skype;
 
+    @Id
+    @Column(name = "UUID", unique = true, nullable = false)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID uuid;
+
+    @NotNull
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "email")
+    private String email;
+
+    @NotNull
+    @Column(name = "gmail")
+    private String gmail;
+
+    @NotNull
+    @Column(name = "slack")
+    private String slack;
+
+    @Column(name = "skype")
+    private String skype;
 
     public String getFullName() {
         if (this.lastName == null || this.lastName.contains("@") || "".equals(this.lastName)) {

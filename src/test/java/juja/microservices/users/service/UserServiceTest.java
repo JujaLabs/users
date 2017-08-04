@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -33,22 +34,28 @@ public class UserServiceTest {
 
     @Test
     public void getUserAllUsersTest() throws Exception {
+        UUID uuid = new UUID(1L,2L);
         List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO("AAAA123", "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+        expected.add(new UserDTO(uuid, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+
         List<User> users = new ArrayList<>();
-        users.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff"));
+        users.add(new User(uuid, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff"));
         when(repository.getAllUsers()).thenReturn(users);
         List<UserDTO> actual = service.getAllUsers();
+
         assertEquals(expected, actual);
     }
 
     @Test
     public void getUsersUuidBySlack() throws Exception {
-        User user1 = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
-        User user2 = new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
+        UUID uuid1 = new UUID(1L,2L);
+        UUID uuid2 = new UUID(1L,3L);
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
+        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
+
         List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO("AAAA123", "vasya", null, null));
-        expected.add(new UserDTO("AAAA456", "kolya", null, null));
+        expected.add(new UserDTO(uuid1, "vasya", null, null));
+        expected.add(new UserDTO(uuid2, "kolya", null, null));
 
         List<String> slackNames = new ArrayList<>();
         slackNames.add("vasya");
@@ -64,15 +71,17 @@ public class UserServiceTest {
 
     @Test
     public void getUsersNameByUuid() throws Exception {
-        User user1 = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
-        User user2 = new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
+        UUID uuid1 = new UUID(1L,2L);
+        UUID uuid2 = new UUID(1L,3L);
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
+        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
         List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO("AAAA123", null, null, "Ivanoff Vasya"));
-        expected.add(new UserDTO("AAAA456", null, null, "Sidoroff Kolya"));
+        expected.add(new UserDTO(uuid1, null, null, "Ivanoff Vasya"));
+        expected.add(new UserDTO(uuid2, null, null, "Sidoroff Kolya"));
 
         List<String> uuids = new ArrayList<>();
-        uuids.add("AAAA123");
-        uuids.add("AAAA456");
+        uuids.add("00000000-0000-0001-0000-000000000002");
+        uuids.add("00000000-0000-0001-0000-000000000003");
         UsersUuidRequest request = new UsersUuidRequest(uuids);
 
         when(repository.getUserByUuid(request.getUuid().get(0))).thenReturn(user1);
