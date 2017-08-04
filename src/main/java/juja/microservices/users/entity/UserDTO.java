@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
@@ -17,7 +18,7 @@ import javax.validation.constraints.Size;
 public class UserDTO {
     @Size(max = 36, min = 36, message = "UUID must consist total of 36 characters with hyphens")
     @Pattern(regexp="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", message="UUID must fit pattern 8-4-4-4-12")
-    private String uuid;
+    private UUID uuid;
 
     @Pattern(regexp="^(?=\\s*\\S).*$")
     private String slack;
@@ -26,7 +27,7 @@ public class UserDTO {
     private String name;
 
     @JsonCreator
-    public UserDTO(@JsonProperty("uuid") String uuid,
+    public UserDTO(@JsonProperty("uuid") UUID uuid,
                 @JsonProperty("slack") String slack,
                 @JsonProperty("skype") String skype,
                 @JsonProperty("name") String name) {

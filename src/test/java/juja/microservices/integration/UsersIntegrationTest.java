@@ -43,11 +43,12 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     public void getAllUsers() throws Exception {
         //given
         List<User> users = new ArrayList<>();
-        User user = new User("AAAA123", "Vasya","Ivanoff", "vasya@mail.ru",
+        UUID uuid = new UUID(1L, 2L);
+        User user = new User(uuid, "Vasya","Ivanoff", "vasya@mail.ru",
                 "vasya@gmail.com","vasya","vasya.ivanoff");
         users.add(user);
-        String expected =
-                "[{\"uuid\":\"AAAA123\",\"name\":\"Ivanoff Vasya\",\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
+        String expected ="[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Ivanoff Vasya\"," +
+                "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
 
         //when
         when(repository.getAllUsers()).thenReturn(users);
@@ -64,14 +65,15 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     @Test
     public void getUserNameByUuid() throws Exception {
         //given
-        User user = new User("AAAA123", "Vasya","Ivanoff", "vasya@mail.ru",
+        UUID uuid = new UUID(1L, 2L);
+        User user = new User(uuid, "Vasya","Ivanoff", "vasya@mail.ru",
                 "vasya@gmail.com","vasya","vasya.ivanoff");
-        String jsonRequest = "{\"uuid\":[\"AAAA123\"]}";
+        String jsonRequest = "{\"uuid\":[\"00000000-0000-0001-0000-000000000002\"]}";
         String expected =
-                "[{\"uuid\":\"AAAA123\",\"name\":\"Ivanoff Vasya\"}]";
+                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Ivanoff Vasya\"}]";
 
         //when
-        when(repository.getUserByUuid("AAAA123")).thenReturn(user);
+        when(repository.getUserByUuid("00000000-0000-0001-0000-000000000002")).thenReturn(user);
         String result = mockMvc.perform(post(NAME_BY_UUID_URL)
                 .content(jsonRequest)
                 .contentType(APPLICATION_JSON_UTF8))
@@ -86,11 +88,12 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     @Test
     public void getUsersUuidBySlack() throws Exception {
         //given
-        User user = new User("AAAA123", "Vasya","Ivanoff", "vasya@mail.ru",
+        UUID uuid = new UUID(1L, 2L);
+        User user = new User(uuid, "Vasya","Ivanoff", "vasya@mail.ru",
                 "vasya@gmail.com","vasya","vasya.ivanoff");
         String jsonRequest = "{\"slackNames\":[\"vasya\"]}";
         String expected =
-                "[{\"uuid\":\"AAAA123\",\"slack\":\"vasya\"}]";
+                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\"}]";
 
         //when
         when(repository.getUserBySlack("vasya")).thenReturn(user);
