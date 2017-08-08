@@ -7,11 +7,11 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class UsersSlackRequest {
+public class UsersSlackNamesRequest {
     private List<String> slackNames;
 
     @JsonCreator
-    public UsersSlackRequest(@JsonProperty("slackNames") List<String> slackNames) {
+    public UsersSlackNamesRequest(@JsonProperty("slackNames") List<String> slackNames) {
         this.slackNames = slackNames;
     }
 }

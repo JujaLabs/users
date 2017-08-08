@@ -1,7 +1,7 @@
 package juja.microservices.users.controller;
 
 import juja.microservices.users.entity.UserDTO;
-import juja.microservices.users.entity.UsersSlackRequest;
+import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.service.UserService;
 import org.slf4j.Logger;
@@ -32,39 +32,33 @@ public class UserController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getAllUsers() {
-        //this UserDTO should have fields: uuid, slack, skype, name
         logger.debug("Received get all users request");
 
         List<UserDTO> users = userService.getAllUsers();
-
         logger.info("Successfully completed GET all users. Sent {} records", users.size());
-        logger.debug("Sent users: [{}]", users.toString());
+
         return users;
     }
 
-    @PostMapping("/nameByUuid")
+    @PostMapping("/usersByUuids")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDTO> getUsersNameByUuid(@RequestBody UsersUuidRequest request){
-        //this UserDTO should have fields: uuid, name
-        logger.debug("Received get users name by uuid request. Requested uuid: {}", request.getUuid());
+    public List<UserDTO> getUsersByUuids(@RequestBody UsersUuidRequest request){
+        logger.debug("Received get users name by uuid request. Requested uuid: {}", request.getUuids());
 
-        List<UserDTO> users = userService.getUsersNameByUuid(request);
-
+        List<UserDTO> users = userService.getUsersByUuids(request);
         logger.info("Get users name by uuid request processed. Transmitted {} records", users.size());
-        logger.debug("Sent users: [{}]", users.toString());
+
         return users;
     }
 
-    @PostMapping("/uuidBySlack")
+    @PostMapping("/usersBySlackNames")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDTO> getUsersUuidBySlack(@RequestBody UsersSlackRequest request){
-        //this UserDTO should have fields: uuid, slack
-        logger.debug("Received get users uuid by slack name request. Requested slack names: {}", request.getSlackNames());
+    public List<UserDTO> getUsersBySlackNames(@RequestBody UsersSlackNamesRequest request){
+        logger.debug("Received get users by slack names request. Requested slack names: {}", request.getSlackNames());
 
-        List<UserDTO> users = userService.getUsersUuidBySlack(request);
-
+        List<UserDTO> users = userService.getUsersBySlackNames(request);
         logger.info("Get users uuid by slack name completed. Transmitted {} records", users.size());
-        logger.debug("Sent users: [{}]", users.toString());
+
         return users;
     }
 }

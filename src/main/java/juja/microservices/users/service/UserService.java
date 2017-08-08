@@ -27,7 +27,6 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUsers() {
-        logger.debug("Send get all users request to repository");
         List<User> users = repository.getAllUsers();
         if (users.size() == 0) {
             logger.warn("No users found. Received empty list from repository.");
@@ -35,61 +34,43 @@ public class UserService {
         }
         logger.debug("Received user list from repository: {}", users.toString());
 
-        logger.debug("Converting received user list to userDTO list");
         List<UserDTO> result = users.stream()
-                .map(this::convertGetAllUsersDto)
+                .map(this::convertUserToUserDto)
                 .collect(Collectors.toList());
         logger.debug("All users converted: {}", result.toString());
 
-        logger.info("Founded {} users", result.size());
         return  result;
     }
 
-    private UserDTO convertGetAllUsersDto(User user) {
-        return new UserDTO(user.getUuid(), user.getSlack(), user.getSkype(), user.getFullName());
-    }
-
-    public List<UserDTO> getUsersUuidBySlack(UsersSlackRequest request) {
-        logger.debug("Sending get uuid by slack name request to repository");
-        logger.debug("Sent slack names: {}", request.getSlackNames());
+    public List<UserDTO> getUsersBySlackNames(UsersSlackNamesRequest request) {
         List<User> users = request.getSlackNames().stream()
                 .map(repository::getUserBySlack)
                 .collect(Collectors.toList());
         logger.debug("Received response from repository: {}", users.toString());
 
-        logger.debug("Converting received user list to userDTO list");
         List<UserDTO> result =users.stream()
-                .map(this::convertGetUuidBySlackDto)
+                .map(this::convertUserToUserDto)
                 .collect(Collectors.toList());
         logger.debug("All users converted: {}", result.toString());
 
-        logger.info("Founded {} users", result.size());
         return result;
     }
 
-    private UserDTO convertGetUuidBySlackDto(User user) {
-        return new UserDTO(user.getUuid(), user.getSlack(), null, null);
-    }
-
-    public List<UserDTO> getUsersNameByUuid(UsersUuidRequest request) {
-        logger.debug("Sending get user bu uuid request to repository");
-        logger.debug("Sent uuid: {}", request.getUuid());
-        List<User> users = request.getUuid().stream()
+    public List<UserDTO> getUsersByUuids(UsersUuidRequest request) {
+        List<User> users = request.getUuids().stream()
                 .map(repository::getUserByUuid)
                 .collect(Collectors.toList());
         logger.debug("Received response from repository: {}", users.toString());
 
-        logger.debug("Converting received user list to userDTO list");
         List<UserDTO> result = users.stream()
-                .map(this::convertGetNameByUuid)
+                .map(this::convertUserToUserDto)
                 .collect(Collectors.toList());
         logger.debug("All users converted: {}", result.toString());
 
-        logger.info("Founded {} users", result.size());
         return result;
     }
 
-    private UserDTO convertGetNameByUuid(User user) {
-        return new UserDTO(user.getUuid(), null,null, user.getFullName());
+    private UserDTO convertUserToUserDto(User user) {
+        return new UserDTO(user.getUuid(), user.getSlack(), user.getSkype(), user.getFullName());
     }
 }

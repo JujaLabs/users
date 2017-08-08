@@ -15,10 +15,10 @@ import java.util.List;
 public class UsersUuidRequest {
 
     @NotEmpty
-    private List<String> uuid;
+    private List<String> uuids;
 
     @JsonCreator
-    public UsersUuidRequest(@JsonProperty("uuid") List<String> uuid) {
-        this.uuid = uuid;
+    public UsersUuidRequest(@JsonProperty("uuids") List<String> uuids) {
+        this.uuids = uuids;
     }
 }

@@ -1,8 +1,8 @@
 package juja.microservices.users.controller;
 
 import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
-import juja.microservices.users.entity.UsersSlackRequest;
 import juja.microservices.users.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,19 +60,19 @@ public class UserControllerTest {
     }
 
     @Test
-    public void getUserUuidBySlackShouldReturnOk() throws Exception {
+    public void getUsersBySlackNamesShouldReturnOk() throws Exception {
         String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\"}," +
-                " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\"}]";
+                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
+                " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
 
         List<UserDTO> users = new ArrayList<>();
-        users.add(new UserDTO(new UUID(1L, 2L), "vasya", null, null));
-        users.add(new UserDTO(new UUID(1L, 3L), "ivan", null, null));
+        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivan.vasilieff", "Vasilieff Ivan"));
         String jsonRequest = "{\"slackNames\":[\"vasya\",\"ivan\"]}";
 
-        when(service.getUsersUuidBySlack(any(UsersSlackRequest.class))).thenReturn(users);
+        when(service.getUsersBySlackNames(any(UsersSlackNamesRequest.class))).thenReturn(users);
 
-        String result = mockMvc.perform(post("/v1/users/uuidBySlack")
+        String result = mockMvc.perform(post("/v1/users/usersBySlackNames")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -84,17 +84,17 @@ public class UserControllerTest {
     @Test
     public void getUsersNameByUuidShouldReturnOk() throws Exception {
         String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"vasya\"}," +
-                " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"name\":\"ivan\"}]";
+                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
+                " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
 
         List<UserDTO> users = new ArrayList<>();
-        users.add(new UserDTO(new UUID(1L, 2L), null, null, "vasya"));
-        users.add(new UserDTO(new UUID(1L, 3L), null, null, "ivan"));
+        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivan.vasilieff", "Vasilieff Ivan"));
         String jsonRequest = "{\"uuid\":[\"00000000-0000-0001-0000-000000000002\",\"00000000-0000-0001-0000-000000000003\"]}";
 
-        when(service.getUsersNameByUuid(any(UsersUuidRequest.class))).thenReturn(users);
+        when(service.getUsersByUuids(any(UsersUuidRequest.class))).thenReturn(users);
 
-        String result = mockMvc.perform(post("/v1/users/nameByUuid")
+        String result = mockMvc.perform(post("/v1/users/usersByUuids")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))

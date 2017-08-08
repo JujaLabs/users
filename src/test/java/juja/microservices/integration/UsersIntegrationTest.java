@@ -25,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UsersIntegrationTest extends BaseIntegrationTest{
 
     private static final String USERS_URL = "/v1/users";
-    private static final String NAME_BY_UUID_URL = "/v1/users/nameByUuid";
-    private static final String UUID_BY_SLACK_URL = "/v1/users/uuidBySlack";
+    private static final String NAME_BY_UUID_URL = "/v1/users/usersByUuids";
+    private static final String UUID_BY_SLACK_URL = "/v1/users/usersBySlackNames";
     private static final String Fake_URL = "/fake";
 
     private MockMvc mockMvc;
@@ -63,14 +63,14 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     }
 
     @Test
-    public void getUserNameByUuid() throws Exception {
+    public void getUsersByUuids() throws Exception {
         //given
         UUID uuid = new UUID(1L, 2L);
         User user = new User(uuid, "Vasya","Ivanoff", "vasya@mail.ru",
                 "vasya@gmail.com","vasya","vasya.ivanoff");
-        String jsonRequest = "{\"uuid\":[\"00000000-0000-0001-0000-000000000002\"]}";
-        String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Ivanoff Vasya\"}]";
+        String jsonRequest = "{\"uuids\":[\"00000000-0000-0001-0000-000000000002\"]}";
+        String expected ="[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Ivanoff Vasya\"," +
+                "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
 
         //when
         when(repository.getUserByUuid("00000000-0000-0001-0000-000000000002")).thenReturn(user);
@@ -86,14 +86,14 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     }
 
     @Test
-    public void getUsersUuidBySlack() throws Exception {
+    public void getUsersBySlackNames() throws Exception {
         //given
         UUID uuid = new UUID(1L, 2L);
         User user = new User(uuid, "Vasya","Ivanoff", "vasya@mail.ru",
                 "vasya@gmail.com","vasya","vasya.ivanoff");
         String jsonRequest = "{\"slackNames\":[\"vasya\"]}";
-        String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\"}]";
+        String expected ="[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Ivanoff Vasya\"," +
+                "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
 
         //when
         when(repository.getUserBySlack("vasya")).thenReturn(user);
@@ -109,7 +109,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     }
 
     @Test
-    public void getUsersUuidBySlackUnsupportedMediaType() throws Exception {
+    public void getUsersBySlackNamesUnsupportedMediaType() throws Exception {
         //when
         mockMvc.perform(post(UUID_BY_SLACK_URL)
                 .contentType(APPLICATION_PDF))
@@ -117,7 +117,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     }
 
     @Test
-    public void getUsersUuidBySlackBadRequest() throws Exception {
+    public void getUsersBySlackNamesBadRequest() throws Exception {
         //given
         String jsonRequest = "{\"slackkkkNames\":[\"vasya\"]}";
 
@@ -129,7 +129,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     }
 
     @Test
-    public void getUsersUuidBySlackMethodNotAllowed() throws Exception {
+    public void getUsersBySlackNamesMethodNotAllowed() throws Exception {
         //given
         String jsonRequest = "{\"slackNames\":[\"vasya\"]}";
 
@@ -142,7 +142,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     }
 
     @Test
-    public void getUsersUuidBySlackNotFound() throws Exception {
+    public void getUsersBySlackNamesNotFound() throws Exception {
         //when
         mockMvc.perform(get(Fake_URL)
                 .contentType(APPLICATION_JSON_UTF8))
