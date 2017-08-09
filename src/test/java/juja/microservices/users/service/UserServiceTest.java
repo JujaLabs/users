@@ -47,47 +47,47 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getUsersUuidBySlack() throws Exception {
+    public void getUsersBySlackNames() throws Exception {
         UUID uuid1 = new UUID(1L,2L);
         UUID uuid2 = new UUID(1L,3L);
         User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
         User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
 
         List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO(uuid1, "vasya", null, null));
-        expected.add(new UserDTO(uuid2, "kolya", null, null));
+        expected.add(new UserDTO(uuid1, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+        expected.add(new UserDTO(uuid2, "kolya", "kolya.sidoroff", "Sidoroff Kolya"));
 
         List<String> slackNames = new ArrayList<>();
         slackNames.add("vasya");
         slackNames.add("ivan");
-        UsersSlackRequest request = new UsersSlackRequest(slackNames);
+        UsersSlackNamesRequest request = new UsersSlackNamesRequest(slackNames);
 
         when(repository.getUserBySlack(request.getSlackNames().get(0))).thenReturn(user1);
         when(repository.getUserBySlack(request.getSlackNames().get(1))).thenReturn(user2);
 
-        List<UserDTO> actual = service.getUsersUuidBySlack(request);
+        List<UserDTO> actual = service.getUsersBySlackNames(request);
         assertEquals(expected, actual);
     }
 
     @Test
-    public void getUsersNameByUuid() throws Exception {
+    public void getUsersByUuids() throws Exception {
         UUID uuid1 = new UUID(1L,2L);
         UUID uuid2 = new UUID(1L,3L);
         User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
         User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
         List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO(uuid1, null, null, "Ivanoff Vasya"));
-        expected.add(new UserDTO(uuid2, null, null, "Sidoroff Kolya"));
+        expected.add(new UserDTO(uuid1, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+        expected.add(new UserDTO(uuid2, "kolya", "kolya.sidoroff", "Sidoroff Kolya"));
 
         List<String> uuids = new ArrayList<>();
         uuids.add("00000000-0000-0001-0000-000000000002");
         uuids.add("00000000-0000-0001-0000-000000000003");
         UsersUuidRequest request = new UsersUuidRequest(uuids);
 
-        when(repository.getUserByUuid(request.getUuid().get(0))).thenReturn(user1);
-        when(repository.getUserByUuid(request.getUuid().get(1))).thenReturn(user2);
+        when(repository.getUserByUuid(request.getUuids().get(0))).thenReturn(user1);
+        when(repository.getUserByUuid(request.getUuids().get(1))).thenReturn(user2);
 
-        List<UserDTO> actual = service.getUsersNameByUuid(request);
+        List<UserDTO> actual = service.getUsersByUuids(request);
         assertEquals(expected, actual);
     }
 
