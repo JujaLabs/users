@@ -25,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UsersIntegrationTest extends BaseIntegrationTest{
 
     private static final String USERS_URL = "/v1/users";
-    private static final String NAME_BY_UUID_URL = "/v1/users/usersByUuids";
-    private static final String UUID_BY_SLACK_URL = "/v1/users/usersBySlackNames";
+    private static final String USERS_BY_UUIDS_URL = "/v1/users/usersByUuids";
+    private static final String USERS_BY_SLACK_NAMES_URL = "/v1/users/usersBySlackNames";
     private static final String Fake_URL = "/fake";
 
     private MockMvc mockMvc;
@@ -74,7 +74,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
 
         //when
         when(repository.getUserByUuid("00000000-0000-0001-0000-000000000002")).thenReturn(user);
-        String result = mockMvc.perform(post(NAME_BY_UUID_URL)
+        String result = mockMvc.perform(post(USERS_BY_UUIDS_URL)
                 .content(jsonRequest)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -97,7 +97,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
 
         //when
         when(repository.getUserBySlack("vasya")).thenReturn(user);
-        String result = mockMvc.perform(post(UUID_BY_SLACK_URL)
+        String result = mockMvc.perform(post(USERS_BY_SLACK_NAMES_URL)
                 .content(jsonRequest)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -111,7 +111,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     @Test
     public void getUsersBySlackNamesUnsupportedMediaType() throws Exception {
         //when
-        mockMvc.perform(post(UUID_BY_SLACK_URL)
+        mockMvc.perform(post(USERS_BY_SLACK_NAMES_URL)
                 .contentType(APPLICATION_PDF))
                 .andExpect(status().isUnsupportedMediaType());
     }
@@ -122,7 +122,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
         String jsonRequest = "{\"slackkkkNames\":[\"vasya\"]}";
 
         //when
-        mockMvc.perform(post(UUID_BY_SLACK_URL)
+        mockMvc.perform(post(USERS_BY_SLACK_NAMES_URL)
                 .content(jsonRequest)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
@@ -134,7 +134,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
         String jsonRequest = "{\"slackNames\":[\"vasya\"]}";
 
         //when
-        mockMvc.perform(get(UUID_BY_SLACK_URL)
+        mockMvc.perform(get(USERS_BY_SLACK_NAMES_URL)
                 .content(jsonRequest)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isMethodNotAllowed());
