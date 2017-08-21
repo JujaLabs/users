@@ -40,7 +40,7 @@ public class UserServiceTest {
 
         List<User> users = new ArrayList<>();
         users.add(new User(uuid, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff"));
-        when(repository.getAllUsers()).thenReturn(users);
+        when(repository.findAll()).thenReturn(users);
         List<UserDTO> actual = service.getAllUsers();
 
         assertEquals(expected, actual);
@@ -62,8 +62,8 @@ public class UserServiceTest {
         slackNames.add("ivan");
         UsersSlackNamesRequest request = new UsersSlackNamesRequest(slackNames);
 
-        when(repository.getUserBySlack(request.getSlackNames().get(0))).thenReturn(user1);
-        when(repository.getUserBySlack(request.getSlackNames().get(1))).thenReturn(user2);
+        when(repository.findOneBySlack(request.getSlackNames().get(0))).thenReturn(user1);
+        when(repository.findOneBySlack(request.getSlackNames().get(1))).thenReturn(user2);
 
         List<UserDTO> actual = service.getUsersBySlackNames(request);
         assertEquals(expected, actual);
@@ -79,13 +79,13 @@ public class UserServiceTest {
         expected.add(new UserDTO(uuid1, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
         expected.add(new UserDTO(uuid2, "kolya", "kolya.sidoroff", "Sidoroff Kolya"));
 
-        List<String> uuids = new ArrayList<>();
-        uuids.add("00000000-0000-0001-0000-000000000002");
-        uuids.add("00000000-0000-0001-0000-000000000003");
+        List<UUID> uuids = new ArrayList<>();
+        uuids.add(uuid1);
+        uuids.add(uuid2);
         UsersUuidRequest request = new UsersUuidRequest(uuids);
 
-        when(repository.getUserByUuid(request.getUuids().get(0))).thenReturn(user1);
-        when(repository.getUserByUuid(request.getUuids().get(1))).thenReturn(user2);
+        when(repository.findOneByUuid(request.getUuids().get(0))).thenReturn(user1);
+        when(repository.findOneByUuid(request.getUuids().get(1))).thenReturn(user2);
 
         List<UserDTO> actual = service.getUsersByUuids(request);
         assertEquals(expected, actual);
@@ -93,7 +93,7 @@ public class UserServiceTest {
 
     @Test(expected = UserException.class)
     public void getAllUsersEmptyListTest() throws Exception {
-        when(repository.getAllUsers()).thenReturn(new ArrayList<>());
+        when(repository.findAll()).thenReturn(new ArrayList<>());
         service.getAllUsers();
         fail();
     }

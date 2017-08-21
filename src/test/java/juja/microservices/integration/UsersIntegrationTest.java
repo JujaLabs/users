@@ -51,7 +51,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
                 "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
 
         //when
-        when(repository.getAllUsers()).thenReturn(users);
+        when(repository.findAll()).thenReturn(users);
         String result = mockMvc.perform(get(USERS_URL)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -73,7 +73,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
                 "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
 
         //when
-        when(repository.getUserByUuid("00000000-0000-0001-0000-000000000002")).thenReturn(user);
+        when(repository.findOneByUuid(uuid)).thenReturn(user);
         String result = mockMvc.perform(post(USERS_BY_UUIDS_URL)
                 .content(jsonRequest)
                 .contentType(APPLICATION_JSON_UTF8))
@@ -96,7 +96,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
                 "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
 
         //when
-        when(repository.getUserBySlack("vasya")).thenReturn(user);
+        when(repository.findOneBySlack("vasya")).thenReturn(user);
         String result = mockMvc.perform(post(USERS_BY_SLACK_NAMES_URL)
                 .content(jsonRequest)
                 .contentType(APPLICATION_JSON_UTF8))

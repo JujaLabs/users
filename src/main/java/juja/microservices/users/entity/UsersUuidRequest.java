@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author  Vadim Dyachenko
@@ -15,10 +16,10 @@ import java.util.List;
 public class UsersUuidRequest {
 
     @NotEmpty
-    private List<String> uuids;
+    private List<UUID> uuids;
 
     @JsonCreator
-    public UsersUuidRequest(@JsonProperty("uuids") List<String> uuids) {
+    public UsersUuidRequest(@JsonProperty("uuids") List<UUID> uuids) {
         this.uuids = uuids;
     }
 }
