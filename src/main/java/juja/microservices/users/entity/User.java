@@ -18,7 +18,6 @@ import java.util.UUID;
  * @author Olga Kulykova
  * @author Vadim Dyachenko
  */
-
 @Entity
 @Table(name = "USERS")
 @Data
@@ -32,25 +31,28 @@ public class User {
     private UUID uuid;
 
     @NotNull
-    @Column(name = "first_name")
+    @Column(name = "FIRST_NAME")
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "LAST_NAME")
     private String lastName;
 
-    @Column(name = "email")
+    @Column(name = "EMAIL")
     private String email;
 
     @NotNull
-    @Column(name = "gmail")
+    @Column(name = "GMAIL")
     private String gmail;
 
     @NotNull
-    @Column(name = "slack")
+    @Column(name = "SLACK")
     private String slack;
 
-    @Column(name = "skype")
+    @Column(name = "SKYPE")
     private String skype;
+
+    public User() {
+    }
 
     public String getFullName() {
         if (this.lastName == null || this.lastName.contains("@") || "".equals(this.lastName)) {
