@@ -1,16 +1,18 @@
 package juja.microservices.users.dao;
 
 import juja.microservices.users.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
  * @author Olga Kulykova
+ * @author Vadim Dyachenko
  */
-public interface UserRepository {
-    List<User> getAllUsers();
-    User getUserBySlack(String slack);
-    User getUserByUuid(String uuid);
-    User getUserById(String id);
+@Repository
+public interface UserRepository extends JpaRepository<User, UUID> {
+    User findOneBySlack(String slack);
+    User findOneByUuid(UUID uuid);
 }

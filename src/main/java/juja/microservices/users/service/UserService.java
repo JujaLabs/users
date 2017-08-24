@@ -1,7 +1,10 @@
 package juja.microservices.users.service;
 
 import juja.microservices.users.dao.UserRepository;
-import juja.microservices.users.entity.*;
+import juja.microservices.users.entity.User;
+import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersSlackNamesRequest;
+import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.exceptions.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +30,7 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUsers() {
-        List<User> users = repository.getAllUsers();
+        List<User> users = repository.findAll();
         if (users.size() == 0) {
             logger.warn("No users found. Received empty list from repository.");
             throw new UserException("No users found by your request!");
@@ -44,7 +47,7 @@ public class UserService {
 
     public List<UserDTO> getUsersBySlackNames(UsersSlackNamesRequest request) {
         List<User> users = request.getSlackNames().stream()
-                .map(repository::getUserBySlack)
+                .map(repository::findOneBySlack)
                 .collect(Collectors.toList());
         logger.debug("Received response from repository: {}", users.toString());
 
@@ -58,7 +61,7 @@ public class UserService {
 
     public List<UserDTO> getUsersByUuids(UsersUuidRequest request) {
         List<User> users = request.getUuids().stream()
-                .map(repository::getUserByUuid)
+                .map(repository::findOneByUuid)
                 .collect(Collectors.toList());
         logger.debug("Received response from repository: {}", users.toString());
 

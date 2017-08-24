@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <USERS UUID="uuid'00000000-0000-0001-0000-000000000002'" FIRST_NAME="Alex" LAST_NAME="Batman" EMAIL="alex.batman@ab.com"
+           GMAIL="alex.batman@gmail.com" SLACK="alex.batman" SKYPE="Alex"/>
+    <USERS UUID="uuid'00000000-0000-0001-0000-000000000003'" FIRST_NAME="Max" LAST_NAME="Superman" EMAIL="max.superman@ab.com"
+           GMAIL="max.superman@gmail.com" SLACK="max.superman" SKYPE="Max"/>
+</dataset>
