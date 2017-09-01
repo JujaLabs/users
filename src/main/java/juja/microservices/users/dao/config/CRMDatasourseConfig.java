@@ -27,7 +27,7 @@ import javax.sql.DataSource;
 )
 public class CRMDatasourseConfig {
     @Bean(name = "crmDataSource")
-    @ConfigurationProperties(prefix = "crm.datasource")
+    @ConfigurationProperties(prefix = "spring.datasource.crm")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }

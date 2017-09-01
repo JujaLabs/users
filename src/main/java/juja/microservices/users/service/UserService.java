@@ -1,7 +1,9 @@
 package juja.microservices.users.service;
 
-import juja.microservices.users.dao.UserRepository;
-import juja.microservices.users.entity.User;
+import juja.microservices.users.dao.crm.repository.CRMRepository;
+import juja.microservices.users.dao.users.repository.UserRepository;
+import juja.microservices.users.dao.users.domain.User;
+import juja.microservices.users.dao.crm.domain.UserCRM;
 import juja.microservices.users.entity.UserDTO;
 import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -22,11 +25,13 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository repository;
+    private final CRMRepository crmRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, CRMRepository crmRepository) {
         this.repository = userRepository;
+        this.crmRepository = crmRepository;
     }
 
     public List<UserDTO> getAllUsers() {
@@ -75,5 +80,26 @@ public class UserService {
 
     private UserDTO convertUserToUserDto(User user) {
         return new UserDTO(user.getUuid(), user.getSlack(), user.getSkype(), user.getFullName());
+    }
+
+    public List<UserDTO> updateUsersFromCRM() {
+        List<UserCRM> crmUsers = crmRepository.findAllByLastUpdatedGreaterThan(1504237985L);
+
+        List<User> users = crmUsers.stream()
+                .map(this::convertUserCRMtoUser)
+                .collect(Collectors.toList());
+        List<User> savedUser = repository.save(users);
+        repository.flush();
+
+        List<UserDTO> result = savedUser.stream()
+                .map(this::convertUserToUserDto)
+                .collect(Collectors.toList());
+
+        return  result;
+    }
+
+    private User convertUserCRMtoUser(UserCRM userCRM) {
+        return new User(UUID.fromString(userCRM.getUuid()), userCRM.getFirstName(), userCRM.getLastName(),
+                userCRM.getEmail(), userCRM.getGmail(), userCRM.getSlack(), userCRM.getSkype());
     }
 }
