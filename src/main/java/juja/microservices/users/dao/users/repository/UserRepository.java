@@ -1,6 +1,6 @@
-package juja.microservices.users.dao;
+package juja.microservices.users.dao.users.repository;
 
-import juja.microservices.users.entity.User;
+import juja.microservices.users.dao.users.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

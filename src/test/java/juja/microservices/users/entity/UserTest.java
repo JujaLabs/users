@@ -1,5 +1,6 @@
 package juja.microservices.users.entity;
 
+import juja.microservices.users.dao.users.domain.User;
 import org.junit.Test;
 
 import java.util.UUID;

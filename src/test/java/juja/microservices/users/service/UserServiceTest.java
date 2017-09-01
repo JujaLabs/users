@@ -1,6 +1,7 @@
 package juja.microservices.users.service;
 
-import juja.microservices.users.dao.UserRepository;
+import juja.microservices.users.dao.users.repository.UserRepository;
+import juja.microservices.users.dao.users.domain.User;
 import juja.microservices.users.entity.*;
 import juja.microservices.users.exceptions.UserException;
 import org.junit.Test;

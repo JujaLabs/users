@@ -1,4 +1,4 @@
-package juja.microservices.users.entity;
+package juja.microservices.users.dao.users.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,8 +26,6 @@ public class User {
 
     @Id
     @Column(name = "UUID", unique = true, nullable = false)
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID uuid;
 
     @NotNull

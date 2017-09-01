@@ -1,7 +1,7 @@
 package juja.microservices.integration;
 
-import juja.microservices.users.dao.UserRepository;
-import juja.microservices.users.entity.User;
+import juja.microservices.users.dao.users.repository.UserRepository;
+import juja.microservices.users.dao.users.domain.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
