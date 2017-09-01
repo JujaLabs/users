@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -11,10 +13,11 @@ import javax.persistence.Table;
  * @author Vadim Dyachenko
  */
 @Entity
-@Table(name = "x2_contact")
+@Table(name = "X2_CONTACT")
 @Data
 public class UserCRM {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     @Column(name = "FIRST_NAME")
     String firstName;

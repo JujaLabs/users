@@ -83,7 +83,7 @@ public class UserService {
     }
 
     public List<UserDTO> updateUsersFromCRM() {
-        List<UserCRM> crmUsers = crmRepository.findAllByLastUpdatedGreaterThan(1504237985L);
+        List<UserCRM> crmUsers = crmRepository.findAllByLastUpdatedGreaterThan(1504237900L);
 
         List<User> users = crmUsers.stream()
                 .map(this::convertUserCRMtoUser)

@@ -42,7 +42,7 @@ public class CRMDatasourseConfig {
                 builder
                         .dataSource(dataSource)
                         .packages("juja.microservices.users.dao.crm.domain")
-                        .persistenceUnit("usercrm")
+                        .persistenceUnit("crmUnit")
                         .build();
     }
     @Bean(name = "crmTransactionManager")

@@ -28,7 +28,7 @@ import javax.sql.DataSource;
 public class UsersDatasourceConfig {
 
     @Primary
-    @Bean(name = "dataSource")
+    @Bean(name = "userDataSource")
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
@@ -39,12 +39,12 @@ public class UsersDatasourceConfig {
     public LocalContainerEntityManagerFactoryBean
     entityManagerFactory(
             EntityManagerFactoryBuilder builder,
-            @Qualifier("dataSource") DataSource dataSource
+            @Qualifier("userDataSource") DataSource dataSource
     ) {
         return builder
                 .dataSource(dataSource)
                 .packages("juja.microservices.users.dao.users.domain")
-                .persistenceUnit("user")
+                .persistenceUnit("userUnit")
                 .build();
     }
 
