@@ -40,7 +40,7 @@ public class UserServiceTest {
         expected.add(new UserDTO(uuid, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
 
         List<User> users = new ArrayList<>();
-        users.add(new User(uuid, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff"));
+        users.add(new User(uuid, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff", 777L));
         when(repository.findAll()).thenReturn(users);
         List<UserDTO> actual = service.getAllUsers();
 
@@ -51,8 +51,8 @@ public class UserServiceTest {
     public void getUsersBySlackNames() throws Exception {
         UUID uuid1 = new UUID(1L,2L);
         UUID uuid2 = new UUID(1L,3L);
-        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
-        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff", 777L);
+        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff", 888L);
 
         List<UserDTO> expected = new ArrayList<>();
         expected.add(new UserDTO(uuid1, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
@@ -74,8 +74,8 @@ public class UserServiceTest {
     public void getUsersByUuids() throws Exception {
         UUID uuid1 = new UUID(1L,2L);
         UUID uuid2 = new UUID(1L,3L);
-        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
-        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff", 777L);
+        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff", 888L);
         List<UserDTO> expected = new ArrayList<>();
         expected.add(new UserDTO(uuid1, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
         expected.add(new UserDTO(uuid2, "kolya", "kolya.sidoroff", "Sidoroff Kolya"));

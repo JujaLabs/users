@@ -3,14 +3,10 @@ package juja.microservices.users.dao.users.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -28,8 +24,7 @@ public class User {
     @Column(name = "UUID", unique = true, nullable = false)
     private UUID uuid;
 
-    @NotNull
-    @Column(name = "FIRST_NAME")
+    @Column(name = "FIRST_NAME", nullable = false)
     private String firstName;
 
     @Column(name = "LAST_NAME")
@@ -38,16 +33,17 @@ public class User {
     @Column(name = "EMAIL")
     private String email;
 
-    @NotNull
-    @Column(name = "GMAIL")
+    @Column(name = "GMAIL", nullable = false)
     private String gmail;
 
-    @NotNull
-    @Column(name = "SLACK")
+    @Column(name = "SLACK", nullable = false)
     private String slack;
 
     @Column(name = "SKYPE")
     private String skype;
+
+    @Column(name = "LASTUPDATED")
+    private Long lastUpdated;
 
     public User() {
     }
