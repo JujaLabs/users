@@ -1,4 +1,4 @@
-package juja.microservices.users.config;
+package juja.microservices.config;
 
 import com.github.springtestdbunit.bean.DatabaseConfigBean;
 import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import javax.sql.DataSource;
 
 @Configuration
