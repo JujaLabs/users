@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dataset>
-    <X2_CONTACT ID="1" FIRST_NAME="Alex" LAST_NAME="Batman" EMAIL="alex.batman@ab.com" SKYPE="Alex" LASTUPDATED="150765" GMAIL="alex.batman@gmail.com" SLACK="alex.batman"  UUID="uuid'00000000-0000-0001-0000-000000000002'"/>
-    <X2_CONTACT ID="2" FIRST_NAME="Max" LAST_NAME="Superman" EMAIL="max.superman@ab.com"  SKYPE="Max" LASTUPDATED="1507650" GMAIL="max.superman@gmail.com" SLACK="max.superman" UUID="uuid'00000000-0000-0001-0000-000000000003'"/>
-</dataset>

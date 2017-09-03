@@ -1,5 +1,6 @@
 package juja.microservices.users.dao.crm.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "X2_CONTACT")
 @Data
+@AllArgsConstructor
 public class UserCRM {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

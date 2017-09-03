@@ -45,7 +45,10 @@ public class UserRepositoryTest {
 
     @Test
     public void testFindAll() throws Exception {
+        //when
         List<User> users = repository.findAll();
+
+        //then
         assertEquals(2, users.size());
         assertEquals("Alex", users.get(0).getFirstName());
         assertEquals("Max", users.get(1).getFirstName());
@@ -53,14 +56,20 @@ public class UserRepositoryTest {
 
     @Test
     public void testFindBySlack() throws Exception {
+        //when
         User user = repository.findOneBySlack("alex.batman");
+
+        //then
         assertEquals("Batman Alex", user.getFullName());
         assertEquals("alex.batman", user.getSlack());
     }
 
     @Test
     public void testFindByUuid() throws Exception {
+        //when
+
         User user = repository.findOneByUuid(new UUID(1L, 3L));
+        //then
         assertEquals("Superman Max", user.getFullName());
     }
 
@@ -68,12 +77,14 @@ public class UserRepositoryTest {
     @Transactional
     @ExpectedDatabase(value = "/datasets/usersDataAfterUpdate.xml")
     public void testUpdateUsersDatabaseFromCRM() throws Exception {
+        //given
         List<User> users = new ArrayList<>();
         users.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max", "Superman",
                 "superman@ab.com", "max.superman@gmail.com", "Max", "Max", 200L));
         users.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000004"), "Sergey", "Spiderman",
                 "sergey.spiderman@ab.com", "sergey.spiderman@gmail.com", "sergey.spiderman", "Sergey", 250L));
 
+        //when
         repository.save(users);
         repository.flush();
     }
