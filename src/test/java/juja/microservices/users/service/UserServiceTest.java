@@ -1,5 +1,7 @@
 package juja.microservices.users.service;
 
+import juja.microservices.users.dao.crm.domain.UserCRM;
+import juja.microservices.users.dao.crm.repository.CRMRepository;
 import juja.microservices.users.dao.users.repository.UserRepository;
 import juja.microservices.users.dao.users.domain.User;
 import juja.microservices.users.entity.*;
@@ -17,11 +19,13 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.when;
 
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
  * @author Olga Kulykova
+ * @author Vadim Dyachenko
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserService.class)
@@ -32,6 +36,9 @@ public class UserServiceTest {
 
     @MockBean
     private UserRepository repository;
+
+    @MockBean
+    private CRMRepository crmRepository;
 
     @Test
     public void getUserAllUsersTest() throws Exception {
@@ -97,5 +104,53 @@ public class UserServiceTest {
         when(repository.findAll()).thenReturn(new ArrayList<>());
         service.getAllUsers();
         fail();
+    }
+
+    @Test
+    public void updateUsersFromCRMTest() throws Exception {
+        //given
+        List<UserCRM> allCrmUsers = new ArrayList<>();
+        allCrmUsers.add(new UserCRM(1L,"Alex","Batman","alex.batman@ab.com",
+                "Alex", 100L, "alex.batman@gmail.com", "alex.batman", "00000000-0000-0001-0000-000000000002"));
+        allCrmUsers.add(new UserCRM(2L,"Max","Superman","max.superman@ab.com",
+                "Max", 200L, "max.superman@gmail.com", "max.superman", "00000000-0000-0001-0000-000000000003"));
+
+        List<User> savedUser = new ArrayList<>();
+        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000002"), "Alex","Batman", "alex.batman@ab.com", "alex.batman@gmail.com", "alex.batman", "Alex", 100L));
+        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max","Superman","max.superman@ab.com", "max.superman@gmail.com", "max.superman", "Max", 200L));
+
+        when(repository.findMaxLastUpdate()).thenReturn(null);
+        when(crmRepository.findAllByLastUpdatedGreaterThan(0L)).thenReturn(allCrmUsers);
+        when(repository.save(anyList())).thenReturn(savedUser);
+
+        //when
+        List<UserDTO> actual = service.updateUsersFromCRM();
+
+        //then
+        assertEquals(2, actual.size());
+    }
+
+    @Test
+    public void updateUsersFromCRMWithNullFieldTest() throws Exception {
+        //given
+        List<UserCRM> allCrmUsers = new ArrayList<>();
+        allCrmUsers.add(new UserCRM(1L,"Alex","Batman","alex.batman@ab.com",
+                "Alex", 100L, "alex.batman@gmail.com", null, "00000000-0000-0001-0000-000000000002"));
+        allCrmUsers.add(new UserCRM(2L,"Max","Superman","max.superman@ab.com",
+                "Max", 200L, "max.superman@gmail.com", "max.superman", "00000000-0000-0001-0000-000000000003"));
+
+        List<User> savedUser = new ArrayList<>();
+        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000002"), "Alex","Batman", "alex.batman@ab.com", "alex.batman@gmail.com", "alex.batman", "Alex", 100L));
+        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max","Superman","max.superman@ab.com", "max.superman@gmail.com", "max.superman", "Max", 200L));
+
+        when(repository.findMaxLastUpdate()).thenReturn(null);
+        when(crmRepository.findAllByLastUpdatedGreaterThan(0L)).thenReturn(allCrmUsers);
+//        when(repository.save(anyList())).thenReturn(anyList());
+
+        //when
+        List<UserDTO> actual = service.updateUsersFromCRM();
+
+        //then
+        assertEquals(1, actual.size());
     }
 }

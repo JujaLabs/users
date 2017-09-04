@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,12 +45,20 @@ public class UserService {
         }
         logger.debug("Received user list from repository: {}", users.toString());
 
-        List<UserDTO> result = users.stream()
-                .map(this::convertUserToUserDto)
-                .collect(Collectors.toList());
+        List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
 
         return  result;
+    }
+
+    private List<UserDTO> getConvertedResult(List<User> users) {
+        return users.stream()
+                .map(this::convertUserToUserDto)
+                .collect(Collectors.toList());
+    }
+
+    private UserDTO convertUserToUserDto(User user) {
+        return new UserDTO(user.getUuid(), user.getSlack(), user.getSkype(), user.getFullName());
     }
 
     public List<UserDTO> getUsersBySlackNames(UsersSlackNamesRequest request) {
@@ -56,9 +67,7 @@ public class UserService {
                 .collect(Collectors.toList());
         logger.debug("Received response from repository: {}", users.toString());
 
-        List<UserDTO> result =users.stream()
-                .map(this::convertUserToUserDto)
-                .collect(Collectors.toList());
+        List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
 
         return result;
@@ -70,36 +79,47 @@ public class UserService {
                 .collect(Collectors.toList());
         logger.debug("Received response from repository: {}", users.toString());
 
-        List<UserDTO> result = users.stream()
-                .map(this::convertUserToUserDto)
-                .collect(Collectors.toList());
+        List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
 
         return result;
     }
 
-    private UserDTO convertUserToUserDto(User user) {
-        return new UserDTO(user.getUuid(), user.getSlack(), user.getSkype(), user.getFullName());
-    }
-
     public List<UserDTO> updateUsersFromCRM() {
-        List<UserCRM> crmUsers = crmRepository.findAllByLastUpdatedGreaterThan(1504237900L);
+        Long lastUpdate = repository.findMaxLastUpdate();
+        if (lastUpdate == null) lastUpdate = 0L;
 
-        List<User> users = crmUsers.stream()
-                .map(this::convertUserCRMtoUser)
-                .collect(Collectors.toList());
-        List<User> savedUser = repository.save(users);
-        repository.flush();
+        logger.info("Starting update users database. Last update was at {}",
+                LocalDateTime.ofEpochSecond(lastUpdate, 0, OffsetDateTime.now().getOffset()));
 
-        List<UserDTO> result = savedUser.stream()
-                .map(this::convertUserToUserDto)
-                .collect(Collectors.toList());
-
-        return  result;
+        return getConvertedResult(updateUsersDatabase(getUpdatedUsersFromCRM(lastUpdate)));
     }
 
-    private User convertUserCRMtoUser(UserCRM userCRM) {
+    private List<User> updateUsersDatabase(List<User> users) {
+        List<User> result = repository.save(users);
+        repository.flush();
+        logger.info("{} records successfully updated", result.size());
+
+        return result;
+    }
+
+    private List<User> getUpdatedUsersFromCRM(Long lastUpdate) {
+        List<User> result = new ArrayList<>();
+        List<UserCRM> usersCrm = crmRepository.findAllByLastUpdatedGreaterThan(lastUpdate);
+        for (UserCRM userCRM: usersCrm) {
+            try {
+                result.add(convertUserCRMtoUser(userCRM));
+            } catch (NullPointerException e) {
+                logger.warn("The user [{}] can not be saved because it has a null at the required field: [{}]",
+                        userCRM, e.getMessage());
+            }
+        }
+
+        return result;
+    }
+
+    private User convertUserCRMtoUser(UserCRM userCRM) throws NullPointerException {
         return new User(UUID.fromString(userCRM.getUuid()), userCRM.getFirstName(), userCRM.getLastName(),
-                userCRM.getEmail(), userCRM.getGmail(), userCRM.getSlack(), userCRM.getSkype());
+                userCRM.getEmail(), userCRM.getGmail(), userCRM.getSlack(), userCRM.getSkype(), userCRM.getLastUpdated());
     }
 }

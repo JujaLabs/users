@@ -2,6 +2,7 @@ package juja.microservices.users.dao.users.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NonNull;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,9 +22,11 @@ import java.util.UUID;
 public class User {
 
     @Id
+    @NonNull
     @Column(name = "UUID", unique = true, nullable = false)
     private UUID uuid;
 
+    @NonNull
     @Column(name = "FIRST_NAME", nullable = false)
     private String firstName;
 
@@ -33,9 +36,10 @@ public class User {
     @Column(name = "EMAIL")
     private String email;
 
-    @Column(name = "GMAIL", nullable = false)
+    @Column(name = "GMAIL")
     private String gmail;
 
+    @NonNull
     @Column(name = "SLACK", nullable = false)
     private String slack;
 

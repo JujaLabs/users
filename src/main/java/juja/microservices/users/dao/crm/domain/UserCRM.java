@@ -42,3 +42,19 @@ public class UserCRM {
 
     }
 }
+
+/* CRM x2_contact structure
++--------------------+------------------+------+-----+---------+----------------+
+| Field              | Type             | Null | Key | Default | Extra          |
++--------------------+------------------+------+-----+---------+----------------+
+| id                 | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| name               | varchar(255)     | YES  |     | NULL    |                |
+| firstName          | varchar(255)     | NO   |     | NULL    |                |
+| lastName           | varchar(255)     | NO   |     | NULL    |                |
+| skype              | varchar(32)      | YES  |     | NULL    |                |
+| lastUpdated        | bigint(20)       | YES  |     | NULL    |                |
+| c_gmail            | varchar(255)     | YES  |     | NULL    |                |
+| c_slack            | varchar(255)     | YES  |     | NULL    |                |
+| c_isStudent        | tinyint(1)       | NO   |     | 0       |                |
+| c_uuid             | varchar(255)     | YES  |     | NULL    |                |
+*/
