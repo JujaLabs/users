@@ -129,6 +129,19 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @DatabaseSetup(value = "/datasets/usersData.xml")
+    @DatabaseSetup(connection = "crmConnection", value = "/datasets/notUpdatedCrmData.xml")
+    @ExpectedDatabase(value = "/datasets/usersData.xml")
+    public void updateUsersDatabaseFromCRMWithoutUpdatedEntries() throws Exception {
+        //when
+        mockMvc.perform(post(USERS_UPDATE_URL)
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
     public void getUsersBySlackNamesUnsupportedMediaType() throws Exception {
         //when
         mockMvc.perform(post(USERS_BY_SLACK_NAMES_URL)

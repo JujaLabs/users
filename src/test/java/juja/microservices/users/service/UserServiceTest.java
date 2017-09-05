@@ -136,7 +136,7 @@ public class UserServiceTest {
         //given
         List<UserCRM> allCrmUsers = new ArrayList<>();
         allCrmUsers.add(new UserCRM(1L,"Alex","Batman","alex.batman@ab.com",
-                "Alex", 100L, "alex.batman@gmail.com", null, "00000000-0000-0001-0000-000000000002"));
+                "Alex", 100L, "alex.batman@gmail.com", "Alex", null));
         allCrmUsers.add(new UserCRM(2L,"Max","Superman","max.superman@ab.com",
                 "Max", 200L, "max.superman@gmail.com", "max.superman", "00000000-0000-0001-0000-000000000003"));
 
