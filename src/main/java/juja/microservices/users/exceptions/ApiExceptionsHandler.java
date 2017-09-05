@@ -53,6 +53,7 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
                                                              Object body, HttpHeaders headers,
                                                              HttpStatus status, WebRequest request) {
         ApiErrorMessage message = convertToApiErrorMessage(ex, status);
+        logger.warn(message.getExceptionMessage());
         return super.handleExceptionInternal(ex, message, headers, status, request);
     }
 

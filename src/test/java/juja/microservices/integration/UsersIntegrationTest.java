@@ -1,7 +1,7 @@
 package juja.microservices.integration;
 
-import juja.microservices.users.dao.UserRepository;
-import juja.microservices.users.entity.User;
+import juja.microservices.users.dao.users.repository.UserRepository;
+import juja.microservices.users.dao.users.domain.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +45,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
         List<User> users = new ArrayList<>();
         UUID uuid = new UUID(1L, 2L);
         User user = new User(uuid, "Vasya","Ivanoff", "vasya@mail.ru",
-                "vasya@gmail.com","vasya","vasya.ivanoff");
+                "vasya@gmail.com","vasya","vasya.ivanoff", 777L);
         users.add(user);
         String expected ="[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Ivanoff Vasya\"," +
                 "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
@@ -67,7 +67,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
         //given
         UUID uuid = new UUID(1L, 2L);
         User user = new User(uuid, "Vasya","Ivanoff", "vasya@mail.ru",
-                "vasya@gmail.com","vasya","vasya.ivanoff");
+                "vasya@gmail.com","vasya","vasya.ivanoff", 777L);
         String jsonRequest = "{\"uuids\":[\"00000000-0000-0001-0000-000000000002\"]}";
         String expected ="[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Ivanoff Vasya\"," +
                 "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
@@ -90,7 +90,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
         //given
         UUID uuid = new UUID(1L, 2L);
         User user = new User(uuid, "Vasya","Ivanoff", "vasya@mail.ru",
-                "vasya@gmail.com","vasya","vasya.ivanoff");
+                "vasya@gmail.com","vasya","vasya.ivanoff", 777L);
         String jsonRequest = "{\"slackNames\":[\"vasya\"]}";
         String expected ="[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Ivanoff Vasya\"," +
                 "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";

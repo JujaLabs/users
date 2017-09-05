@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <X2_CONTACT ID="1" FIRST_NAME="Alex" LAST_NAME="Batman" EMAIL="alex.batman@ab.com" SKYPE="Alex" LASTUPDATED="100" C_GMAIL="alex.batman@gmail.com" C_SLACK="alex.batman"  C_UUID="00000000-0000-0001-0000-000000000002"/>
+    <X2_CONTACT ID="2" FIRST_NAME="Max" LAST_NAME="Superman" EMAIL="max.superman@ab.com"  SKYPE="Max" LASTUPDATED="200" C_GMAIL="max.superman@gmail.com" C_SLACK="max.superman" C_UUID="00000000-0000-0001-0000-000000000003"/>
+    <X2_CONTACT ID="3" FIRST_NAME="Sergey" LAST_NAME="Spiderman" EMAIL="sergey.siderman@ab.com"  SKYPE="Sergey" LASTUPDATED="250" C_GMAIL="sergey.spiderman@gmail.com" C_SLACK="sergey.spiderman" C_UUID="00000000-0000-0001-0000-000000000004"/>
+</dataset>

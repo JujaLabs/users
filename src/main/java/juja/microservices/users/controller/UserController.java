@@ -61,4 +61,10 @@ public class UserController {
 
         return users;
     }
+
+    @PostMapping("/update")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDTO> updateUsersFromCRM(){
+        return userService.updateUsersFromCRM();
+    }
 }
