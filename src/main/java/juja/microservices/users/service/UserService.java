@@ -98,13 +98,19 @@ public class UserService {
     }
 
     public List<UserDTO> updateUsersFromCRM() {
-        Long lastUpdate = repository.findMaxLastUpdate();
-        if (lastUpdate == null) lastUpdate = 0L;
-
+        Long lastUpdate = getLastUpdate();
         logger.info("Starting update users database. Last update was at {}",
                 LocalDateTime.ofEpochSecond(lastUpdate, 0, OffsetDateTime.now().getOffset()));
 
-        return getConvertedResult(updateUsersDatabase(getUpdatedUsersFromCRM(lastUpdate)));
+        final List<User> crmUsers = getUpdatedUsersFromCRM(lastUpdate);
+        final List<User> result = updateUsersDatabase(crmUsers);
+
+        return getConvertedResult(result);
+    }
+
+    private Long getLastUpdate() {
+        Long lastUpdate = repository.findMaxLastUpdate();
+        return lastUpdate == null ? 0L : lastUpdate;
     }
 
     private List<User> updateUsersDatabase(List<User> users) {

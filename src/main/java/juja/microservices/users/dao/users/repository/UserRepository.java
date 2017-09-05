@@ -14,12 +14,12 @@ import java.util.UUID;
  * @author Vadim Dyachenko
  */
 @Repository
+@Transactional
 public interface UserRepository extends JpaRepository<User, UUID> {
     User findOneBySlack(String slack);
 
     User findOneByUuid(UUID uuid);
 
-    @Transactional
     @Query("SELECT max(u.lastUpdated) FROM User u")
     Long findMaxLastUpdate();
 }
