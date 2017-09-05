@@ -80,8 +80,8 @@ public class UserRepositoryTest {
     public void testUpdateUsersDatabaseFromCRM() throws Exception {
         //given
         List<User> users = new ArrayList<>();
-        users.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max", "Superman",
-                "superman@ab.com", "max.superman@gmail.com", "Max", "Max", 200L));
+        users.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max", "Ironman",
+                "max.ironman@ab.com", "max.ironman@gmail.com", "max.ironman", "Max", 200L));
         users.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000004"), "Sergey", "Spiderman",
                 "sergey.spiderman@ab.com", "sergey.spiderman@gmail.com", "sergey.spiderman", "Sergey", 250L));
 

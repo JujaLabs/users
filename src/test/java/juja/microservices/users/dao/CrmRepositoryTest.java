@@ -48,7 +48,7 @@ public class CrmRepositoryTest {
 
     @Test
     public void testFindAllByLastUpdatedGreaterThan() throws Exception {
-        UserCRM expected = new UserCRM(3L,"Sergey","Spiderman","sergey.siderman@ab.com",
+        UserCRM expected = new UserCRM(3L,"Sergey","Spiderman","sergey.spiderman@ab.com",
                 "Sergey", 250L, "sergey.spiderman@gmail.com", "sergey.spiderman", "00000000-0000-0001-0000-000000000004");
         //when
         List<UserCRM> users = crmRepository.findAllByLastUpdatedGreaterThan(210L);
