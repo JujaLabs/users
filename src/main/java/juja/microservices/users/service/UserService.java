@@ -10,6 +10,7 @@ import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.exceptions.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
  * @author Olga Kulykova
+ * @author Vadim Dyachenko
  */
 @Service
 public class UserService {
@@ -88,6 +90,11 @@ public class UserService {
         logger.debug("All users converted: {}", result.toString());
 
         return result;
+    }
+
+    @Scheduled(cron = "${cron.expression}")
+    public void scheduleUpdateUsers() {
+        updateUsersFromCRM();
     }
 
     public List<UserDTO> updateUsersFromCRM() {
