@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -32,7 +31,6 @@ import static org.junit.Assert.assertEquals;
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
-@EnableTransactionManagement
 @DbUnitConfiguration(databaseConnection = {"usersConnection", "crmConnection"})
 @DatabaseSetup(connection = "crmConnection", value = "/datasets/crmData.xml")
 public class CrmRepositoryTest {

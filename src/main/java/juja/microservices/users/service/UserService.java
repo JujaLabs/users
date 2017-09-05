@@ -48,7 +48,7 @@ public class UserService {
         List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
 
-        return  result;
+        return result;
     }
 
     private List<UserDTO> getConvertedResult(List<User> users) {
@@ -58,7 +58,12 @@ public class UserService {
     }
 
     private UserDTO convertUserToUserDto(User user) {
-        return new UserDTO(user.getUuid(), user.getSlack(), user.getSkype(), user.getFullName());
+        return new UserDTO(
+                user.getUuid(),
+                user.getSlack(),
+                user.getSkype(),
+                user.getFullName()
+        );
     }
 
     public List<UserDTO> getUsersBySlackNames(UsersSlackNamesRequest request) {
@@ -96,30 +101,41 @@ public class UserService {
     }
 
     private List<User> updateUsersDatabase(List<User> users) {
-        List<User> result = repository.save(users);
-        repository.flush();
-        logger.info("{} records successfully updated", result.size());
-
+        List<User> result = new ArrayList<>();
+        if (users.size() != 0) {
+            result = repository.save(users);
+            repository.flush();
+            logger.info("{} records updated", result.size());
+        } else {
+            logger.info("No update required. There are no updated entries in CRM");
+        }
         return result;
     }
 
     private List<User> getUpdatedUsersFromCRM(Long lastUpdate) {
         List<User> result = new ArrayList<>();
         List<UserCRM> usersCrm = crmRepository.findAllByLastUpdatedGreaterThan(lastUpdate);
-        for (UserCRM userCRM: usersCrm) {
+        for (UserCRM userCRM : usersCrm) {
             try {
                 result.add(convertUserCRMtoUser(userCRM));
-            } catch (NullPointerException e) {
+            } catch (NullPointerException ex) {
                 logger.warn("The user [{}] can not be saved because it has a null at the required field: [{}]",
-                        userCRM, e.getMessage());
+                        userCRM, ex.getMessage());
             }
         }
-
         return result;
     }
 
     private User convertUserCRMtoUser(UserCRM userCRM) throws NullPointerException {
-        return new User(UUID.fromString(userCRM.getUuid()), userCRM.getFirstName(), userCRM.getLastName(),
-                userCRM.getEmail(), userCRM.getGmail(), userCRM.getSlack(), userCRM.getSkype(), userCRM.getLastUpdated());
+        return new User(
+                UUID.fromString(userCRM.getUuid()),
+                userCRM.getFirstName(),
+                userCRM.getLastName(),
+                userCRM.getEmail(),
+                userCRM.getGmail(),
+                userCRM.getSlack(),
+                userCRM.getSkype(),
+                userCRM.getLastUpdated()
+        );
     }
 }

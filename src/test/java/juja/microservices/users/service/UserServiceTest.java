@@ -20,6 +20,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -122,11 +123,11 @@ public class UserServiceTest {
         when(repository.findMaxLastUpdate()).thenReturn(null);
         when(crmRepository.findAllByLastUpdatedGreaterThan(0L)).thenReturn(allCrmUsers);
         when(repository.save(anyList())).thenReturn(savedUser);
-
         //when
         List<UserDTO> actual = service.updateUsersFromCRM();
 
         //then
+        verify(repository).flush();
         assertEquals(2, actual.size());
     }
 
@@ -139,18 +140,18 @@ public class UserServiceTest {
         allCrmUsers.add(new UserCRM(2L,"Max","Superman","max.superman@ab.com",
                 "Max", 200L, "max.superman@gmail.com", "max.superman", "00000000-0000-0001-0000-000000000003"));
 
-        List<User> savedUser = new ArrayList<>();
-        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000002"), "Alex","Batman", "alex.batman@ab.com", "alex.batman@gmail.com", "alex.batman", "Alex", 100L));
-        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max","Superman","max.superman@ab.com", "max.superman@gmail.com", "max.superman", "Max", 200L));
+        List<User> haveToSaveUser = new ArrayList<>();
+        haveToSaveUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max","Superman","max.superman@ab.com", "max.superman@gmail.com", "max.superman", "Max", 200L));
 
         when(repository.findMaxLastUpdate()).thenReturn(null);
         when(crmRepository.findAllByLastUpdatedGreaterThan(0L)).thenReturn(allCrmUsers);
-//        when(repository.save(anyList())).thenReturn(anyList());
+        when(repository.save(haveToSaveUser)).thenReturn(haveToSaveUser);
 
         //when
         List<UserDTO> actual = service.updateUsersFromCRM();
 
         //then
-        assertEquals(1, actual.size());
+        verify(repository).save(haveToSaveUser);
+        verify(repository).flush();
     }
 }

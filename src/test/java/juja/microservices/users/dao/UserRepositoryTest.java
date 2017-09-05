@@ -38,7 +38,6 @@ import static org.junit.Assert.assertEquals;
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
-@EnableTransactionManagement
 @DbUnitConfiguration(databaseConnection = {"usersConnection", "crmConnection"})
 @DatabaseSetup(value = "/datasets/usersData.xml")
 public class UserRepositoryTest {
@@ -77,7 +76,6 @@ public class UserRepositoryTest {
     }
 
     @Test
-    @Transactional
     @ExpectedDatabase(value = "/datasets/usersDataAfterUpdate.xml")
     public void testUpdateUsersDatabaseFromCRM() throws Exception {
         //given
