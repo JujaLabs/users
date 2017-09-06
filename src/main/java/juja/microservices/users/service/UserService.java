@@ -31,6 +31,7 @@ public class UserService {
 
     private final UserRepository repository;
     private final CRMRepository crmRepository;
+    private final Logger wrongUserLogger = LoggerFactory.getLogger("Wrong User");
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
@@ -132,7 +133,7 @@ public class UserService {
             try {
                 result.add(convertUserCRMtoUser(userCRM));
             } catch (NullPointerException ex) {
-                logger.warn("The user [{}] can not be saved because it has a null at the required field: [{}]",
+                wrongUserLogger.warn("{} can not be saved because it has a null at the required field: [{}]",
                         userCRM, ex.getMessage());
             }
         }
