@@ -42,7 +42,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
     private static final String USERS_BY_UUIDS_URL = "/v1/users/usersByUuids";
     private static final String USERS_BY_SLACK_NAMES_URL = "/v1/users/usersBySlackNames";
     private static final String USERS_UPDATE_URL = "/v1/users/update";
-    private static final String Fake_URL = "/fake";
+    private static final String FAKE_URL = "/fake";
 
     private MockMvc mockMvc;
 
@@ -101,7 +101,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
     public void getUsersBySlackNames() throws Exception {
         //given
         String jsonRequest = "{\"slackNames\":[\"alex.batman\"]}";
-        String expected = "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Batman Alex\", \"skype\":\"Alex\",\"slack\":\"alex.batman\"}]";
+        String expected = "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Batman Alex\",\"skype\":\"Alex\",\"slack\":\"alex.batman\"}]";
 
         //when
         String result = mockMvc.perform(post(USERS_BY_SLACK_NAMES_URL)
@@ -120,12 +120,19 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
     @DatabaseSetup(connection = "crmConnection", value = "/datasets/crmData.xml")
     @ExpectedDatabase(value = "/datasets/usersDataAfterUpdate.xml")
     public void updateUsersDatabaseFromCRM() throws Exception {
+        //given
+        String expected =
+                "[{\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"max.ironman\",\"skype\":\"Max\",\"name\":\"Ironman Max\"}," +
+                "{\"uuid\":\"00000000-0000-0001-0000-000000000004\",\"slack\":\"sergey.spiderman\",\"skype\":\"Sergey\",\"name\":\"Spiderman Sergey\"}]";
         //when
-        mockMvc.perform(post(USERS_UPDATE_URL)
+        String result = mockMvc.perform(post(USERS_UPDATE_URL)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
+
+        //then
+        assertThatJson(result).isEqualTo(expected);
     }
 
     @Test
@@ -133,12 +140,18 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
     @DatabaseSetup(connection = "crmConnection", value = "/datasets/notUpdatedCrmData.xml")
     @ExpectedDatabase(value = "/datasets/usersData.xml")
     public void updateUsersDatabaseFromCRMWithoutUpdatedEntries() throws Exception {
+        //given
+        String expected ="[]";
+
         //when
-        mockMvc.perform(post(USERS_UPDATE_URL)
+        String result = mockMvc.perform(post(USERS_UPDATE_URL)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
+
+        //then
+        assertThatJson(result).isEqualTo(expected);
     }
 
     @Test
@@ -177,7 +190,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
     @Test
     public void getUsersBySlackNamesNotFound() throws Exception {
         //when
-        mockMvc.perform(get(Fake_URL)
+        mockMvc.perform(get(FAKE_URL)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
     }
