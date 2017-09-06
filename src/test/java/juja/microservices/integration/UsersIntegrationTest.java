@@ -1,19 +1,27 @@
 package juja.microservices.integration;
 
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import juja.microservices.config.DBUnitConfig;
+import juja.microservices.users.dao.crm.repository.CRMRepository;
 import juja.microservices.users.dao.users.repository.UserRepository;
-import juja.microservices.users.dao.users.domain.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.*;
+import javax.inject.Inject;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,17 +30,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-public class UsersIntegrationTest extends BaseIntegrationTest{
+@Import(DBUnitConfig.class)
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
+@DbUnitConfiguration(databaseConnection = {"usersConnection", "crmConnection"})
+public class UsersIntegrationTest extends BaseIntegrationTest {
 
     private static final String USERS_URL = "/v1/users";
     private static final String USERS_BY_UUIDS_URL = "/v1/users/usersByUuids";
     private static final String USERS_BY_SLACK_NAMES_URL = "/v1/users/usersBySlackNames";
-    private static final String Fake_URL = "/fake";
+    private static final String USERS_UPDATE_URL = "/v1/users/update";
+    private static final String FAKE_URL = "/fake";
 
     private MockMvc mockMvc;
 
-    @MockBean
+    @Inject
     private UserRepository repository;
+
+    @Inject
+    private CRMRepository crmRepository;
 
     @Before
     public void setup() {
@@ -40,18 +58,15 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     }
 
     @Test
+    @DatabaseSetup(value = "/datasets/usersData.xml")
     public void getAllUsers() throws Exception {
         //given
-        List<User> users = new ArrayList<>();
-        UUID uuid = new UUID(1L, 2L);
-        User user = new User(uuid, "Vasya","Ivanoff", "vasya@mail.ru",
-                "vasya@gmail.com","vasya","vasya.ivanoff", 777L);
-        users.add(user);
-        String expected ="[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Ivanoff Vasya\"," +
-                "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
+        String expected = "[" +
+                "{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Batman Alex\", \"skype\":\"Alex\",\"slack\":\"alex.batman\"}," +
+                "{\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"name\":\"Superman Max\", \"skype\":\"Max\",\"slack\":\"max.superman\"}" +
+                "]";
 
         //when
-        when(repository.findAll()).thenReturn(users);
         String result = mockMvc.perform(get(USERS_URL)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -63,17 +78,13 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     }
 
     @Test
+    @DatabaseSetup(value = "/datasets/usersData.xml")
     public void getUsersByUuids() throws Exception {
         //given
-        UUID uuid = new UUID(1L, 2L);
-        User user = new User(uuid, "Vasya","Ivanoff", "vasya@mail.ru",
-                "vasya@gmail.com","vasya","vasya.ivanoff", 777L);
-        String jsonRequest = "{\"uuids\":[\"00000000-0000-0001-0000-000000000002\"]}";
-        String expected ="[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Ivanoff Vasya\"," +
-                "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
+        String jsonRequest = "{\"uuids\":[\"00000000-0000-0001-0000-000000000003\"]}";
+        String expected = "[{\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"name\":\"Superman Max\", \"skype\":\"Max\",\"slack\":\"max.superman\"}]";
 
         //when
-        when(repository.findOneByUuid(uuid)).thenReturn(user);
         String result = mockMvc.perform(post(USERS_BY_UUIDS_URL)
                 .content(jsonRequest)
                 .contentType(APPLICATION_JSON_UTF8))
@@ -86,19 +97,54 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     }
 
     @Test
+    @DatabaseSetup(value = "/datasets/usersData.xml")
     public void getUsersBySlackNames() throws Exception {
         //given
-        UUID uuid = new UUID(1L, 2L);
-        User user = new User(uuid, "Vasya","Ivanoff", "vasya@mail.ru",
-                "vasya@gmail.com","vasya","vasya.ivanoff", 777L);
-        String jsonRequest = "{\"slackNames\":[\"vasya\"]}";
-        String expected ="[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Ivanoff Vasya\"," +
-                "\"skype\":\"vasya.ivanoff\",\"slack\":\"vasya\"}]";
+        String jsonRequest = "{\"slackNames\":[\"alex.batman\"]}";
+        String expected = "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Batman Alex\",\"skype\":\"Alex\",\"slack\":\"alex.batman\"}]";
 
         //when
-        when(repository.findOneBySlack("vasya")).thenReturn(user);
         String result = mockMvc.perform(post(USERS_BY_SLACK_NAMES_URL)
                 .content(jsonRequest)
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        //then
+        assertThatJson(result).isEqualTo(expected);
+    }
+
+    @Test
+    @DatabaseSetup(value = "/datasets/usersData.xml")
+    @DatabaseSetup(connection = "crmConnection", value = "/datasets/crmData.xml")
+    @ExpectedDatabase(value = "/datasets/usersDataAfterUpdate.xml")
+    public void updateUsersDatabaseFromCRM() throws Exception {
+        //given
+        String expected =
+                "[{\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"max.ironman\",\"skype\":\"Max\",\"name\":\"Ironman Max\"}," +
+                "{\"uuid\":\"00000000-0000-0001-0000-000000000004\",\"slack\":\"sergey.spiderman\",\"skype\":\"Sergey\",\"name\":\"Spiderman Sergey\"}]";
+        //when
+        String result = mockMvc.perform(post(USERS_UPDATE_URL)
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        //then
+        assertThatJson(result).isEqualTo(expected);
+    }
+
+    @Test
+    @DatabaseSetup(value = "/datasets/usersData.xml")
+    @DatabaseSetup(connection = "crmConnection", value = "/datasets/notUpdatedCrmData.xml")
+    @ExpectedDatabase(value = "/datasets/usersData.xml")
+    public void updateUsersDatabaseFromCRMWithoutUpdatedEntries() throws Exception {
+        //given
+        String expected ="[]";
+
+        //when
+        String result = mockMvc.perform(post(USERS_UPDATE_URL)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
@@ -144,7 +190,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest{
     @Test
     public void getUsersBySlackNamesNotFound() throws Exception {
         //when
-        mockMvc.perform(get(Fake_URL)
+        mockMvc.perform(get(FAKE_URL)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
     }
