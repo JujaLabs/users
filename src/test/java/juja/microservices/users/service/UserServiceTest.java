@@ -48,7 +48,7 @@ public class UserServiceTest {
         expected.add(new UserDTO(uuid, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
 
         List<User> users = new ArrayList<>();
-        users.add(new User(uuid, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff", 777L));
+        users.add(new User(uuid, "Vasya", "Ivanoff", "vasya", "vasya.ivanoff", 777L));
         when(repository.findAll()).thenReturn(users);
         List<UserDTO> actual = service.getAllUsers();
 
@@ -59,8 +59,8 @@ public class UserServiceTest {
     public void getUsersBySlackNames() throws Exception {
         UUID uuid1 = new UUID(1L,2L);
         UUID uuid2 = new UUID(1L,3L);
-        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff", 777L);
-        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff", 888L);
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "vasya.ivanoff", 777L);
+        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya", "kolya.sidoroff", 888L);
 
         List<UserDTO> expected = new ArrayList<>();
         expected.add(new UserDTO(uuid1, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
@@ -82,8 +82,8 @@ public class UserServiceTest {
     public void getUsersByUuids() throws Exception {
         UUID uuid1 = new UUID(1L,2L);
         UUID uuid2 = new UUID(1L,3L);
-        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff", 777L);
-        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff", 888L);
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "vasya.ivanoff", 777L);
+        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya", "kolya.sidoroff", 888L);
         List<UserDTO> expected = new ArrayList<>();
         expected.add(new UserDTO(uuid1, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
         expected.add(new UserDTO(uuid2, "kolya", "kolya.sidoroff", "Sidoroff Kolya"));
@@ -111,14 +111,14 @@ public class UserServiceTest {
     public void updateUsersFromCRMTest() throws Exception {
         //given
         List<UserCRM> allCrmUsers = new ArrayList<>();
-        allCrmUsers.add(new UserCRM(1L,"Alex","Batman","alex.batman@ab.com",
-                "Alex", 100L, "alex.batman@gmail.com", "alex.batman", "00000000-0000-0001-0000-000000000002"));
-        allCrmUsers.add(new UserCRM(2L,"Max","Superman","max.superman@ab.com",
-                "Max", 200L, "max.superman@gmail.com", "max.superman", "00000000-0000-0001-0000-000000000003"));
+        allCrmUsers.add(new UserCRM(1L,"Alex","Batman",
+                "Alex", 100L, "alex.batman", "00000000-0000-0001-0000-000000000002"));
+        allCrmUsers.add(new UserCRM(2L,"Max","Superman",
+                "Max", 200L, "max.superman", "00000000-0000-0001-0000-000000000003"));
 
         List<User> savedUser = new ArrayList<>();
-        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000002"), "Alex","Batman", "alex.batman@ab.com", "alex.batman@gmail.com", "alex.batman", "Alex", 100L));
-        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max","Superman","max.superman@ab.com", "max.superman@gmail.com", "max.superman", "Max", 200L));
+        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000002"), "Alex","Batman", "alex.batman", "Alex", 100L));
+        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max","Superman","max.superman", "Max", 200L));
 
         when(repository.findMaxLastUpdate()).thenReturn(null);
         when(crmRepository.findAllByLastUpdatedGreaterThan(0L)).thenReturn(allCrmUsers);
@@ -135,13 +135,11 @@ public class UserServiceTest {
     public void updateUsersFromCRMWithNullFieldTest() throws Exception {
         //given
         List<UserCRM> allCrmUsers = new ArrayList<>();
-        allCrmUsers.add(new UserCRM(1L,"Alex","Batman","alex.batman@ab.com",
-                "Alex", 100L, "alex.batman@gmail.com", "Alex", null));
-        allCrmUsers.add(new UserCRM(2L,"Max","Superman","max.superman@ab.com",
-                "Max", 200L, "max.superman@gmail.com", "max.superman", "00000000-0000-0001-0000-000000000003"));
+        allCrmUsers.add(new UserCRM(1L,"Alex","Batman","Alex", 100L,  "Alex", null));
+        allCrmUsers.add(new UserCRM(2L,"Max","Superman","Max", 200L, "max.superman", "00000000-0000-0001-0000-000000000003"));
 
         List<User> haveToSaveUser = new ArrayList<>();
-        haveToSaveUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max","Superman","max.superman@ab.com", "max.superman@gmail.com", "max.superman", "Max", 200L));
+        haveToSaveUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max","Superman","max.superman", "Max", 200L));
 
         when(repository.findMaxLastUpdate()).thenReturn(null);
         when(crmRepository.findAllByLastUpdatedGreaterThan(0L)).thenReturn(allCrmUsers);
