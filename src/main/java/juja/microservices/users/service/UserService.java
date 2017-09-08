@@ -1,9 +1,9 @@
 package juja.microservices.users.service;
 
-import juja.microservices.users.dao.crm.repository.CRMRepository;
-import juja.microservices.users.dao.users.repository.UserRepository;
-import juja.microservices.users.dao.users.domain.User;
 import juja.microservices.users.dao.crm.domain.UserCRM;
+import juja.microservices.users.dao.crm.repository.CRMRepository;
+import juja.microservices.users.dao.users.domain.User;
+import juja.microservices.users.dao.users.repository.UserRepository;
 import juja.microservices.users.entity.UserDTO;
 import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
  * @author Denis Tantsev (dtantsev@gmail.com)
  * @author Olga Kulykova
  * @author Vadim Dyachenko
+ * @author Ivan Shapovalov
  */
 @Service
 public class UserService {
@@ -70,11 +71,8 @@ public class UserService {
     }
 
     public List<UserDTO> getUsersBySlackNames(UsersSlackNamesRequest request) {
-        List<User> users = request.getSlackNames().stream()
-                .map(repository::findOneBySlack)
-                .collect(Collectors.toList());
+        List<User> users = repository.findBySlackIn(request.getSlackNames());
         logger.debug("Received response from repository: {}", users.toString());
-
         List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
 
@@ -82,9 +80,7 @@ public class UserService {
     }
 
     public List<UserDTO> getUsersByUuids(UsersUuidRequest request) {
-        List<User> users = request.getUuids().stream()
-                .map(repository::findOneByUuid)
-                .collect(Collectors.toList());
+        List<User> users = repository.findByUuidIn(request.getUuids());
         logger.debug("Received response from repository: {}", users.toString());
 
         List<UserDTO> result = getConvertedResult(users);
