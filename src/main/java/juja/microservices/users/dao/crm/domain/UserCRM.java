@@ -25,14 +25,10 @@ public class UserCRM {
     String firstName;
     @Column(name = "LAST_NAME")
     String lastName;
-    @Column(name = "EMAIL")
-    String email;
     @Column(name = "SKYPE")
     String skype;
     @Column(name = "LASTUPDATED")
     long lastUpdated;
-    @Column(name = "C_GMAIL")
-    String gmail;
     @Column(name = "C_SLACK")
     String slack;
     @Column(name = "C_UUID")

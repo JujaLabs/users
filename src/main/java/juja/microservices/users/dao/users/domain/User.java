@@ -33,12 +33,6 @@ public class User {
     @Column(name = "LAST_NAME")
     private String lastName;
 
-    @Column(name = "EMAIL")
-    private String email;
-
-    @Column(name = "GMAIL")
-    private String gmail;
-
     @NonNull
     @Column(name = "SLACK", nullable = false)
     private String slack;
@@ -57,12 +51,5 @@ public class User {
             return this.firstName;
         }
         return this.lastName + " " + this.firstName;
-    }
-
-    public String getEmail() {
-        if (this.gmail == null) {
-            return this.email;
-        }
-        return this.gmail;
     }
 }

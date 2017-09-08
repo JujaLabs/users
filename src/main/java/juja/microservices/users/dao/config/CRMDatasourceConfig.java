@@ -25,7 +25,7 @@ import javax.sql.DataSource;
         transactionManagerRef = "crmTransactionManager",
         basePackages = {"juja.microservices.users.dao.crm.repository"}
 )
-public class CRMDatasourseConfig {
+public class CRMDatasourceConfig {
     @Bean(name = "crmDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.crm")
     public DataSource dataSource() {
