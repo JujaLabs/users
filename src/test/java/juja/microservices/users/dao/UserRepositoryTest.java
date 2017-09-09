@@ -6,9 +6,7 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import juja.microservices.config.DBUnitConfig;
 import juja.microservices.users.dao.users.domain.User;
-
 import juja.microservices.users.dao.users.repository.UserRepository;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,18 +16,23 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Vadim Dyachenko
+ * @author Ivan Shapovalov
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -45,34 +48,54 @@ public class UserRepositoryTest {
     @Inject
     private UserRepository repository;
 
+    private UUID uuid1 = new UUID(1L, 2L);
+    private UUID uuid2 = new UUID(1L, 3L);
+    private User user1 = new User(uuid1, "Alex", "Batman", "alex.batman", "Alex", 100L);
+    private User user2 = new User(new UUID(1L, 3L), "Max", "Superman", "max.superman", "Max", 100L);
+
     @Test
     public void testFindAll() throws Exception {
-        //when
-        List<User> users = repository.findAll();
+        List<User> expected = Arrays.asList(user1, user2);
 
-        //then
-        assertEquals(2, users.size());
-        assertEquals("Alex", users.get(0).getFirstName());
-        assertEquals("Max", users.get(1).getFirstName());
+        List<User> actual = repository.findAll();
+
+        assertThat(expected, is(actual));
     }
 
     @Test
-    public void testFindBySlack() throws Exception {
-        //when
-        User user = repository.findOneBySlack("alex.batman");
+    public void testFindOneUserBySlack() throws Exception {
+        List<User> users = repository.findBySlackIn(Collections.singletonList(user1.getSlack()));
 
-        //then
-        assertEquals("Batman Alex", user.getFullName());
-        assertEquals("alex.batman", user.getSlack());
+        assertEquals(1, users.size());
+        assertThat(users, contains(user1));
     }
 
     @Test
-    public void testFindByUuid() throws Exception {
-        //when
+    public void testFindTwoUsersByThreeSlackName() throws Exception {
+        List<User> expected = Arrays.asList(user1, user2);
+        List<String> slackNames = Arrays.asList(user1.getSlack(), user2.getSlack(), "fake.user");
 
-        User user = repository.findOneByUuid(new UUID(1L, 3L));
-        //then
-        assertEquals("Superman Max", user.getFullName());
+        List<User> actual = repository.findBySlackIn(slackNames);
+
+        assertThat(expected, is(actual));
+    }
+
+    @Test
+    public void testFindOneUserByUuid() throws Exception {
+        List<User> users = repository.findByUuidIn(Collections.singletonList(user1.getUuid()));
+
+        assertEquals(1, users.size());
+        assertThat(users, contains(user1));
+    }
+
+    @Test
+    public void testFindTwoUsersByUUID() throws Exception {
+        List<User> expected = Arrays.asList(user1, user2);
+        List<UUID> uuids = Arrays.asList(uuid1, uuid2);
+
+        List<User> actual = repository.findByUuidIn(uuids);
+
+        assertThat(expected, is(actual));
     }
 
     @Test

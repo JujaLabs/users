@@ -8,13 +8,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import java.util.List;
 
 /**
- *@author Olga Kulykova
+ * @author Olga Kulykova
  */
 @RestController
 @Validated
@@ -42,7 +47,7 @@ public class UserController {
 
     @PostMapping("/usersByUuids")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDTO> getUsersByUuids(@RequestBody UsersUuidRequest request){
+    public List<UserDTO> getUsersByUuids(@RequestBody UsersUuidRequest request) {
         logger.debug("Received get users name by uuid request. Requested uuid: {}", request.getUuids());
 
         List<UserDTO> users = userService.getUsersByUuids(request);
@@ -53,7 +58,7 @@ public class UserController {
 
     @PostMapping("/usersBySlackNames")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDTO> getUsersBySlackNames(@RequestBody UsersSlackNamesRequest request){
+    public List<UserDTO> getUsersBySlackNames(@RequestBody UsersSlackNamesRequest request) {
         logger.debug("Received get users by slack names request. Requested slack names: {}", request.getSlackNames());
 
         List<UserDTO> users = userService.getUsersBySlackNames(request);
@@ -64,7 +69,7 @@ public class UserController {
 
     @PostMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDTO> updateUsersFromCRM(){
+    public List<UserDTO> updateUsersFromCRM() {
         return userService.updateUsersFromCRM();
     }
 }
