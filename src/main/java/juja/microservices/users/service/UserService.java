@@ -141,8 +141,6 @@ public class UserService {
                 UUID.fromString(userCRM.getUuid()),
                 userCRM.getFirstName(),
                 userCRM.getLastName(),
-                userCRM.getEmail(),
-                userCRM.getGmail(),
                 userCRM.getSlack(),
                 userCRM.getSkype(),
                 userCRM.getLastUpdated()
