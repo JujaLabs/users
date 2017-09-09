@@ -18,6 +18,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -70,7 +71,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testFindTwoUsersByThreeeSlackName() throws Exception {
+    public void testFindTwoUsersByThreeSlackName() throws Exception {
         List<User> expected = Arrays.asList(user1, user2);
         List<String> slackNames = Arrays.asList(user1.getSlack(), user2.getSlack(), "fake.user");
 
@@ -100,18 +101,15 @@ public class UserRepositoryTest {
     @Test
     @ExpectedDatabase(value = "/datasets/usersDataAfterUpdate.xml")
     public void testUpdateUsersDatabaseFromCRM() throws Exception {
-        User user1Updated = new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max", "Ironman",
-                "max.ironman", "Max", 200L);
-        User user4 = new User(UUID.fromString("00000000-0000-0001-0000-000000000004"), "Sergey", "Spiderman",
-                "sergey.spiderman", "Sergey", 250L);
-        List<User> expected = Arrays.asList(user1, user1Updated, user4);
-        List<User> newUsers = Arrays.asList(user1Updated, user4);
+        //given
+        List<User> users = new ArrayList<>();
+        users.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max", "Ironman",
+                "max.ironman", "Max", 200L));
+        users.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000004"), "Sergey", "Spiderman",
+                "sergey.spiderman", "Sergey", 250L));
 
-        repository.save(newUsers);
+        //when
+        repository.save(users);
         repository.flush();
-
-        List<User> actual = repository.findAll();
-        assertEquals(3, actual.size());
-        assertThat(actual, hasItems(expected.toArray(new User[expected.size()])));
     }
 }
