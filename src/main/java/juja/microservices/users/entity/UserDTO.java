@@ -17,10 +17,10 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
     @Size(max = 36, min = 36, message = "UUID must consist total of 36 characters with hyphens")
-    @Pattern(regexp="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", message="UUID must fit pattern 8-4-4-4-12")
+    @Pattern(regexp = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", message = "UUID must fit pattern 8-4-4-4-12")
     private UUID uuid;
 
-    @Pattern(regexp="^(?=\\s*\\S).*$")
+    @Pattern(regexp = "^(?=\\s*\\S).*$")
     private String slack;
 
     private String skype;
@@ -28,9 +28,9 @@ public class UserDTO {
 
     @JsonCreator
     public UserDTO(@JsonProperty("uuid") UUID uuid,
-                @JsonProperty("slack") String slack,
-                @JsonProperty("skype") String skype,
-                @JsonProperty("name") String name) {
+                   @JsonProperty("slack") String slack,
+                   @JsonProperty("skype") String skype,
+                   @JsonProperty("name") String name) {
         this.uuid = uuid;
         this.slack = slack;
         this.skype = skype;
