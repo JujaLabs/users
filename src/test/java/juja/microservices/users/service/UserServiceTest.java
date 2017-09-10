@@ -48,6 +48,7 @@ public class UserServiceTest {
 
     @Test
     public void getUserAllUsersTest() throws Exception {
+        //given
         UUID uuid = new UUID(1L, 2L);
         List<UserDTO> expected = new ArrayList<>();
         expected.add(new UserDTO(uuid, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
@@ -55,13 +56,16 @@ public class UserServiceTest {
         users.add(new User(uuid, "Vasya", "Ivanoff", "vasya", "vasya.ivanoff", 777L));
         when(repository.findAll()).thenReturn(users);
 
+        //when
         List<UserDTO> actual = service.getAllUsers();
 
+        //then
         assertEquals(expected, actual);
     }
 
     @Test
     public void getUsersBySlackNames() throws Exception {
+        //given
         UUID uuid1 = new UUID(1L, 2L);
         UUID uuid2 = new UUID(1L, 3L);
         User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "vasya.ivanoff", 777L);
@@ -77,8 +81,10 @@ public class UserServiceTest {
         UsersSlackNamesRequest request = new UsersSlackNamesRequest(slackNames);
         given(repository.findBySlackIn(slackNames)).willReturn(Arrays.asList(user1, user2));
 
+        //when
         List<UserDTO> actual = service.getUsersBySlackNames(request);
 
+        //then
         assertEquals(expected, actual);
         verify(repository).findBySlackIn(slackNames);
         verifyNoMoreInteractions(repository);
@@ -86,6 +92,7 @@ public class UserServiceTest {
 
     @Test
     public void getUsersByUuids() throws Exception {
+        //given
         UUID uuid1 = new UUID(1L, 2L);
         UUID uuid2 = new UUID(1L, 3L);
         User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "vasya.ivanoff", 777L);
@@ -101,8 +108,10 @@ public class UserServiceTest {
         UsersUuidRequest request = new UsersUuidRequest(uuids);
         given(repository.findByUuidIn(request.getUuids())).willReturn(Arrays.asList(user1, user2));
 
+        //when
         List<UserDTO> actual = service.getUsersByUuids(request);
 
+        //then
         assertEquals(expected, actual);
         verify(repository).findByUuidIn(uuids);
         verifyNoMoreInteractions(repository);
@@ -110,8 +119,13 @@ public class UserServiceTest {
 
     @Test(expected = UserException.class)
     public void getAllUsersEmptyListTest() throws Exception {
+        //given
         when(repository.findAll()).thenReturn(new ArrayList<>());
+
+        //when
         service.getAllUsers();
+
+        //then
         fail();
     }
 
@@ -130,15 +144,17 @@ public class UserServiceTest {
 
         when(repository.findMaxLastUpdate()).thenReturn(null);
         when(crmRepository.findUpdatedUsers(0L)).thenReturn(allCrmUsers);
-        when(repository.save(anyList())).thenReturn(savedUser);
+        when(repository.save(savedUser)).thenReturn(savedUser);
+
         //when
         List<UserDTO> actual = service.updateUsersFromCRM();
 
+        //then
         assertEquals(2, actual.size());
         verify(repository).findMaxLastUpdate();
-        verify(repository).flush();
-        verify(crmRepository).findAllByLastUpdatedGreaterThan(0L);
+        verify(crmRepository).findUpdatedUsers(0L);
         verify(repository).save(savedUser);
+        verify(repository).flush();
         verifyNoMoreInteractions(repository, crmRepository);
     }
 
@@ -156,12 +172,14 @@ public class UserServiceTest {
         when(crmRepository.findUpdatedUsers(0L)).thenReturn(allCrmUsers);
         when(repository.save(haveToSaveUser)).thenReturn(haveToSaveUser);
 
+        //when
         service.updateUsersFromCRM();
 
+        //then
         verify(repository).findMaxLastUpdate();
-        verify(repository).flush();
-        verify(crmRepository).findAllByLastUpdatedGreaterThan(0L);
+        verify(crmRepository).findUpdatedUsers(0L);
         verify(repository).save(haveToSaveUser);
+        verify(repository).flush();
         verifyNoMoreInteractions(repository, crmRepository);
     }
 }

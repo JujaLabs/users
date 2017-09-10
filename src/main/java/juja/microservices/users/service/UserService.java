@@ -73,6 +73,7 @@ public class UserService {
     public List<UserDTO> getUsersBySlackNames(UsersSlackNamesRequest request) {
         List<User> users = repository.findBySlackIn(request.getSlackNames());
         logger.debug("Received response from repository: {}", users.toString());
+
         List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
 
