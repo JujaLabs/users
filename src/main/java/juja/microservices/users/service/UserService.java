@@ -128,7 +128,7 @@ public class UserService {
 
     private List<User> getUpdatedUsersFromCRM(Long lastUpdate) {
         List<User> result = new ArrayList<>();
-        List<UserCRM> usersCrm = crmRepository.findAllByLastUpdatedGreaterThan(lastUpdate);
+        List<UserCRM> usersCrm = crmRepository.findUpdatedUsers(lastUpdate);
         for (UserCRM userCRM : usersCrm) {
             try {
                 result.add(convertUserCRMtoUser(userCRM));

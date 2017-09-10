@@ -112,16 +112,16 @@ public class UserServiceTest {
         //given
         List<UserCRM> allCrmUsers = new ArrayList<>();
         allCrmUsers.add(new UserCRM(1L,"Alex","Batman",
-                "Alex", 100L, "alex.batman", "00000000-0000-0001-0000-000000000002"));
+                "Alex", 100L, "alex.batman", "1","00000000-0000-0001-0000-000000000002"));
         allCrmUsers.add(new UserCRM(2L,"Max","Superman",
-                "Max", 200L, "max.superman", "00000000-0000-0001-0000-000000000003"));
+                "Max", 200L, "max.superman", "1","00000000-0000-0001-0000-000000000003"));
 
         List<User> savedUser = new ArrayList<>();
         savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000002"), "Alex","Batman", "alex.batman", "Alex", 100L));
         savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max","Superman","max.superman", "Max", 200L));
 
         when(repository.findMaxLastUpdate()).thenReturn(null);
-        when(crmRepository.findAllByLastUpdatedGreaterThan(0L)).thenReturn(allCrmUsers);
+        when(crmRepository.findUpdatedUsers(0L)).thenReturn(allCrmUsers);
         when(repository.save(anyList())).thenReturn(savedUser);
         //when
         List<UserDTO> actual = service.updateUsersFromCRM();
@@ -135,14 +135,14 @@ public class UserServiceTest {
     public void updateUsersFromCRMWithNullFieldTest() throws Exception {
         //given
         List<UserCRM> allCrmUsers = new ArrayList<>();
-        allCrmUsers.add(new UserCRM(1L,"Alex","Batman","Alex", 100L,  "Alex", null));
-        allCrmUsers.add(new UserCRM(2L,"Max","Superman","Max", 200L, "max.superman", "00000000-0000-0001-0000-000000000003"));
+        allCrmUsers.add(new UserCRM(1L,"Alex","Batman","Alex", 100L,  "Alex", "1", null));
+        allCrmUsers.add(new UserCRM(2L,"Max","Superman","Max", 200L, "max.superman", "1","00000000-0000-0001-0000-000000000003"));
 
         List<User> haveToSaveUser = new ArrayList<>();
         haveToSaveUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max","Superman","max.superman", "Max", 200L));
 
         when(repository.findMaxLastUpdate()).thenReturn(null);
-        when(crmRepository.findAllByLastUpdatedGreaterThan(0L)).thenReturn(allCrmUsers);
+        when(crmRepository.findUpdatedUsers(0L)).thenReturn(allCrmUsers);
         when(repository.save(haveToSaveUser)).thenReturn(haveToSaveUser);
 
         //when

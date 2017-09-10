@@ -31,6 +31,8 @@ public class UserCRM {
     long lastUpdated;
     @Column(name = "C_SLACK")
     String slack;
+    @Column(name = "C_ISSTUDENT")
+    String isStudent;
     @Column(name = "C_UUID")
     String uuid;
 
