@@ -21,18 +21,25 @@ public class UserCRM {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
+
     @Column(name = "FIRST_NAME")
     String firstName;
+
     @Column(name = "LAST_NAME")
     String lastName;
+
     @Column(name = "SKYPE")
     String skype;
+
     @Column(name = "LASTUPDATED")
     long lastUpdated;
+
     @Column(name = "C_SLACK")
     String slack;
+
     @Column(name = "C_ISSTUDENT")
-    String isStudent;
+    int isStudent;
+
     @Column(name = "C_UUID")
     String uuid;
 

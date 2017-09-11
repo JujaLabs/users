@@ -13,6 +13,6 @@ import java.util.List;
  */
 @Repository
 public interface CRMRepository extends JpaRepository<UserCRM, Long> {
-    @Query("SELECT u FROM UserCRM u WHERE u.lastUpdated > :date AND u.isStudent = '1'")
+    @Query("SELECT u FROM UserCRM u WHERE u.lastUpdated > :date AND u.isStudent = 1")
     List<UserCRM> findUpdatedUsers(@Param("date")Long date);
 }
