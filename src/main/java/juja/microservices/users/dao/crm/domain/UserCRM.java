@@ -43,7 +43,7 @@ public class UserCRM {
     @Column(name = "C_UUID")
     String uuid;
 
-    public UserCRM(){
+    public UserCRM() {
 
     }
 }
