@@ -7,6 +7,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import juja.microservices.config.DBUnitConfig;
 import juja.microservices.users.dao.users.domain.User;
 import juja.microservices.users.dao.users.repository.UserRepository;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +26,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -55,46 +55,59 @@ public class UserRepositoryTest {
 
     @Test
     public void testFindAll() throws Exception {
+        //given
         List<User> expected = Arrays.asList(user1, user2);
 
+        //when
         List<User> actual = repository.findAll();
 
+        //then
         assertThat(expected, is(actual));
     }
 
     @Test
     public void testFindOneUserBySlack() throws Exception {
+        //when
         List<User> users = repository.findBySlackIn(Collections.singletonList(user1.getSlack()));
 
+        //then
         assertEquals(1, users.size());
         assertThat(users, contains(user1));
     }
 
     @Test
     public void testFindTwoUsersByThreeSlackName() throws Exception {
+        //given
         List<User> expected = Arrays.asList(user1, user2);
         List<String> slackNames = Arrays.asList(user1.getSlack(), user2.getSlack(), "fake.user");
 
+        //when
         List<User> actual = repository.findBySlackIn(slackNames);
 
+        //then
         assertThat(expected, is(actual));
     }
 
     @Test
     public void testFindOneUserByUuid() throws Exception {
+        //when
         List<User> users = repository.findByUuidIn(Collections.singletonList(user1.getUuid()));
 
+        //then
         assertEquals(1, users.size());
         assertThat(users, contains(user1));
     }
 
     @Test
     public void testFindTwoUsersByUUID() throws Exception {
+        //given
         List<User> expected = Arrays.asList(user1, user2);
         List<UUID> uuids = Arrays.asList(uuid1, uuid2);
 
+        //when
         List<User> actual = repository.findByUuidIn(uuids);
 
+        //then
         assertThat(expected, is(actual));
     }
 

@@ -40,7 +40,7 @@ public class CrmRepositoryTest {
     @Test
     public void testFindAll() throws Exception {
         //when
-        List<UserCRM> users = crmRepository.findAllByLastUpdatedGreaterThan(0L);
+        List<UserCRM> users = crmRepository.findUpdatedUsers(0L);
 
         //then
         assertEquals(4, users.size());
@@ -48,10 +48,11 @@ public class CrmRepositoryTest {
 
     @Test
     public void testFindAllByLastUpdatedGreaterThan() throws Exception {
+        //given
         UserCRM expected = new UserCRM(3L,"Sergey","Spiderman",
-                "Sergey", 250L, "sergey.spiderman", "00000000-0000-0001-0000-000000000004");
+                "Sergey", 250L, "sergey.spiderman", "1", "00000000-0000-0001-0000-000000000004");
         //when
-        List<UserCRM> users = crmRepository.findAllByLastUpdatedGreaterThan(220L);
+        List<UserCRM> users = crmRepository.findUpdatedUsers(220L);
 
         //then
         assertEquals(1, users.size());
@@ -61,7 +62,7 @@ public class CrmRepositoryTest {
     @Test
     public void testFindAllByLastUpdatedGreaterThanShouldReturnEmptyList() throws Exception {
         //when
-        List<UserCRM> users = crmRepository.findAllByLastUpdatedGreaterThan(300L);
+        List<UserCRM> users = crmRepository.findUpdatedUsers(300L);
 
         //then
         assertEquals(0, users.size());

@@ -73,6 +73,7 @@ public class UserService {
     public List<UserDTO> getUsersBySlackNames(UsersSlackNamesRequest request) {
         List<User> users = repository.findBySlackIn(request.getSlackNames());
         logger.debug("Received response from repository: {}", users.toString());
+
         List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
 
@@ -124,7 +125,7 @@ public class UserService {
 
     private List<User> getUpdatedUsersFromCRM(Long lastUpdate) {
         List<User> result = new ArrayList<>();
-        List<UserCRM> usersCrm = crmRepository.findAllByLastUpdatedGreaterThan(lastUpdate);
+        List<UserCRM> usersCrm = crmRepository.findUpdatedUsers(lastUpdate);
         for (UserCRM userCRM : usersCrm) {
             try {
                 result.add(convertUserCRMtoUser(userCRM));
