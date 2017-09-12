@@ -146,7 +146,7 @@ public class UserServiceTest {
         UsersUuidRequest request = new UsersUuidRequest(uuids);
         given(repository.findByUuidIn(request.getUuids())).willReturn(Arrays.asList(user1));
         expectedException.expect(UserException.class);
-        expectedException.expectMessage("Some '[00000000-0000-0001-0000-000000000003]' has not been found");
+        expectedException.expectMessage("Uuids '[00000000-0000-0001-0000-000000000003]' has not been found");
 
         //when
         service.getUsersByUuids(request);
