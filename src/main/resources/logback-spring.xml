@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="false" scan="true" scanPeriod="30 seconds" >
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <property name="LOG_PATH" value="logs"/>
     <property name="LOG_ARCHIVE" value="${LOG_PATH}/archive"/>
@@ -8,7 +8,9 @@
 
     <appender name="Console-Appender" class="ch.qos.logback.core.ConsoleAppender">
         <layout>
-            <pattern>%d %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} --- [%15.15thread] %clr(%-40.40logger{39}){cyan} : %m%n}</pattern>
+            <pattern>%d %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} --- [%15.15thread]
+                %clr(%-40.40logger{39}){cyan} : %m%n}
+            </pattern>
         </layout>
     </appender>
     <appender name="RollingFile-Appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -20,7 +22,7 @@
             <totalSizeCap>10MB</totalSizeCap>
         </rollingPolicy>
         <encoder>
-            <pattern>%d  ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15thread] %-40.40logger{39} : %m%n</pattern>
+            <pattern>%d ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15thread] %-40.40logger{39} : %m%n</pattern>
         </encoder>
     </appender>
     <appender name="WrongUserFile-Appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -36,11 +38,11 @@
         </encoder>
     </appender>
 
-    <logger name="juja.microservices" level="INFO" additivity="false">
+    <logger name="juja.microservices" level="DEBUG" additivity="false">
         <appender-ref ref="Console-Appender"/>
         <appender-ref ref="RollingFile-Appender"/>
     </logger>
-    <logger name="Wrong User"  level="WARN" additivity="false" >
+    <logger name="Wrong User" level="WARN" additivity="false">
         <appender-ref ref="Console-Appender"/>
         <appender-ref ref="WrongUserFile-Appender"/>
     </logger>

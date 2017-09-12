@@ -71,22 +71,61 @@ public class UserService {
     }
 
     public List<UserDTO> getUsersBySlackNames(UsersSlackNamesRequest request) {
-        List<User> users = repository.findBySlackIn(request.getSlackNames());
+        List<String> slackNames = request.getSlackNames();
+        List<User> users = repository.findBySlackIn(slackNames);
         logger.debug("Received response from repository: {}", users.toString());
+        compareSlackNamesAndUsers(slackNames, users);
+        List<UserDTO> result = getConvertedResult(users);
+        logger.debug("All users converted: {}", result.toString());
+        return result;
+    }
+
+    private void compareSlackNamesAndUsers(List<String> slackNames, List<User> users) {
+        logger.debug("Compare slackNames '{}' and users '{}'", slackNames.toString(), users.toString());
+        List<String> foundSlackNames = users.stream()
+                .map(r -> r.getSlack())
+                .filter(sn -> slackNames.contains(sn))
+                .collect(Collectors.toList());
+        List<String> notFoundSlackNames = slackNames.stream()
+                .filter(sn -> !foundSlackNames.contains(sn))
+                .collect(Collectors.toList());
+        if (!notFoundSlackNames.isEmpty()) {
+            String message = "Error. ";
+            message += String.format("Slacknames '%s' has not been found",
+                    notFoundSlackNames.stream().sorted().collect(Collectors.joining(" ")));
+            logger.warn(message);
+            throw new UserException("Error. Some slacknames has not been found");
+        }
+    }
+
+    public List<UserDTO> getUsersByUuids(UsersUuidRequest request) {
+        List<UUID> uuids = request.getUuids();
+        List<User> users = repository.findByUuidIn(uuids);
+        logger.debug("Received response from repository: {}", users.toString());
+        compareUUIDsAndUsers(uuids, users);
         List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
 
         return result;
     }
 
-    public List<UserDTO> getUsersByUuids(UsersUuidRequest request) {
-        List<User> users = repository.findByUuidIn(request.getUuids());
-        logger.debug("Received response from repository: {}", users.toString());
-
-        List<UserDTO> result = getConvertedResult(users);
-        logger.debug("All users converted: {}", result.toString());
-
-        return result;
+    private void compareUUIDsAndUsers(List<UUID> uuids, List<User> users) {
+        logger.debug("Compare uuids '{}' and users '{}'", uuids.toString(), users.toString());
+        List<UUID> foundUUIDs = users.stream()
+                .map(r -> r.getUuid())
+                .filter(sn -> uuids.contains(sn))
+                .collect(Collectors.toList());
+        List<UUID> notFoundUUIDs = uuids.stream()
+                .filter(sn -> !foundUUIDs.contains(sn))
+                .collect(Collectors.toList());
+        if (!notFoundUUIDs.isEmpty()) {
+            String message = String.format("Error. UUIDS '%s' has not been found",
+                    notFoundUUIDs.stream().sorted()
+                            .map(uuid -> uuid.toString())
+                            .collect(Collectors.joining(" ")));
+            logger.warn(message);
+            throw new UserException("Error. Some uuids has not been found");
+        }
     }
 
     @Scheduled(cron = "${cron.expression}")
