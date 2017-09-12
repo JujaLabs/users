@@ -74,13 +74,13 @@ public class UserService {
         List<String> slackNames = request.getSlackNames();
         List<User> users = repository.findBySlackIn(slackNames);
         logger.debug("Received response from repository: {}", users.toString());
-        compareSlackNamesAndUsers(slackNames, users);
+        findAbsentUsersBySlackNames(slackNames, users);
         List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
         return result;
     }
 
-    private void compareSlackNamesAndUsers(List<String> slackNames, List<User> users) {
+    private void findAbsentUsersBySlackNames(List<String> slackNames, List<User> users) {
         logger.debug("Compare slackNames '{}' and users '{}'", slackNames.toString(), users.toString());
         List<String> foundSlackNames = users.stream()
                 .map(r -> r.getSlack())
@@ -90,10 +90,7 @@ public class UserService {
                 .filter(sn -> !foundSlackNames.contains(sn))
                 .collect(Collectors.toList());
         if (!notFoundSlackNames.isEmpty()) {
-            String message = "Error. ";
-            message += String.format("Slacknames '%s' has not been found",
-                    notFoundSlackNames.stream().sorted().collect(Collectors.joining(" ")));
-            logger.warn(message);
+            logger.warn(String.format("Error. Slacknames '%s' has not been found", notFoundSlackNames.toString()));
             throw new UserException("Error. Some slacknames has not been found");
         }
     }
@@ -102,14 +99,14 @@ public class UserService {
         List<UUID> uuids = request.getUuids();
         List<User> users = repository.findByUuidIn(uuids);
         logger.debug("Received response from repository: {}", users.toString());
-        compareUUIDsAndUsers(uuids, users);
+        findAbsentUsersByUUIDS(uuids, users);
         List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
 
         return result;
     }
 
-    private void compareUUIDsAndUsers(List<UUID> uuids, List<User> users) {
+    private void findAbsentUsersByUUIDS(List<UUID> uuids, List<User> users) {
         logger.debug("Compare uuids '{}' and users '{}'", uuids.toString(), users.toString());
         List<UUID> foundUUIDs = users.stream()
                 .map(r -> r.getUuid())
@@ -119,11 +116,7 @@ public class UserService {
                 .filter(sn -> !foundUUIDs.contains(sn))
                 .collect(Collectors.toList());
         if (!notFoundUUIDs.isEmpty()) {
-            String message = String.format("Error. UUIDS '%s' has not been found",
-                    notFoundUUIDs.stream().sorted()
-                            .map(uuid -> uuid.toString())
-                            .collect(Collectors.joining(" ")));
-            logger.warn(message);
+            logger.warn(String.format("Error. Uuids '%s' has not been found",notFoundUUIDs.toString()));
             throw new UserException("Error. Some uuids has not been found");
         }
     }
