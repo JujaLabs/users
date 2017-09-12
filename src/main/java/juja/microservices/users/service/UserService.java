@@ -71,23 +71,47 @@ public class UserService {
     }
 
     public List<UserDTO> getUsersBySlackNames(UsersSlackNamesRequest request) {
-        List<User> users = repository.findBySlackIn(request.getSlackNames());
+        List<String> slackNames = request.getSlackNames();
+        List<User> users = repository.findBySlackIn(slackNames);
         logger.debug("Received response from repository: {}", users.toString());
-
+        findAbsentUsersBySlackNames(slackNames, users);
         List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
-
         return result;
     }
 
-    public List<UserDTO> getUsersByUuids(UsersUuidRequest request) {
-        List<User> users = repository.findByUuidIn(request.getUuids());
-        logger.debug("Received response from repository: {}", users.toString());
+    private void findAbsentUsersBySlackNames(List<String> slackNames, List<User> users) {
+        logger.debug("Compare slackNames '{}' and users '{}'", slackNames.toString(), users.toString());
+        List<String> foundSlackNames = users.stream().map(r -> r.getSlack()).collect(Collectors.toList());
+        List<String> notFoundSlackNames = new ArrayList<>(slackNames);
+        notFoundSlackNames.removeAll(foundSlackNames);
+        if (!notFoundSlackNames.isEmpty()) {
+            String message = String.format("Slacknames '%s' has not been found", notFoundSlackNames.toString());
+            logger.warn(message);
+            throw new UserException(message);
+        }
+    }
 
+    public List<UserDTO> getUsersByUuids(UsersUuidRequest request) {
+        List<UUID> uuids = request.getUuids();
+        List<User> users = repository.findByUuidIn(uuids);
+        logger.debug("Received response from repository: {}", users.toString());
+        findAbsentUsersByUUIDS(uuids, users);
         List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
-
         return result;
+    }
+
+    private void findAbsentUsersByUUIDS(List<UUID> uuids, List<User> users) {
+        logger.debug("Compare uuids '{}' and users '{}'", uuids.toString(), users.toString());
+        List<UUID> foundUUIDs = users.stream().map(r -> r.getUuid()).collect(Collectors.toList());
+        List<UUID> notFoundUUIDs = new ArrayList<>(uuids);
+        notFoundUUIDs.removeAll(foundUUIDs);
+        if (!notFoundUUIDs.isEmpty()) {
+            String message = String.format("Uuids '%s' has not been found", notFoundUUIDs.toString());
+            logger.warn(message);
+            throw new UserException(message);
+        }
     }
 
     @Scheduled(cron = "${cron.expression}")
