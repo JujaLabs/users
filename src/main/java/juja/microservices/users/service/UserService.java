@@ -90,8 +90,9 @@ public class UserService {
                 .filter(sn -> !foundSlackNames.contains(sn))
                 .collect(Collectors.toList());
         if (!notFoundSlackNames.isEmpty()) {
-            logger.warn(String.format("Error. Slacknames '%s' has not been found", notFoundSlackNames.toString()));
-            throw new UserException("Error. Some slacknames has not been found");
+            String message = String.format("Slacknames '%s' has not been found", notFoundSlackNames.toString());
+            logger.warn(message);
+            throw new UserException(message);
         }
     }
 
@@ -102,7 +103,6 @@ public class UserService {
         findAbsentUsersByUUIDS(uuids, users);
         List<UserDTO> result = getConvertedResult(users);
         logger.debug("All users converted: {}", result.toString());
-
         return result;
     }
 
@@ -116,8 +116,9 @@ public class UserService {
                 .filter(sn -> !foundUUIDs.contains(sn))
                 .collect(Collectors.toList());
         if (!notFoundUUIDs.isEmpty()) {
-            logger.warn(String.format("Error. Uuids '%s' has not been found",notFoundUUIDs.toString()));
-            throw new UserException("Error. Some uuids has not been found");
+            String message = String.format("Uuids '%s' has not been found", notFoundUUIDs.toString());
+            logger.warn(message);
+            throw new UserException(message);
         }
     }
 
