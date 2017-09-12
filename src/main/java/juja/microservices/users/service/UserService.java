@@ -82,13 +82,9 @@ public class UserService {
 
     private void findAbsentUsersBySlackNames(List<String> slackNames, List<User> users) {
         logger.debug("Compare slackNames '{}' and users '{}'", slackNames.toString(), users.toString());
-        List<String> foundSlackNames = users.stream()
-                .map(r -> r.getSlack())
-                .filter(sn -> slackNames.contains(sn))
-                .collect(Collectors.toList());
-        List<String> notFoundSlackNames = slackNames.stream()
-                .filter(sn -> !foundSlackNames.contains(sn))
-                .collect(Collectors.toList());
+        List<String> foundSlackNames = users.stream().map(r -> r.getSlack()).collect(Collectors.toList());
+        List<String> notFoundSlackNames = new ArrayList<>(slackNames);
+        notFoundSlackNames.removeAll(foundSlackNames);
         if (!notFoundSlackNames.isEmpty()) {
             String message = String.format("Slacknames '%s' has not been found", notFoundSlackNames.toString());
             logger.warn(message);
@@ -108,13 +104,9 @@ public class UserService {
 
     private void findAbsentUsersByUUIDS(List<UUID> uuids, List<User> users) {
         logger.debug("Compare uuids '{}' and users '{}'", uuids.toString(), users.toString());
-        List<UUID> foundUUIDs = users.stream()
-                .map(r -> r.getUuid())
-                .filter(sn -> uuids.contains(sn))
-                .collect(Collectors.toList());
-        List<UUID> notFoundUUIDs = uuids.stream()
-                .filter(sn -> !foundUUIDs.contains(sn))
-                .collect(Collectors.toList());
+        List<UUID> foundUUIDs = users.stream().map(r -> r.getUuid()).collect(Collectors.toList());
+        List<UUID> notFoundUUIDs = new ArrayList<>(uuids);
+        notFoundUUIDs.removeAll(foundUUIDs);
         if (!notFoundUUIDs.isEmpty()) {
             String message = String.format("Uuids '%s' has not been found", notFoundUUIDs.toString());
             logger.warn(message);
