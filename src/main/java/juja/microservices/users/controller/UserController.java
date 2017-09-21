@@ -67,9 +67,14 @@ public class UserController {
         return users;
     }
 
+    /**
+     * There is undocumented endpoint for manual update database from CRM
+     * Only for first production tests. This endpoint should be removed in the next release.
+     */
     @PostMapping("/update")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> updateUsersFromCRM() {
+        logger.info("Received request for manual update the database");
         return userService.updateUsersFromCRM();
     }
 }

@@ -49,16 +49,16 @@ public class UserService {
         }
         logger.debug("Received user list from repository: {}", users.toString());
 
-        List<UserDTO> result = getConvertedResult(users);
-        logger.debug("All users converted: {}", result.toString());
-
-        return result;
+        return getConvertedResult(users);
     }
 
     private List<UserDTO> getConvertedResult(List<User> users) {
-        return users.stream()
+        List<UserDTO> result = users.stream()
                 .map(this::convertUserToUserDto)
                 .collect(Collectors.toList());
+
+        logger.debug("All users converted: {}", result.toString());
+        return result;
     }
 
     private UserDTO convertUserToUserDto(User user) {
@@ -75,9 +75,7 @@ public class UserService {
         List<User> users = repository.findBySlackIn(slackNames);
         logger.debug("Received response from repository: {}", users.toString());
         findAbsentUsersBySlackNames(slackNames, users);
-        List<UserDTO> result = getConvertedResult(users);
-        logger.debug("All users converted: {}", result.toString());
-        return result;
+        return getConvertedResult(users);
     }
 
     private void findAbsentUsersBySlackNames(List<String> slackNames, List<User> users) {
@@ -97,9 +95,7 @@ public class UserService {
         List<User> users = repository.findByUuidIn(uuids);
         logger.debug("Received response from repository: {}", users.toString());
         findAbsentUsersByUUIDS(uuids, users);
-        List<UserDTO> result = getConvertedResult(users);
-        logger.debug("All users converted: {}", result.toString());
-        return result;
+        return getConvertedResult(users);
     }
 
     private void findAbsentUsersByUUIDS(List<UUID> uuids, List<User> users) {
@@ -116,12 +112,13 @@ public class UserService {
 
     @Scheduled(cron = "${cron.expression}")
     public void scheduleUpdateUsers() {
+        logger.info("Starting scheduled task: Update database from CRM");
         updateUsersFromCRM();
     }
 
     public List<UserDTO> updateUsersFromCRM() {
         Long lastUpdate = getLastUpdate();
-        logger.info("Starting update users database. Last update was at {}",
+        logger.info("Last update was at {}",
                 LocalDateTime.ofEpochSecond(lastUpdate, 0, OffsetDateTime.now().getOffset()));
 
         final List<User> crmUsers = getUpdatedUsersFromCRM(lastUpdate);
@@ -140,7 +137,7 @@ public class UserService {
         if (users.size() != 0) {
             result = repository.save(users);
             repository.flush();
-            logger.info("{} records updated", result.size());
+            logger.info("{} records updated successful", result.size());
         } else {
             logger.info("No update required. There are no updated entries in CRM");
         }
@@ -150,6 +147,8 @@ public class UserService {
     private List<User> getUpdatedUsersFromCRM(Long lastUpdate) {
         List<User> result = new ArrayList<>();
         List<UserCRM> usersCrm = crmRepository.findUpdatedUsers(lastUpdate);
+        logger.info("Received {} records from CRM", usersCrm.size());
+
         for (UserCRM userCRM : usersCrm) {
             try {
                 result.add(convertUserCRMtoUser(userCRM));

@@ -34,7 +34,7 @@ public class CRMDatasourceConfig {
 
     @Bean(name = "crmEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean
-    barEntityManagerFactory(
+    crmEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
             @Qualifier("crmDataSource") DataSource dataSource
     ) {
@@ -46,10 +46,10 @@ public class CRMDatasourceConfig {
                         .build();
     }
     @Bean(name = "crmTransactionManager")
-    public PlatformTransactionManager barTransactionManager(
+    public PlatformTransactionManager crmTransactionManager(
             @Qualifier("crmEntityManagerFactory") EntityManagerFactory
-                    barEntityManagerFactory
+                    crmEntityManagerFactory
     ) {
-        return new JpaTransactionManager(barEntityManagerFactory);
+        return new JpaTransactionManager(crmEntityManagerFactory);
     }
 }
