@@ -1,30 +1,70 @@
-group 'ua.com.juja'
-version '1.0-SNAPSHOT'
-
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE'
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
     }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
+apply plugin: 'spring-boot'
+apply plugin: 'docker'
+
+group 'juja'
 
 jar {
     baseName = 'users'
     version =  '0.1.0'
 }
 
-repositories {
-    mavenCentral()
-}
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+import org.gradle.internal.os.OperatingSystem
+
+task buildDocker(type: Docker, dependsOn: build) {
+    if(OperatingSystem.current().isLinux()){
+        dockerBinary = "sudo docker"
+    }
+    applicationName = jar.baseName
+    dockerfile = file('docker/Dockerfile')
+    doFirst {
+        copy {
+            from jar
+            into "${stageDir}/target"
+        }
+    }
+}
+
+test.testLogging {
+    events "skipped", "failed"
+    exceptionFormat "SHORT"
+    showStandardStreams = true
+}
+
+test {
+
+    filter{
+        includeTestsMatching "juja.microservices.users.*"
+    }
+
+    afterTest { desc, result ->
+        println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+    }
+}
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web") {
@@ -43,4 +83,8 @@ dependencies {
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.196'
     testCompile group: 'org.dbunit', name: 'dbunit', version: '2.5.3'
     testCompile group: 'com.github.springtestdbunit', name: 'spring-test-dbunit', version: '1.3.0'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.3'
 }
