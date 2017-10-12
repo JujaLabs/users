@@ -8,6 +8,7 @@ import juja.microservices.config.DBUnitConfig;
 import juja.microservices.users.dao.crm.repository.CRMRepository;
 import juja.microservices.users.dao.users.repository.UserRepository;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.Import;
@@ -115,6 +116,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
         assertThatJson(result).isEqualTo(expected);
     }
 
+    @Ignore
     @Test
     @DatabaseSetup(value = "/datasets/usersData.xml")
     @DatabaseSetup(connection = "crmConnection", value = "/datasets/crmData.xml")
@@ -135,6 +137,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
         assertThatJson(result).isEqualTo(expected);
     }
 
+    @Ignore
     @Test
     @DatabaseSetup(value = "/datasets/usersData.xml")
     @DatabaseSetup(connection = "crmConnection", value = "/datasets/notUpdatedCrmData.xml")

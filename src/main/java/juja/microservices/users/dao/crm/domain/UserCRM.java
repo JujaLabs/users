@@ -12,9 +12,10 @@ import javax.persistence.Table;
 
 /**
  * @author Vadim Dyachenko
+ * @author Danil Kuznetsov kuznetsov.danil.v@gmail.com
  */
 @Entity
-@Table(name = "X2_CONTACT")
+@Table(name = "\"x2_contacts\"")
 @Data
 @AllArgsConstructor
 public class UserCRM {
@@ -22,25 +23,25 @@ public class UserCRM {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @Column(name = "FIRST_NAME")
+    @Column(name = "\"firstName\"")
     String firstName;
 
-    @Column(name = "LAST_NAME")
+    @Column(name = "\"lastName\"")
     String lastName;
 
-    @Column(name = "SKYPE")
+    @Column(name = "\"skype\"")
     String skype;
 
-    @Column(name = "LASTUPDATED")
+    @Column(name = "\"lastUpdated\"")
     long lastUpdated;
 
-    @Column(name = "C_SLACK")
+    @Column(name = "\"c_slack\"")
     String slack;
 
-    @Column(name = "C_ISSTUDENT")
+    @Column(name = "\"c_isStudent\"")
     int isStudent;
 
-    @Column(name = "C_UUID")
+    @Column(name = "\"c_uuid\"")
     String uuid;
 
     public UserCRM() {
@@ -48,7 +49,7 @@ public class UserCRM {
     }
 }
 
-/* CRM x2_contact structure
+/* CRM x2_contacts structure
 +--------------------+------------------+------+-----+---------+----------------+
 | Field              | Type             | Null | Key | Default | Extra          |
 +--------------------+------------------+------+-----+---------+----------------+
