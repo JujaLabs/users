@@ -18,11 +18,12 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 
 /**
  * @author Vadim Dyachenko
@@ -79,14 +80,20 @@ public class CrmRepositoryTest {
     @Ignore
     @Test
     public void findAllShouldNotContainsUserAssignedToAnyoneAndVisibility0() throws Exception {
-        //given
-        UserCRM expected = new UserCRM(6L, "Baduser", "Bad", "Bad", 100L, "bad.user", 1, "00000000-0000-0001-0000-000000000006", "Anyone", 0);
-
         //when
         List<UserCRM> users = crmRepository.findUpdatedUsers(0L);
 
+        //given
+        List<UserCRM> expectedEmptyList = new ArrayList<>();
+        List<UserCRM> resultList = new ArrayList<>();
+        for (UserCRM user : users) {
+            if (user.getAssignedTo().equals("Anyone") && user.getVisibility() == 0) {
+                resultList.add(user);
+            }
+        }
+
         //then
-        assertFalse(users.contains(expected));
+        assertEquals(expectedEmptyList, resultList);
     }
 
     @Ignore
