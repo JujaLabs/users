@@ -1,6 +1,9 @@
 package juja.microservices.users.controller;
 
-import juja.microservices.users.entity.User;
+import juja.microservices.users.entity.Keeper;
+import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersUuidRequest;
+import juja.microservices.users.entity.UsersSlackRequest;
 import juja.microservices.users.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,35 +13,26 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
-
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
+ * @author Olga Kulykova
  */
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
-
-    private static final String ALL_USERS = "[{\"uuid\":\"AAAA123\",\"firstName\":\"Vasya\",\"lastName\":\"Ivanoff\"," +
-            "\"email\":\"vasya@mail.ru\",\"gmail\":\"vasya@gmail.com\",\"slack\":\"vasya\",\"skype\":\"vasya.ivanoff\"," +
-            "\"linkedin\":\"linkedin/vasya\",\"facebook\":\"facebook/vasya\",\"twitter\":\"twitter/vasya\"}]";
-
-    private static final String vasyaUser = "[{\"uuid\":\"AAAA123\",\"firstName\":\"Vasya\",\"lastName\":\"Ivanoff\"," +
-            "\"email\":\"vasya@mail.ru\",\"gmail\":\"vasya@gmail.com\",\"slack\":\"vasya\",\"skype\":\"vasya.ivanoff\"," +
-            "\"linkedin\":\"linkedin/vasya\",\"facebook\":\"facebook/vasya\",\"twitter\":\"twitter/vasya\"}]";
 
     @Inject
     private MockMvc mockMvc;
@@ -47,34 +41,82 @@ public class UserControllerTest {
     private UserService service;
 
     @Test
-    public void getAllUsers() throws Exception {
-        List<User> users = new ArrayList<>();
-        users.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
-                "linkedin/vasya", "facebook/vasya", "twitter/vasya"));
+    public void getAllUsersShouldReturnOk() throws Exception {
+        String expected =
+                "[{\"uuid\":\"AAAA123\",\"slack\":\"vasya\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
+                " {\"uuid\":\"AAAA456\",\"slack\":\"ivan\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
+        List<UserDTO> users = new ArrayList<>();
+        users.add(new UserDTO("AAAA123", "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+        users.add(new UserDTO("AAAA456", "ivan", "ivan.vasilieff", "Vasilieff Ivan"));
+
         when(service.getAllUsers()).thenReturn(users);
-        String result = mockMvc.perform(get("/users")
+
+        String result = mockMvc.perform(get("/v1/users")
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        assertThatJson(result).isEqualTo(ALL_USERS);
+        assertThatJson(result).isEqualTo(expected);
     }
 
     @Test
-    public void searchUserByEmailTest() throws Exception {
-        List<User> users = new ArrayList<>();
-        users.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff",
-                "linkedin/vasya", "facebook/vasya", "twitter/vasya"));
-        Map params = new HashMap<String,String>();
-        params.put("email","vasya@mail.ru");
-        when(service.searchUser(params)).thenReturn(users);
-        String result = mockMvc.perform(get("/users/search")
-                .param("email","vasya@mail.ru")
+    public void getUserUuidBySlackShouldReturnOk() throws Exception {
+        String expected =
+                "[{\"uuid\":\"AAAA123\",\"slack\":\"vasya\"}," +
+                " {\"uuid\":\"AAAA456\",\"slack\":\"ivan\"}]";
+        List<UserDTO> users = new ArrayList<>();
+        users.add(new UserDTO("AAAA123", "vasya", null, null));
+        users.add(new UserDTO("AAAA456", "ivan", null, null));
+        String jsonRequest = "{\"slackNames\":[\"vasya\",\"ivan\"]}";
+
+        when(service.getUsersUuidBySlack(any(UsersSlackRequest.class))).thenReturn(users);
+
+        String result = mockMvc.perform(post("/v1/users/uuidBySlack")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertThatJson(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void getUsersNameByUuidShouldReturnOk() throws Exception {
+        String expected =
+                "[{\"uuid\":\"AAAA123\",\"name\":\"vasya\"}," +
+                " {\"uuid\":\"AAAA456\",\"name\":\"ivan\"}]";
+        List<UserDTO> users = new ArrayList<>();
+        users.add(new UserDTO("AAAA123", null, null, "vasya"));
+        users.add(new UserDTO("AAAA456", null, null, "ivan"));
+        String jsonRequest = "{\"uuid\":[\"AAAA123\",\"AAAA456\"]}";
+
+        when(service.getUsersNameByUuid(any(UsersUuidRequest.class))).thenReturn(users);
+
+        String result = mockMvc.perform(post("/v1/users/nameByUuid")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertThatJson(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void getActiveKeepersShouldReturnOk() throws Exception {
+        String expected =
+                "[{\"uuid\":\"AAAA123\",\"description\":\"description1\",\"from\":\"vasya.ivanoff\"}," +
+                " {\"uuid\":\"AAAA456\",\"description\":\"description2\",\"from\":\"ivan.vasilieff\"}]";
+        List<Keeper> keepers = new ArrayList<>();
+        keepers.add(new Keeper("AAAA123", "description1", "vasya.ivanoff"));
+        keepers.add(new Keeper("AAAA456", "description2", "ivan.vasilieff"));
+
+        when(service.getActiveKeepers()).thenReturn(keepers);
+
+        String result = mockMvc.perform(get("/v1/users/activeKeepers")
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        assertThatJson(result).isEqualTo(users);
-
+        assertThatJson(result).isEqualTo(expected);
     }
 }

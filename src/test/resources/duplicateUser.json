@@ -1,0 +1,10 @@
+[
+  {
+    "c_uuid":"AAAA123","id":"123","firstName":"Vasya","lastName":"Ivanoff", "email":"vasya@mail.ru",
+    "c_gmail":"vasya@gmail.com","c_slack":"vasya","skype":"vasya.ivanoff"
+  },
+  {
+    "c_uuid":"AAAA123","id":"123","firstName":"Vasya","lastName":"Ivanoff", "email":"vasya@mail.ru",
+    "c_gmail":"vasya@gmail.com","c_slack":"vasya","skype":"vasya.ivanoff"
+  }
+]

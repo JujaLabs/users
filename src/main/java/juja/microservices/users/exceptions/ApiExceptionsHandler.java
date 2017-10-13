@@ -24,7 +24,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.ArrayList;
 import java.util.List;
 
-
 @RestControllerAdvice
 public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
 
@@ -40,7 +39,7 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UserException.class)
-    public ResponseEntity<ApiErrorMessage> handleGamificationException(UserException ex) {
+    public ResponseEntity<ApiErrorMessage> handleUserException(UserException ex) {
         ApiErrorMessage message =
                 ApiErrorMessage.builder(ApiErrorStatus.USER_EXCEPTION)
                         .httpStatus(HttpStatus.BAD_REQUEST.value())

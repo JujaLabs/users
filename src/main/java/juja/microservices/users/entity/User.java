@@ -1,50 +1,48 @@
 package juja.microservices.users.entity;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
+ * @author Olga Kulykova
  */
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@AllArgsConstructor
 public class User {
-
+    @JsonProperty("c_uuid")
     private String uuid;
+    @JsonProperty("firstName")
     private String firstName;
+    @JsonProperty("lastName")
     private String lastName;
+    @Getter(AccessLevel.NONE)
+    @JsonProperty("email")
     private String email;
+    @Getter(AccessLevel.NONE)
+    @JsonProperty("c_gmail")
     private String gmail;
+    @JsonProperty("c_slack")
     private String slack;
+    @JsonProperty("skype")
     private String skype;
-    private String linkedin;
-    private String facebook;
-    private String twitter;
 
-    @JsonCreator
-    public User(@JsonProperty("c_uuid") String uuid,
-                @JsonProperty("firstName") String firstName,
-                @JsonProperty("lastName") String lastName,
-                @JsonProperty("email") String email,
-                @JsonProperty("c_gmail") String gmail,
-                @JsonProperty("c_slack") String slack,
-                @JsonProperty("skype") String skype,
-                @JsonProperty("linkedin") String linkedin,
-                @JsonProperty("facebook") String facebook,
-                @JsonProperty("twitter") String twitter) {
-        this.uuid = uuid;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.gmail = gmail;
-        this.slack = slack;
-        this.skype = skype;
-        this.linkedin = linkedin;
-        this.facebook = facebook;
-        this.twitter = twitter;
+
+    public String getFullName() {
+        if (this.lastName == null || this.lastName.contains("@") || "".equals(this.lastName)) {
+            return this.firstName;
+        }
+        return this.lastName + " " + this.firstName;
     }
 
+    public String getEmail() {
+        if (this.gmail == null) {
+            return this.email;
+        }
+        return this.gmail;
+    }
 }
