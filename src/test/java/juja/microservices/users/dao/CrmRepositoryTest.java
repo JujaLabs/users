@@ -21,6 +21,8 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Vadim Dyachenko
@@ -40,20 +42,59 @@ public class CrmRepositoryTest {
 
     @Ignore
     @Test
-    public void testFindAll() throws Exception {
+    public void findAll() throws Exception {
         //when
         List<UserCRM> users = crmRepository.findUpdatedUsers(0L);
 
         //then
-        assertEquals(4, users.size());
+        assertEquals(6, users.size());
     }
 
     @Ignore
     @Test
-    public void testFindAllByLastUpdatedGreaterThan() throws Exception {
+    public void findAllShouldContainsUserAssignedToAnyoneAndVisibility1() throws Exception {
+        //given
+        UserCRM expected = new UserCRM(7L, "Student", "Happy", "student", 100L, "student", 1, "00000000-0000-0001-0000-000000000007", "Anyone", 1);
+
+        //when
+        List<UserCRM> users = crmRepository.findUpdatedUsers(0L);
+
+        //then
+        assertTrue(users.contains(expected));
+    }
+
+    @Ignore
+    @Test
+    public void findAllShouldContainsUserAssignedToSomeoneAndVisibility0() throws Exception {
+        //given
+        UserCRM expected = new UserCRM(8L, "Boomer", "MPower", "mpower", 100L, "boomer", 1, "00000000-0000-0001-0000-000000000008", "Someone", 0);
+
+        //when
+        List<UserCRM> users = crmRepository.findUpdatedUsers(0L);
+
+        //then
+        assertTrue(users.contains(expected));
+    }
+
+    @Ignore
+    @Test
+    public void findAllShouldNotContainsUserAssignedToAnyoneAndVisibility0() throws Exception {
+        //given
+        UserCRM expected = new UserCRM(6L, "Baduser", "Bad", "Bad", 100L, "bad.user", 1, "00000000-0000-0001-0000-000000000006", "Anyone", 0);
+
+        //when
+        List<UserCRM> users = crmRepository.findUpdatedUsers(0L);
+
+        //then
+        assertFalse(users.contains(expected));
+    }
+
+    @Ignore
+    @Test
+    public void findAllByLastUpdatedGreaterThan() throws Exception {
         //given
         UserCRM expected = new UserCRM(3L, "Sergey", "Spiderman",
-                "Sergey", 250L, "sergey.spiderman", 1, "00000000-0000-0001-0000-000000000004", "Assigned", 1);
+                "Sergey", 250L, "sergey.spiderman", 1, "00000000-0000-0001-0000-000000000004", "Someone", 1);
         //when
         List<UserCRM> users = crmRepository.findUpdatedUsers(220L);
 
@@ -64,7 +105,7 @@ public class CrmRepositoryTest {
 
     @Ignore
     @Test
-    public void testFindAllByLastUpdatedGreaterThanShouldReturnEmptyList() throws Exception {
+    public void findAllByLastUpdatedGreaterThanShouldReturnEmptyList() throws Exception {
         //when
         List<UserCRM> users = crmRepository.findUpdatedUsers(300L);
 
