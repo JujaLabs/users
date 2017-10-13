@@ -44,6 +44,12 @@ public class UserCRM {
     @Column(name = "\"c_uuid\"")
     String uuid;
 
+    @Column(name = "\"assignedTo\"")
+    String assignedTo;
+
+    @Column(name = "\"visibility\"")
+    int visibility;
+
     public UserCRM() {
 
     }
@@ -63,4 +69,6 @@ public class UserCRM {
 | c_slack            | varchar(255)     | YES  |     | NULL    |                |
 | c_isStudent        | tinyint(1)       | NO   |     | 0       |                |
 | c_uuid             | varchar(255)     | YES  |     | NULL    |                |
+| assignedTo         | varchar(50)      |      |     |         |                |
+| visibility         | int(11)          |      |     |         |                |
 */
