@@ -69,6 +69,6 @@ public class UserCRM {
 | c_slack            | varchar(255)     | YES  |     | NULL    |                |
 | c_isStudent        | tinyint(1)       | NO   |     | 0       |                |
 | c_uuid             | varchar(255)     | YES  |     | NULL    |                |
-| assignedTo         | varchar(50)      |      |     |         |                |
-| visibility         | int(11)          |      |     |         |                |
+| assignedTo         | varchar(50)      | YES  | MUL | NULL    |                |
+| visibility         | int(11)          | NO   |     | NULL    |                |
 */
