@@ -15,7 +15,7 @@ import javax.persistence.Table;
  * @author Danil Kuznetsov kuznetsov.danil.v@gmail.com
  */
 @Entity
-@Table(name = "\"x2_contacts\"")
+@Table(name = "x2_contacts")
 @Data
 @AllArgsConstructor
 public class UserCRM {
@@ -23,26 +23,32 @@ public class UserCRM {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @Column(name = "\"firstName\"")
+    @Column(name = "firstName")
     String firstName;
 
-    @Column(name = "\"lastName\"")
+    @Column(name = "lastName")
     String lastName;
 
-    @Column(name = "\"skype\"")
+    @Column(name = "skype")
     String skype;
 
-    @Column(name = "\"lastUpdated\"")
+    @Column(name = "lastUpdated")
     long lastUpdated;
 
-    @Column(name = "\"c_slack\"")
+    @Column(name = "c_slack")
     String slack;
 
-    @Column(name = "\"c_isStudent\"")
+    @Column(name = "c_isStudent")
     int isStudent;
 
-    @Column(name = "\"c_uuid\"")
+    @Column(name = "c_uuid")
     String uuid;
+
+    @Column(name = "assignedTo")
+    String assignedTo;
+
+    @Column(name = "visibility")
+    int visibility;
 
     public UserCRM() {
 
@@ -63,4 +69,6 @@ public class UserCRM {
 | c_slack            | varchar(255)     | YES  |     | NULL    |                |
 | c_isStudent        | tinyint(1)       | NO   |     | 0       |                |
 | c_uuid             | varchar(255)     | YES  |     | NULL    |                |
+| assignedTo         | varchar(50)      | YES  | MUL | NULL    |                |
+| visibility         | int(11)          | NO   |     | NULL    |                |
 */
