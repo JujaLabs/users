@@ -8,7 +8,6 @@ import juja.microservices.config.DBUnitConfig;
 import juja.microservices.users.dao.crm.repository.CRMRepository;
 import juja.microservices.users.dao.users.repository.UserRepository;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.Import;
@@ -116,7 +115,6 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
         assertThatJson(result).isEqualTo(expected);
     }
 
-    @Ignore
     @Test
     @DatabaseSetup(value = "/datasets/usersData.xml")
     @DatabaseSetup(connection = "crmConnection", value = "/datasets/crmData.xml")
@@ -125,7 +123,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
         //given
         String expected =
                 "[{\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"max.ironman\",\"skype\":\"Max\",\"name\":\"Ironman Max\"}," +
-                "{\"uuid\":\"00000000-0000-0001-0000-000000000004\",\"slack\":\"sergey.spiderman\",\"skype\":\"Sergey\",\"name\":\"Spiderman Sergey\"}]";
+                        "{\"uuid\":\"00000000-0000-0001-0000-000000000004\",\"slack\":\"sergey.spiderman\",\"skype\":\"Sergey\",\"name\":\"Spiderman Sergey\"}]";
         //when
         String result = mockMvc.perform(post(USERS_UPDATE_URL)
                 .contentType(APPLICATION_JSON_UTF8))
@@ -137,14 +135,13 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
         assertThatJson(result).isEqualTo(expected);
     }
 
-    @Ignore
     @Test
     @DatabaseSetup(value = "/datasets/usersData.xml")
     @DatabaseSetup(connection = "crmConnection", value = "/datasets/notUpdatedCrmData.xml")
     @ExpectedDatabase(value = "/datasets/usersData.xml")
     public void updateUsersDatabaseFromCRMWithoutUpdatedEntries() throws Exception {
         //given
-        String expected ="[]";
+        String expected = "[]";
 
         //when
         String result = mockMvc.perform(post(USERS_UPDATE_URL)

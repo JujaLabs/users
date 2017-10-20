@@ -6,7 +6,6 @@ import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import juja.microservices.config.DBUnitConfig;
 import juja.microservices.users.dao.crm.domain.UserCRM;
 import juja.microservices.users.dao.crm.repository.CRMRepository;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +23,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-
 /**
  * @author Vadim Dyachenko
  */
@@ -41,7 +39,6 @@ public class CrmRepositoryTest {
     @Inject
     private CRMRepository crmRepository;
 
-    @Ignore
     @Test
     public void findAll() throws Exception {
         //when
@@ -51,7 +48,6 @@ public class CrmRepositoryTest {
         assertEquals(6, users.size());
     }
 
-    @Ignore
     @Test
     public void findAllShouldContainsUserAssignedToAnyoneAndVisibility1() throws Exception {
         //given
@@ -64,7 +60,6 @@ public class CrmRepositoryTest {
         assertTrue(users.contains(expected));
     }
 
-    @Ignore
     @Test
     public void findAllShouldContainsUserAssignedToSomeoneAndVisibility0() throws Exception {
         //given
@@ -77,7 +72,6 @@ public class CrmRepositoryTest {
         assertTrue(users.contains(expected));
     }
 
-    @Ignore
     @Test
     public void findAllShouldNotContainsUserAssignedToAnyoneAndVisibility0() throws Exception {
         //when
@@ -96,7 +90,6 @@ public class CrmRepositoryTest {
         assertEquals(expectedEmptyList, resultList);
     }
 
-    @Ignore
     @Test
     public void findAllByLastUpdatedGreaterThan() throws Exception {
         //given
@@ -110,7 +103,6 @@ public class CrmRepositoryTest {
         assertEquals(expected, users.get(0));
     }
 
-    @Ignore
     @Test
     public void findAllByLastUpdatedGreaterThanShouldReturnEmptyList() throws Exception {
         //when
