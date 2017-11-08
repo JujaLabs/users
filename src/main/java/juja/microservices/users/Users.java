@@ -4,6 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
@@ -12,6 +14,7 @@ import org.springframework.web.filter.CorsFilter;
 
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
+ * @author Vadim Dyachenko
  */
 @SpringBootApplication
 public class Users {
@@ -38,6 +41,11 @@ public class Users {
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
         return new MethodValidationPostProcessor();
+    }
+
+    @Configuration
+    @EnableScheduling
+    public static class SchedulingConfiguration {
     }
 
     public static void main(String[] args) {
