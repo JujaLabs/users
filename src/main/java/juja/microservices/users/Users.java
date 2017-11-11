@@ -16,7 +16,6 @@ import org.springframework.web.filter.CorsFilter;
  * @author Vadim Dyachenko
  */
 @SpringBootApplication
-@Import(value = SchedulingConfiguration.class)
 public class Users {
 
     @Bean

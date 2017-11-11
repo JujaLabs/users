@@ -1,4 +1,4 @@
-package juja.microservices.users;
+package juja.microservices.users.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package juja.microservices.users.dao.config;
+package juja.microservices.users.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -25,7 +25,7 @@ import javax.sql.DataSource;
         entityManagerFactoryRef = "entityManagerFactory",
         basePackages = {"juja.microservices.users.dao.users.repository"}
 )
-public class UsersDatasourceConfig {
+public class UsersDatasourceConfiguration {
 
     @Primary
     @Bean(name = "userDataSource")
