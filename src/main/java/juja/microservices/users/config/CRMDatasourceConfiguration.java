@@ -1,4 +1,4 @@
-package juja.microservices.users.dao.config;
+package juja.microservices.users.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -25,7 +25,7 @@ import javax.sql.DataSource;
         transactionManagerRef = "crmTransactionManager",
         basePackages = {"juja.microservices.users.dao.crm.repository"}
 )
-public class CRMDatasourceConfig {
+public class CRMDatasourceConfiguration {
     @Bean(name = "crmDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.crm")
     public DataSource dataSource() {
