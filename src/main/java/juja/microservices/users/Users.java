@@ -3,8 +3,8 @@ package juja.microservices.users;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
@@ -16,6 +16,7 @@ import org.springframework.web.filter.CorsFilter;
  * @author Vadim Dyachenko
  */
 @SpringBootApplication
+@EnableEurekaClient
 public class Users {
 
     @Bean

@@ -16,7 +16,7 @@ repositories {
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'docker'
 
 group 'juja'
@@ -66,12 +66,21 @@ test {
     }
 }
 
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Dalston.SR3'
+    }
+}
+
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
     compile("org.springframework.boot:spring-boot-starter-jetty")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    compile 'org.springframework.cloud:spring-cloud-starter-eureka'
+
     compile 'org.projectlombok:lombok:1.16.10'
     compile 'javax.inject:javax.inject:1'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.1.3'
