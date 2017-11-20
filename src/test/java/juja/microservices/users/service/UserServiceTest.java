@@ -1,9 +1,16 @@
 package juja.microservices.users.service;
 
-import juja.microservices.users.dao.UserRepository;
-import juja.microservices.users.entity.*;
+import juja.microservices.users.dao.crm.domain.UserCRM;
+import juja.microservices.users.dao.crm.repository.CRMRepository;
+import juja.microservices.users.dao.users.domain.User;
+import juja.microservices.users.dao.users.repository.UserRepository;
+import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersSlackNamesRequest;
+import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.exceptions.UserException;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -11,19 +18,29 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
  * @author Olga Kulykova
+ * @author Vadim Dyachenko
+ * @author Ivan Shapovalov
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserService.class)
 public class UserServiceTest {
+
+    @Rule
+    final public ExpectedException expectedException = ExpectedException.none();
 
     @Inject
     private UserService service;
@@ -31,82 +48,177 @@ public class UserServiceTest {
     @MockBean
     private UserRepository repository;
 
+    @MockBean
+    private CRMRepository crmRepository;
+
     @Test
     public void getUserAllUsersTest() throws Exception {
+        //given
+        UUID uuid = new UUID(1L, 2L);
         List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO("AAAA123", "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+        expected.add(new UserDTO(uuid, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
         List<User> users = new ArrayList<>();
-        users.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff"));
-        when(repository.getAllUsers()).thenReturn(users);
+        users.add(new User(uuid, "Vasya", "Ivanoff", "vasya", "vasya.ivanoff", 777L));
+        when(repository.findAll()).thenReturn(users);
+
+        //when
         List<UserDTO> actual = service.getAllUsers();
+
+        //then
         assertEquals(expected, actual);
     }
 
     @Test
-    public void getUsersUuidBySlack() throws Exception {
-        User user1 = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
-        User user2 = new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
+    public void getUsersBySlackNamesWhenRepositoryReturnsCorrectUsersExecutedCorrectly() throws Exception {
+        //given
+        UUID uuid1 = new UUID(1L, 2L);
+        UUID uuid2 = new UUID(1L, 3L);
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "vasya.ivanoff", 777L);
+        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya", "kolya.sidoroff", 888L);
+
         List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO("AAAA123", "vasya", null, null));
-        expected.add(new UserDTO("AAAA456", "kolya", null, null));
+        expected.add(new UserDTO(uuid1, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+        expected.add(new UserDTO(uuid2, "kolya", "kolya.sidoroff", "Sidoroff Kolya"));
+        List<String> slackNames = Arrays.asList("vasya", "kolya");
+        UsersSlackNamesRequest request = new UsersSlackNamesRequest(slackNames);
+        given(repository.findBySlackIn(slackNames)).willReturn(Arrays.asList(user1, user2));
 
-        List<String> slackNames = new ArrayList<>();
-        slackNames.add("vasya");
-        slackNames.add("ivan");
-        UsersSlackRequest request = new UsersSlackRequest(slackNames);
+        //when
+        List<UserDTO> actual = service.getUsersBySlackNames(request);
 
-        when(repository.getUserBySlack(request.getSlackNames().get(0))).thenReturn(user1);
-        when(repository.getUserBySlack(request.getSlackNames().get(1))).thenReturn(user2);
-
-        List<UserDTO> actual = service.getUsersUuidBySlack(request);
+        //then
         assertEquals(expected, actual);
+        verify(repository).findBySlackIn(slackNames);
+        verifyNoMoreInteractions(repository);
     }
 
     @Test
-    public void getUsersNameByUuid() throws Exception {
-        User user1 = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff");
-        User user2 = new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff");
-        List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO("AAAA123", null, null, "Ivanoff Vasya"));
-        expected.add(new UserDTO("AAAA456", null, null, "Sidoroff Kolya"));
+    public void getUsersBySlackNamesWhenRepositoryNotFoundSomeUsersThrowsException() throws Exception {
+        //given
+        UUID uuid1 = new UUID(1L, 2L);
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "vasya.ivanoff", 777L);
+        List<String> slackNames = Arrays.asList("vasya", "kolya");
+        UsersSlackNamesRequest request = new UsersSlackNamesRequest(slackNames);
+        given(repository.findBySlackIn(slackNames)).willReturn(Arrays.asList(user1));
+        expectedException.expect(UserException.class);
+        expectedException.expectMessage("Slacknames '[kolya]' has not been found");
 
-        List<String> uuids = new ArrayList<>();
-        uuids.add("AAAA123");
-        uuids.add("AAAA456");
+        //when
+        service.getUsersBySlackNames(request);
+
+        //then
+        verify(repository).findBySlackIn(slackNames);
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    public void getUsersByUuidsWhenRepositoryReturnsCorrectUsersExecutedCorrectly() throws Exception {
+        //given
+        UUID uuid1 = new UUID(1L, 2L);
+        UUID uuid2 = new UUID(1L, 3L);
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "vasya.ivanoff", 777L);
+        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya", "kolya.sidoroff", 888L);
+
+        List<UserDTO> expected = new ArrayList<>();
+        expected.add(new UserDTO(uuid1, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+        expected.add(new UserDTO(uuid2, "kolya", "kolya.sidoroff", "Sidoroff Kolya"));
+
+        List<UUID> uuids = Arrays.asList(uuid1, uuid2);
         UsersUuidRequest request = new UsersUuidRequest(uuids);
+        given(repository.findByUuidIn(request.getUuids())).willReturn(Arrays.asList(user1, user2));
 
-        when(repository.getUserByUuid(request.getUuid().get(0))).thenReturn(user1);
-        when(repository.getUserByUuid(request.getUuid().get(1))).thenReturn(user2);
+        //when
+        List<UserDTO> actual = service.getUsersByUuids(request);
 
-        List<UserDTO> actual = service.getUsersNameByUuid(request);
+        //then
         assertEquals(expected, actual);
+        verify(repository).findByUuidIn(uuids);
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    public void getUsersByUuidsWhenRepositoryNotFoundSomeUsersThrowsException() throws Exception {
+        //given
+        UUID uuid1 = new UUID(1L, 2L);
+        UUID uuid2 = new UUID(1L, 3L);
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "vasya.ivanoff", 777L);
+        List<UUID> uuids = Arrays.asList(uuid1, uuid2);
+        UsersUuidRequest request = new UsersUuidRequest(uuids);
+        given(repository.findByUuidIn(request.getUuids())).willReturn(Arrays.asList(user1));
+        expectedException.expect(UserException.class);
+        expectedException.expectMessage("Uuids '[00000000-0000-0001-0000-000000000003]' has not been found");
+
+        //when
+        service.getUsersByUuids(request);
+
+        //then
+        verify(repository).findByUuidIn(uuids);
+        verifyNoMoreInteractions(repository);
     }
 
     @Test(expected = UserException.class)
     public void getAllUsersEmptyListTest() throws Exception {
-        when(repository.getAllUsers()).thenReturn(new ArrayList<>());
+        //given
+        when(repository.findAll()).thenReturn(new ArrayList<>());
+
+        //when
         service.getAllUsers();
+
+        //then
         fail();
     }
 
     @Test
-    public void getActiveKeepersTest() throws Exception {
+    public void updateUsersFromCRMTest() throws Exception {
+        //given
+        List<UserCRM> allCrmUsers = new ArrayList<>();
+        allCrmUsers.add(new UserCRM(1L, "Alex", "Batman",
+                "Alex", 100L, "alex.batman", 1, "00000000-0000-0001-0000-000000000002", "Someone", 1));
+        allCrmUsers.add(new UserCRM(2L, "Max", "Superman",
+                "Max", 200L, "max.superman", 1, "00000000-0000-0001-0000-000000000003", "Someone", 1));
 
-        List<Keeper> keepers = new ArrayList<>();
-        keepers.add(new Keeper("AAAA123", "description1", "Ivanoff"));
-        keepers.add(new Keeper("AAAA456", "description2", "Sidoroff"));
-        keepers.add(new Keeper("AAAA123", "description3", "Petrova"));
+        List<User> savedUser = new ArrayList<>();
+        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000002"), "Alex", "Batman", "alex.batman", "Alex", 100L));
+        savedUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max", "Superman", "max.superman", "Max", 200L));
 
-        List<Keeper> expected = keepers;
-        when(repository.getActiveKeepers()).thenReturn(keepers);
-        List<Keeper> actual = service.getActiveKeepers();
-        assertEquals(expected, actual);
+        when(repository.findMaxLastUpdate()).thenReturn(null);
+        when(crmRepository.findUpdatedUsers(0L)).thenReturn(allCrmUsers);
+        when(repository.save(savedUser)).thenReturn(savedUser);
+
+        //when
+        List<UserDTO> actual = service.updateUsersFromCRM();
+
+        //then
+        assertEquals(2, actual.size());
+        verify(repository).findMaxLastUpdate();
+        verify(crmRepository).findUpdatedUsers(0L);
+        verify(repository).save(savedUser);
+        verify(repository).flush();
+        verifyNoMoreInteractions(repository, crmRepository);
     }
 
-    @Test(expected = UserException.class)
-    public void getActiveKeepersNoActiveKeepersTest() throws Exception {
+    @Test
+    public void updateUsersFromCRMWithNullFieldTest() throws Exception {
+        //given
+        List<UserCRM> allCrmUsers = new ArrayList<>();
+        allCrmUsers.add(new UserCRM(1L, "Alex", "Batman", "Alex", 100L, "Alex", 1, null, "Someone", 1));
+        allCrmUsers.add(new UserCRM(2L, "Max", "Superman", "Max", 200L, "max.superman", 1, "00000000-0000-0001-0000-000000000003", "Someone", 1));
 
-        when(repository.getActiveKeepers()).thenReturn(new ArrayList<>());
-        service.getActiveKeepers();
+        List<User> haveToSaveUser = new ArrayList<>();
+        haveToSaveUser.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max", "Superman", "max.superman", "Max", 200L));
+
+        when(repository.findMaxLastUpdate()).thenReturn(null);
+        when(crmRepository.findUpdatedUsers(0L)).thenReturn(allCrmUsers);
+        when(repository.save(haveToSaveUser)).thenReturn(haveToSaveUser);
+
+        //when
+        service.updateUsersFromCRM();
+
+        //then
+        verify(repository).findMaxLastUpdate();
+        verify(crmRepository).findUpdatedUsers(0L);
+        verify(repository).save(haveToSaveUser);
+        verify(repository).flush();
+        verifyNoMoreInteractions(repository, crmRepository);
     }
 }

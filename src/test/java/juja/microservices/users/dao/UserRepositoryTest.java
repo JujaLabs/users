@@ -1,184 +1,128 @@
 package juja.microservices.users.dao;
 
-import juja.microservices.users.entity.Keeper;
-import juja.microservices.users.entity.User;
-import juja.microservices.users.exceptions.UserException;
-import org.junit.Before;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import juja.microservices.config.DBUnitConfig;
+import juja.microservices.users.dao.users.domain.User;
+import juja.microservices.users.dao.users.repository.UserRepository;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 /**
- * @author Denis Tantsev (dtantsev@gmail.com)
- * @author Olga Kulykova
+ * @author Vadim Dyachenko
+ * @author Ivan Shapovalov
  */
-
-@RunWith(SpringRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
+@Import(DBUnitConfig.class)
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class,
+        DbUnitTestExecutionListener.class})
+@DbUnitConfiguration(databaseConnection = {"usersConnection", "crmConnection"})
+@DatabaseSetup(value = "/datasets/usersData.xml")
 public class UserRepositoryTest {
 
     @Inject
-    private CRMUserRepository crmUserRepository;
+    private UserRepository repository;
 
-    @Inject
-    private RestTemplate restTemplate;
-
-    private MockRestServiceServer mockServer;
-
-    @Value("${x2.baseUrl}")
-    private String x2BaseUrl;
-
-    @Value("${x2.contactsUrl}")
-    private String x2ContactsUrl;
-
-    @Value("${x2.keepersUrl}")
-    private String x2KeepersUrl;
-
-    @Before
-    public void setup() {
-        mockServer = MockRestServiceServer.bindTo(restTemplate).build();
-    }
+    private UUID uuid1 = new UUID(1L, 2L);
+    private UUID uuid2 = new UUID(1L, 3L);
+    private User user1 = new User(uuid1, "Alex", "Batman", "alex.batman", "Alex", 100L);
+    private User user2 = new User(new UUID(1L, 3L), "Max", "Superman", "max.superman", "Max", 100L);
 
     @Test
-    public void getAllUsersCRMUserRepositoryTest() throws URISyntaxException, IOException {
-        String allUsers = jsonFromFile("allUsers.json");
-
-        List<User> expected = new ArrayList<>();
-        expected.add(new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya", "vasya.ivanoff"));
-        expected.add(new User("AAAA456", "Kolya", "Sidoroff", "kolya@mail.ru", "kolya@gmail.com", "kolya", "kolya.sidoroff"));
-        expected.add(new User("AAAA789", "Lena", "Petrova", "lena@mail.ru", "lena@gmail.com", "lena", "lena.petrova"));
-
-        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1"))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(allUsers, MediaType.APPLICATION_JSON));
-
-        List<User> result = crmUserRepository.getAllUsers();
-
-        mockServer.verify();
-        assertThat(result, is(expected));
-    }
-
-    @Test
-    public void searchUserBySlackTest() throws URISyntaxException, IOException {
-        String mockUser = jsonFromFile("vasya.json");
-
-        User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
-                "vasya.ivanoff");
-
-        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_slack=vasya"))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
-
-        User result = crmUserRepository.getUserBySlack("vasya");
-        mockServer.verify();
-        assertThat(result, is(expected));
-    }
-
-    @Test
-    public void searchUserByUuidTest() throws URISyntaxException, IOException {
-        String mockUser = jsonFromFile("vasya.json");
-
-        User expected = new User("AAAA123", "Vasya", "Ivanoff", "vasya@mail.ru", "vasya@gmail.com", "vasya",
-                "vasya.ivanoff");
-
-        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_uuid=AAAA123"))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
-
-        User result = crmUserRepository.getUserByUuid("AAAA123");
-        mockServer.verify();
-        assertThat(result, is(expected));
-    }
-
-    @Test
-    public void getActiveKeepersCRMUserRepositoryTest() throws URISyntaxException, IOException {
-        String keepersCRM = jsonFromFile("keepersCRM.json");
-
-        mockServer.expect(requestTo(x2BaseUrl + x2KeepersUrl+"?c_isActive=1"))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(keepersCRM, MediaType.APPLICATION_JSON));
-
-        mockUser("vasya.json", "123");
-        mockUser("kolya.json", "456");
-        mockUser("vasya.json", "123");
-
-        List<Keeper> expected = new ArrayList<>();
-        expected.add(new Keeper("AAAA123", "codejoy keeper", "Ivanoff"));
-        expected.add(new Keeper("AAAA456", "interview keeper", "Sidoroff"));
-        expected.add(new Keeper("AAAA123", "gamification keeper", "Petrova"));
-
-        List<Keeper> result = crmUserRepository.getActiveKeepers();
-
-        mockServer.verify();
-        assertThat(result, is(expected));
-    }
-
-    private void mockUser(String userJson, String userId) throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource(userJson).toURI();
-        String mockUser = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
-
-        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_id=" + userId))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
-    }
-
-
-    @Test(expected = UserException.class)
-    public void searchUnexistedUserByUuidTest() throws URISyntaxException, IOException {
+    public void testFindAll() throws Exception {
         //given
-        String mockUser = "[]";
-        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_id=123"))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
+        List<User> expected = Arrays.asList(user1, user2);
 
         //when
-        User result = crmUserRepository.getUserById("123");
+        List<User> actual = repository.findAll();
 
         //then
-        fail();
+        assertThat(expected, is(actual));
     }
 
-    @Test(expected = UserException.class)
-    public void searchDuplicateUserByUuidTest() throws URISyntaxException, IOException {
+    @Test
+    public void testFindOneUserBySlack() throws Exception {
+        //when
+        List<User> users = repository.findBySlackIn(Collections.singletonList(user1.getSlack()));
+
+        //then
+        assertEquals(1, users.size());
+        assertThat(users, contains(user1));
+    }
+
+    @Test
+    public void testFindTwoUsersByThreeSlackName() throws Exception {
         //given
-        String mockUser = jsonFromFile("duplicateUser.json");;
-        mockServer.expect(requestTo(x2BaseUrl + x2ContactsUrl+"?c_isStudent=1&c_id=123"))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(mockUser, MediaType.APPLICATION_JSON));
+        List<User> expected = Arrays.asList(user1, user2);
+        List<String> slackNames = Arrays.asList(user1.getSlack(), user2.getSlack(), "fake.user");
 
         //when
-        User result = crmUserRepository.getUserById("123");
+        List<User> actual = repository.findBySlackIn(slackNames);
 
         //then
-        fail();
+        assertThat(expected, is(actual));
     }
 
-    private String jsonFromFile(String file) throws URISyntaxException, IOException {
-        URI uri = UserRepositoryTest.class.getClassLoader().getResource(file).toURI();
-        return new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
+    @Test
+    public void testFindOneUserByUuid() throws Exception {
+        //when
+        List<User> users = repository.findByUuidIn(Collections.singletonList(user1.getUuid()));
+
+        //then
+        assertEquals(1, users.size());
+        assertThat(users, contains(user1));
     }
 
+    @Test
+    public void testFindTwoUsersByUUID() throws Exception {
+        //given
+        List<User> expected = Arrays.asList(user1, user2);
+        List<UUID> uuids = Arrays.asList(uuid1, uuid2);
+
+        //when
+        List<User> actual = repository.findByUuidIn(uuids);
+
+        //then
+        assertThat(expected, is(actual));
+    }
+
+    @Test
+    @ExpectedDatabase(value = "/datasets/usersDataAfterUpdate.xml")
+    public void testUpdateUsersDatabaseFromCRM() throws Exception {
+        //given
+        List<User> users = new ArrayList<>();
+        users.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max", "Ironman",
+                "max.ironman", "Max", 200L));
+        users.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000004"), "Sergey", "Spiderman",
+                "sergey.spiderman", "Sergey", 250L));
+
+        //when
+        repository.save(users);
+        repository.flush();
+    }
 }

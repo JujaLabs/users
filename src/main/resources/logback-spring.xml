@@ -23,10 +23,26 @@
             <pattern>%d  ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15thread] %-40.40logger{39} : %m%n</pattern>
         </encoder>
     </appender>
+    <appender name="WrongUserFile-Appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/wrong_users.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_ARCHIVE}/wrong_users.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>1MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d : %m%n</pattern>
+        </encoder>
+    </appender>
 
-    <logger name="juja.microservices" level="DEBUG" additivity="false">
+    <logger name="juja.microservices" level="INFO" additivity="false">
         <appender-ref ref="Console-Appender"/>
         <appender-ref ref="RollingFile-Appender"/>
+    </logger>
+    <logger name="Wrong User"  level="WARN" additivity="false" >
+        <appender-ref ref="Console-Appender"/>
+        <appender-ref ref="WrongUserFile-Appender"/>
     </logger>
 
     <root level="INFO" additivity="false">
