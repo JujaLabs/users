@@ -79,7 +79,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-jetty")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    compile 'org.springframework.cloud:spring-cloud-starter-eureka'
+    compile 'org.springframework.cloud:spring-cloud-starter-eureka-server'
 
     compile 'org.projectlombok:lombok:1.16.10'
     compile 'javax.inject:javax.inject:1'
