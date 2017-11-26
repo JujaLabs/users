@@ -35,8 +35,11 @@ public class UserCRM {
     @Column(name = "lastUpdated")
     long lastUpdated;
 
-    @Column(name = "c_slack")
+    @Column(name = "c_slack_display")
     String slack;
+
+    @Column(name = "c_slack_id")
+    String slackId;
 
     @Column(name = "c_isStudent")
     int isStudent;
@@ -66,7 +69,8 @@ public class UserCRM {
 | skype              | varchar(32)      | YES  |     | NULL    |                |
 | lastUpdated        | bigint(20)       | YES  |     | NULL    |                |
 | c_gmail            | varchar(255)     | YES  |     | NULL    |                |
-| c_slack            | varchar(255)     | YES  |     | NULL    |                |
+| c_slack_display    | varchar(255)     | YES  |     | NULL    |                |
+| c_slack_id         | varchar(255)     | YES  |     | NULL    |                |
 | c_isStudent        | tinyint(1)       | NO   |     | 0       |                |
 | c_uuid             | varchar(255)     | YES  |     | NULL    |                |
 | assignedTo         | varchar(50)      | YES  | MUL | NULL    |                |
