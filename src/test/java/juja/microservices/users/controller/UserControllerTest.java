@@ -5,6 +5,7 @@ import juja.microservices.users.entity.UsersSlackIdsRequest;
 import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.service.UserService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,10 +30,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Denis Tantsev (dtantsev@gmail.com)
  * @author Olga Kulykova
+ * @author Vadim Dyachenko
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
+
+    private List<UserDTO> users;
+    private String  expected;
 
     @Inject
     private MockMvc mockMvc;
@@ -40,15 +45,19 @@ public class UserControllerTest {
     @MockBean
     private UserService service;
 
-    @Test
-    public void getAllUsersShouldReturnOk() throws Exception {
-        String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"slackId\":\"vasyaSlackID\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
-                        " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"slackId\":\"ivanSlackID\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
-
-        List<UserDTO> users = new ArrayList<>();
+    @Before
+    public void setUpUsers() {
+        users = new ArrayList<>();
         users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
         users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivanSlackID", "ivan.vasilieff", "Vasilieff Ivan"));
+
+        expected = "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"slackId\":\"vasyaSlackID\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
+                " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"slackId\":\"ivanSlackID\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
+
+    }
+
+    @Test
+    public void getAllUsersShouldReturnOk() throws Exception {
 
         when(service.getAllUsers()).thenReturn(users);
 
@@ -62,13 +71,7 @@ public class UserControllerTest {
 
     @Test
     public void getUsersBySlackNamesShouldReturnOk() throws Exception {
-        String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"slackId\":\"vasyaSlackID\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
-                        " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"slackId\":\"ivanSlackID\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
 
-        List<UserDTO> users = new ArrayList<>();
-        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
-        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivanSlackID", "ivan.vasilieff", "Vasilieff Ivan"));
         String jsonRequest = "{\"slackNames\":[\"vasya\",\"ivan\"]}";
 
         when(service.getUsersBySlackNames(any(UsersSlackNamesRequest.class))).thenReturn(users);
@@ -84,13 +87,7 @@ public class UserControllerTest {
 
     @Test
     public void getUsersBySlackIdsShouldReturnOk() throws Exception {
-        String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"slackId\":\"vasyaSlackID\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
-                        " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"slackId\":\"ivanSlackID\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
 
-        List<UserDTO> users = new ArrayList<>();
-        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
-        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivanSlackID", "ivan.vasilieff", "Vasilieff Ivan"));
         String jsonRequest = "{\"slackIds\":[\"vasyaSlackID\",\"ivanSlackID\"]}";
 
         when(service.getUsersBySlackIds(any(UsersSlackIdsRequest.class))).thenReturn(users);
@@ -106,13 +103,7 @@ public class UserControllerTest {
 
     @Test
     public void getUsersNameByUuidShouldReturnOk() throws Exception {
-        String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"slackId\":\"vasyaSlackID\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
-                        " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"slackId\":\"ivanSlackID\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
 
-        List<UserDTO> users = new ArrayList<>();
-        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
-        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivanSlackID", "ivan.vasilieff", "Vasilieff Ivan"));
         String jsonRequest = "{\"uuid\":[\"00000000-0000-0001-0000-000000000002\",\"00000000-0000-0001-0000-000000000003\"]}";
 
         when(service.getUsersByUuids(any(UsersUuidRequest.class))).thenReturn(users);
