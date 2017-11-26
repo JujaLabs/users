@@ -42,12 +42,12 @@ public class UserControllerTest {
     @Test
     public void getAllUsersShouldReturnOk() throws Exception {
         String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
-                " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
+                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"slackId\":\"vasyaSlackID\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
+                        " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"slackId\":\"ivanSlackID\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
 
         List<UserDTO> users = new ArrayList<>();
-        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
-        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivan.vasilieff", "Vasilieff Ivan"));
+        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
+        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivanSlackID", "ivan.vasilieff", "Vasilieff Ivan"));
 
         when(service.getAllUsers()).thenReturn(users);
 
@@ -62,12 +62,12 @@ public class UserControllerTest {
     @Test
     public void getUsersBySlackNamesShouldReturnOk() throws Exception {
         String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
-                " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
+                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"slackId\":\"vasyaSlackID\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
+                        " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"slackId\":\"ivanSlackID\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
 
         List<UserDTO> users = new ArrayList<>();
-        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
-        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivan.vasilieff", "Vasilieff Ivan"));
+        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
+        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivanSlackID", "ivan.vasilieff", "Vasilieff Ivan"));
         String jsonRequest = "{\"slackNames\":[\"vasya\",\"ivan\"]}";
 
         when(service.getUsersBySlackNames(any(UsersSlackNamesRequest.class))).thenReturn(users);
@@ -84,12 +84,12 @@ public class UserControllerTest {
     @Test
     public void getUsersNameByUuidShouldReturnOk() throws Exception {
         String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
-                " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
+                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"slackId\":\"vasyaSlackID\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
+                        " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"slackId\":\"ivanSlackID\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
 
         List<UserDTO> users = new ArrayList<>();
-        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
-        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivan.vasilieff", "Vasilieff Ivan"));
+        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
+        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivanSlackID", "ivan.vasilieff", "Vasilieff Ivan"));
         String jsonRequest = "{\"uuid\":[\"00000000-0000-0001-0000-000000000002\",\"00000000-0000-0001-0000-000000000003\"]}";
 
         when(service.getUsersByUuids(any(UsersUuidRequest.class))).thenReturn(users);
