@@ -56,7 +56,7 @@ public class UserServiceTest {
         //given
         UUID uuid = new UUID(1L, 2L);
         List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO(uuid, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
+        expected.add(new UserDTO(uuid, "vasya", "VasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
         List<User> users = new ArrayList<>();
         users.add(new User(uuid, "Vasya", "Ivanoff", "vasya", "VasyaSlackID", "vasya.ivanoff", 777L));
         when(repository.findAll()).thenReturn(users);
@@ -77,8 +77,8 @@ public class UserServiceTest {
         User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya", "KolyaSlackID", "kolya.sidoroff", 888L);
 
         List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO(uuid1, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
-        expected.add(new UserDTO(uuid2, "kolya", "kolya.sidoroff", "Sidoroff Kolya"));
+        expected.add(new UserDTO(uuid1, "vasya", "VasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
+        expected.add(new UserDTO(uuid2, "kolya", "KolyaSlackID", "kolya.sidoroff", "Sidoroff Kolya"));
         List<String> slackNames = Arrays.asList("vasya", "kolya");
         UsersSlackNamesRequest request = new UsersSlackNamesRequest(slackNames);
         given(repository.findBySlackIn(slackNames)).willReturn(Arrays.asList(user1, user2));
@@ -120,8 +120,8 @@ public class UserServiceTest {
         User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya", "KolyaSlackID", "kolya.sidoroff", 888L);
 
         List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO(uuid1, "vasya", "vasya.ivanoff", "Ivanoff Vasya"));
-        expected.add(new UserDTO(uuid2, "kolya", "kolya.sidoroff", "Sidoroff Kolya"));
+        expected.add(new UserDTO(uuid1, "vasya", "VasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
+        expected.add(new UserDTO(uuid2, "kolya", "KolyaSlackID", "kolya.sidoroff", "Sidoroff Kolya"));
 
         List<UUID> uuids = Arrays.asList(uuid1, uuid2);
         UsersUuidRequest request = new UsersUuidRequest(uuids);

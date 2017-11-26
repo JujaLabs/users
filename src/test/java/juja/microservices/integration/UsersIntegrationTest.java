@@ -62,8 +62,8 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
     public void getAllUsers() throws Exception {
         //given
         String expected = "[" +
-                "{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Batman Alex\", \"skype\":\"Alex\",\"slack\":\"alex.batman\"}," +
-                "{\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"name\":\"Superman Max\", \"skype\":\"Max\",\"slack\":\"max.superman\"}" +
+                "{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Batman Alex\", \"skype\":\"Alex\",\"slack\":\"alex.batman\",\"slackId\":\"AlexSlackID\"}," +
+                "{\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"name\":\"Superman Max\", \"skype\":\"Max\",\"slack\":\"max.superman\",\"slackId\":\"MaxSlackID\"}" +
                 "]";
 
         //when
@@ -82,7 +82,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
     public void getUsersByUuids() throws Exception {
         //given
         String jsonRequest = "{\"uuids\":[\"00000000-0000-0001-0000-000000000003\"]}";
-        String expected = "[{\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"name\":\"Superman Max\", \"skype\":\"Max\",\"slack\":\"max.superman\"}]";
+        String expected = "[{\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"name\":\"Superman Max\", \"skype\":\"Max\",\"slack\":\"max.superman\",\"slackId\":\"MaxSlackID\"}]";
 
         //when
         String result = mockMvc.perform(post(USERS_BY_UUIDS_URL)
@@ -101,7 +101,7 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
     public void getUsersBySlackNames() throws Exception {
         //given
         String jsonRequest = "{\"slackNames\":[\"alex.batman\"]}";
-        String expected = "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Batman Alex\",\"skype\":\"Alex\",\"slack\":\"alex.batman\"}]";
+        String expected = "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Batman Alex\",\"skype\":\"Alex\",\"slack\":\"alex.batman\",\"slackId\":\"AlexSlackID\"}]";
 
         //when
         String result = mockMvc.perform(post(USERS_BY_SLACK_NAMES_URL)
@@ -122,8 +122,8 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
     public void updateUsersDatabaseFromCRM() throws Exception {
         //given
         String expected =
-                "[{\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"max.ironman\",\"skype\":\"Max\",\"name\":\"Ironman Max\"}," +
-                        "{\"uuid\":\"00000000-0000-0001-0000-000000000004\",\"slack\":\"sergey.spiderman\",\"skype\":\"Sergey\",\"name\":\"Spiderman Sergey\"}]";
+                "[{\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"max.ironman\",\"slackId\":\"MaxSlackID\",\"skype\":\"Max\",\"name\":\"Ironman Max\"}," +
+                        "{\"uuid\":\"00000000-0000-0001-0000-000000000004\",\"slack\":\"sergey.spiderman\",\"slackId\":\"SergeySlackID\",\"skype\":\"Sergey\",\"name\":\"Spiderman Sergey\"}]";
         //when
         String result = mockMvc.perform(post(USERS_UPDATE_URL)
                 .contentType(APPLICATION_JSON_UTF8))

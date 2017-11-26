@@ -65,6 +65,7 @@ public class UserService {
         return new UserDTO(
                 user.getUuid(),
                 user.getSlack(),
+                user.getSlackId(),
                 user.getSkype(),
                 user.getFullName()
         );
