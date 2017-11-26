@@ -51,7 +51,8 @@ public class CrmRepositoryTest {
     @Test
     public void findAllShouldContainsUserAssignedToAnyoneAndVisibility1() throws Exception {
         //given
-        UserCRM expected = new UserCRM(7L, "Student", "Happy", "student", 100L, "student", 1, "00000000-0000-0001-0000-000000000007", "Anyone", 1);
+        UserCRM expected = new UserCRM(7L, "Student", "Happy", "student", 100L, "student", "StudentSlackID", 1,
+                "00000000-0000-0001-0000-000000000007", "Anyone", 1);
 
         //when
         List<UserCRM> users = crmRepository.findUpdatedUsers(0L);
@@ -63,7 +64,8 @@ public class CrmRepositoryTest {
     @Test
     public void findAllShouldContainsUserAssignedToSomeoneAndVisibility0() throws Exception {
         //given
-        UserCRM expected = new UserCRM(8L, "Boomer", "MPower", "mpower", 100L, "boomer", 1, "00000000-0000-0001-0000-000000000008", "Someone", 0);
+        UserCRM expected = new UserCRM(8L, "Boomer", "MPower", "mpower", 100L, "boomer", "BoomerSlackID", 1,
+                "00000000-0000-0001-0000-000000000008", "Someone", 0);
 
         //when
         List<UserCRM> users = crmRepository.findUpdatedUsers(0L);
@@ -93,8 +95,8 @@ public class CrmRepositoryTest {
     @Test
     public void findAllByLastUpdatedGreaterThan() throws Exception {
         //given
-        UserCRM expected = new UserCRM(3L, "Sergey", "Spiderman",
-                "Sergey", 250L, "sergey.spiderman", 1, "00000000-0000-0001-0000-000000000004", "Someone", 1);
+        UserCRM expected = new UserCRM(3L, "Sergey", "Spiderman", "Sergey", 250L, "sergey.spiderman",
+                "SergeySlackID", 1, "00000000-0000-0001-0000-000000000004", "Someone", 1);
         //when
         List<UserCRM> users = crmRepository.findUpdatedUsers(220L);
 
