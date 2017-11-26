@@ -5,6 +5,7 @@ import juja.microservices.users.dao.crm.repository.CRMRepository;
 import juja.microservices.users.dao.users.domain.User;
 import juja.microservices.users.dao.users.repository.UserRepository;
 import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersSlackIdsRequest;
 import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.exceptions.UserException;
@@ -108,6 +109,50 @@ public class UserServiceTest {
 
         //then
         verify(repository).findBySlackIn(slackNames);
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    public void getUsersBySlackIdsWhenRepositoryReturnsCorrectUsersExecutedCorrectly() throws Exception {
+        //given
+        UUID uuid1 = new UUID(1L, 2L);
+        UUID uuid2 = new UUID(1L, 3L);
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "VasyaSlackID", "vasya.ivanoff", 777L);
+        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya", "KolyaSlackID", "kolya.sidoroff", 888L);
+
+        List<UserDTO> expected = new ArrayList<>();
+        expected.add(new UserDTO(uuid1, "vasya", "VasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
+        expected.add(new UserDTO(uuid2, "kolya", "KolyaSlackID", "kolya.sidoroff", "Sidoroff Kolya"));
+        List<String> slackIds = Arrays.asList("VasyaSlackID", "KolyaSlackID");
+        UsersSlackIdsRequest request = new UsersSlackIdsRequest(slackIds);
+        given(repository.findBySlackIdIn(slackIds)).willReturn(Arrays.asList(user1, user2));
+
+        //when
+        List<UserDTO> actual = service.getUsersBySlackIds(request);
+
+        //then
+        assertEquals(expected, actual);
+        verify(repository).findBySlackIdIn(slackIds);
+        verifyNoMoreInteractions(repository);
+    }
+
+
+    @Test
+    public void getUsersBySlackIdsWhenRepositoryNotFoundSomeUsersThrowsException() throws Exception {
+        //given
+        UUID uuid1 = new UUID(1L, 2L);
+        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "VasyaSlackID", "vasya.ivanoff", 777L);
+        List<String> slackIds = Arrays.asList("VasyaSlackID", "KolyaSlackID");
+        UsersSlackIdsRequest request = new UsersSlackIdsRequest(slackIds);
+        given(repository.findBySlackIdIn(slackIds)).willReturn(Arrays.asList(user1));
+        expectedException.expect(UserException.class);
+        expectedException.expectMessage("SlackId '[KolyaSlackID]' has not been found");
+
+        //when
+        service.getUsersBySlackIds(request);
+
+        //then
+        verify(repository).findBySlackIdIn(slackIds);
         verifyNoMoreInteractions(repository);
     }
 

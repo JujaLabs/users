@@ -1,6 +1,7 @@
 package juja.microservices.users.controller;
 
 import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersSlackIdsRequest;
 import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.service.UserService;
@@ -73,6 +74,28 @@ public class UserControllerTest {
         when(service.getUsersBySlackNames(any(UsersSlackNamesRequest.class))).thenReturn(users);
 
         String result = mockMvc.perform(post("/v1/users/usersBySlackNames")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertThatJson(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void getUsersBySlackIdsShouldReturnOk() throws Exception {
+        String expected =
+                "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"slackId\":\"vasyaSlackID\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
+                        " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"slackId\":\"ivanSlackID\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
+
+        List<UserDTO> users = new ArrayList<>();
+        users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
+        users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivanSlackID", "ivan.vasilieff", "Vasilieff Ivan"));
+        String jsonRequest = "{\"slackIds\":[\"vasyaSlackID\",\"ivanSlackID\"]}";
+
+        when(service.getUsersBySlackIds(any(UsersSlackIdsRequest.class))).thenReturn(users);
+
+        String result = mockMvc.perform(post("/v1/users/usersBySlackIds")
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))

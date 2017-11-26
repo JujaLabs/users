@@ -1,6 +1,7 @@
 package juja.microservices.users.controller;
 
 import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersSlackIdsRequest;
 import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.service.UserService;
@@ -63,6 +64,17 @@ public class UserController {
 
         List<UserDTO> users = userService.getUsersBySlackNames(request);
         logger.info("Get users uuid by slack name completed. Transmitted {} records", users.size());
+
+        return users;
+    }
+
+    @PostMapping("/usersBySlackIds")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDTO> getUsersBySlackIds(@RequestBody UsersSlackIdsRequest request) {
+        logger.debug("Received get users by slackId ids request. Requested slackId ids: {}", request.getSlackIds());
+
+        List<UserDTO> users = userService.getUsersBySlackIds(request);
+        logger.info("Get users uuid by slack id completed. Transmitted {} records", users.size());
 
         return users;
     }
