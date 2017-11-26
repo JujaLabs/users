@@ -50,8 +50,8 @@ public class UserRepositoryTest {
 
     private UUID uuid1 = new UUID(1L, 2L);
     private UUID uuid2 = new UUID(1L, 3L);
-    private User user1 = new User(uuid1, "Alex", "Batman", "alex.batman", "Alex", 100L);
-    private User user2 = new User(new UUID(1L, 3L), "Max", "Superman", "max.superman", "Max", 100L);
+    private User user1 = new User(uuid1, "Alex", "Batman", "alex.batman", "AlexSlackID", "Alex", 100L);
+    private User user2 = new User(new UUID(1L, 3L), "Max", "Superman", "max.superman", "MaxSlackID", "Max", 100L);
 
     @Test
     public void testFindAll() throws Exception {
@@ -117,9 +117,9 @@ public class UserRepositoryTest {
         //given
         List<User> users = new ArrayList<>();
         users.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000003"), "Max", "Ironman",
-                "max.ironman", "Max", 200L));
+                "max.ironman", "MaxSlackID", "Max", 200L));
         users.add(new User(UUID.fromString("00000000-0000-0001-0000-000000000004"), "Sergey", "Spiderman",
-                "sergey.spiderman", "Sergey", 250L));
+                "sergey.spiderman", "SergeySlackID", "Sergey", 250L));
 
         //when
         repository.save(users);

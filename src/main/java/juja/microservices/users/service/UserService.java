@@ -166,6 +166,7 @@ public class UserService {
                 userCRM.getFirstName(),
                 userCRM.getLastName(),
                 userCRM.getSlack(),
+                userCRM.getSlackId(),
                 userCRM.getSkype(),
                 userCRM.getLastUpdated()
         );

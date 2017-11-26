@@ -17,7 +17,7 @@ public class UserTest {
         String expectedSlack = "slack";
         String expectedSkype = "skype";
 
-        User user = new User(new UUID(1L,2L), "firstName", "lastName", "slack", "skype",777L);
+        User user = new User(new UUID(1L, 2L), "firstName", "lastName", "slack", "slackId", "skype", 777L);
 
         assertNotNull(user);
         assertEquals(expectedUuid, user.getUuid());
@@ -31,7 +31,7 @@ public class UserTest {
     public void getFullNameTest() {
         String expectedFullName = "lastName firstName";
 
-        User user = new User(new UUID(1L,2L), "firstName", "lastName","slack", "skype", 777L);
+        User user = new User(new UUID(1L, 2L), "firstName", "lastName", "slack", "slackId", "skype", 777L);
         assertEquals(expectedFullName, user.getFullName());
     }
 
@@ -39,7 +39,7 @@ public class UserTest {
     public void getFullNameWithNullLastNameTest() {
         String expectedFullName = "firstName";
 
-        User user = new User(new UUID(1L,2L), "firstName", null, "slack", "skype", 777L);
+        User user = new User(new UUID(1L, 2L), "firstName", null, "slack", "slackId", "skype", 777L);
         assertEquals(expectedFullName, user.getFullName());
     }
 
@@ -47,7 +47,7 @@ public class UserTest {
     public void getFullNameWithEmptyLastNameTest() {
         String expectedFullName = "firstName";
 
-        User user = new User(new UUID(1L,2L), "firstName", "", "slack", "skype", 777L);
+        User user = new User(new UUID(1L, 2L), "firstName", "", "slack", "slackId", "skype", 777L);
         assertEquals(expectedFullName, user.getFullName());
     }
 
@@ -55,7 +55,7 @@ public class UserTest {
     public void getFullNameWithEmailInLastNameTest() {
         String expectedFullName = "firstName";
 
-        User user = new User(new UUID(1L,2L), "firstName", "user@mail.com", "slack", "skype", 777L);
+        User user = new User(new UUID(1L, 2L), "firstName", "user@mail.com", "slack", "slackId", "skype", 777L);
         assertEquals(expectedFullName, user.getFullName());
     }
 }
