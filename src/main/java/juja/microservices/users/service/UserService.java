@@ -5,6 +5,7 @@ import juja.microservices.users.dao.crm.repository.CRMRepository;
 import juja.microservices.users.dao.users.domain.User;
 import juja.microservices.users.dao.users.repository.UserRepository;
 import juja.microservices.users.entity.UserDTO;
+import juja.microservices.users.entity.UsersSlackIdsRequest;
 import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.exceptions.UserException;
@@ -65,6 +66,7 @@ public class UserService {
         return new UserDTO(
                 user.getUuid(),
                 user.getSlack(),
+                user.getSlackId(),
                 user.getSkype(),
                 user.getFullName()
         );
@@ -80,9 +82,12 @@ public class UserService {
 
     private void findAbsentUsersBySlackNames(List<String> slackNames, List<User> users) {
         logger.debug("Compare slackNames '{}' and users '{}'", slackNames.toString(), users.toString());
-        List<String> foundSlackNames = users.stream().map(r -> r.getSlack()).collect(Collectors.toList());
-        List<String> notFoundSlackNames = new ArrayList<>(slackNames);
-        notFoundSlackNames.removeAll(foundSlackNames);
+        List<String> foundSlackNames = users.stream()
+                .map(User::getSlack)
+                .collect(Collectors.toList());
+        List<String> notFoundSlackNames = slackNames.stream()
+                .filter(s -> !foundSlackNames.contains(s))
+                .collect(Collectors.toList());
         if (!notFoundSlackNames.isEmpty()) {
             String message = String.format("Slacknames '%s' has not been found", notFoundSlackNames.toString());
             logger.warn(message);
@@ -100,11 +105,37 @@ public class UserService {
 
     private void findAbsentUsersByUUIDS(List<UUID> uuids, List<User> users) {
         logger.debug("Compare uuids '{}' and users '{}'", uuids.toString(), users.toString());
-        List<UUID> foundUUIDs = users.stream().map(r -> r.getUuid()).collect(Collectors.toList());
-        List<UUID> notFoundUUIDs = new ArrayList<>(uuids);
-        notFoundUUIDs.removeAll(foundUUIDs);
+        List<UUID> foundUUIDs = users.stream()
+                .map(User::getUuid)
+                .collect(Collectors.toList());
+        List<UUID> notFoundUUIDs = uuids.stream()
+                .filter(uuid -> !foundUUIDs.contains(uuid))
+                .collect(Collectors.toList());
         if (!notFoundUUIDs.isEmpty()) {
             String message = String.format("Uuids '%s' has not been found", notFoundUUIDs.toString());
+            logger.warn(message);
+            throw new UserException(message);
+        }
+    }
+
+    public List<UserDTO> getUsersBySlackIds(UsersSlackIdsRequest request) {
+        List<String> slackIds = request.getSlackIds();
+        List<User> users = repository.findBySlackIdIn(slackIds);
+        logger.debug("Received response from repository: {}", users.toString());
+        findAbsentUsersBySlackId(slackIds, users);
+        return getConvertedResult(users);
+    }
+
+    private void findAbsentUsersBySlackId(List<String> slackIds, List<User> users) {
+        logger.debug("Compare slackIds '{}' and users '{}'", slackIds.toString(), users.toString());
+        List<String> foundSlackIds = users.stream()
+                .map(User::getSlackId)
+                .collect(Collectors.toList());
+        List<String> notFoundSlackIds = slackIds.stream()
+                .filter(s -> !foundSlackIds.contains(s))
+                .collect(Collectors.toList());
+        if (!notFoundSlackIds.isEmpty()) {
+            String message = String.format("SlackId '%s' has not been found", notFoundSlackIds.toString());
             logger.warn(message);
             throw new UserException(message);
         }
@@ -166,6 +197,7 @@ public class UserService {
                 userCRM.getFirstName(),
                 userCRM.getLastName(),
                 userCRM.getSlack(),
+                userCRM.getSlackId(),
                 userCRM.getSkype(),
                 userCRM.getLastUpdated()
         );

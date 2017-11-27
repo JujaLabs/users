@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-    <x2_contacts ID='1' firstName="Alex" lastName="Batman" skype="Alex" lastUpdated='50' c_slack="alex.batman" c_isStudent='1'  c_uuid="00000000-0000-0001-0000-000000000002"/>
-    <x2_contacts ID='2' firstName="Max" lastName="Ironman" skype="Max" lastUpdated='50' c_slack="max.ironman" c_isStudent='1' c_uuid="00000000-0000-0001-0000-000000000003"/>
+    <x2_contacts ID='1' firstName="Alex" lastName="Batman" skype="Alex" lastUpdated='50' c_slack_display="alex.batman"
+                 c_slack_id="AlexSlackID" c_isStudent='1' c_uuid="00000000-0000-0001-0000-000000000002"/>
+    <x2_contacts ID='2' firstName="Max" lastName="Ironman" skype="Max" lastUpdated='50' c_slack_display="max.ironman"
+                 c_slack_id="MaxSlackID" c_isStudent='1' c_uuid="00000000-0000-0001-0000-000000000003"/>
 </dataset>

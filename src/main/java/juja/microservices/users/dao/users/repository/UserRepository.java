@@ -22,6 +22,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     List<User> findByUuidIn(List<UUID> uuids);
 
+    List<User> findBySlackIdIn(List<String> slackIds);
+
     @Query("SELECT max(u.lastUpdated) FROM User u")
     Long findMaxLastUpdate();
 }
