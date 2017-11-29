@@ -23,16 +23,19 @@ public class UserDTO {
     @Pattern(regexp = "^(?=\\s*\\S).*$")
     private String slack;
 
+    private String slackId;
     private String skype;
     private String name;
 
     @JsonCreator
     public UserDTO(@JsonProperty("uuid") UUID uuid,
                    @JsonProperty("slack") String slack,
+                   @JsonProperty("slackId") String slackId,
                    @JsonProperty("skype") String skype,
                    @JsonProperty("name") String name) {
         this.uuid = uuid;
         this.slack = slack;
+        this.slackId = slackId;
         this.skype = skype;
         this.name = name;
     }
