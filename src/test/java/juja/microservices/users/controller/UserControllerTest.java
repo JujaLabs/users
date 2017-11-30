@@ -2,7 +2,6 @@ package juja.microservices.users.controller;
 
 import juja.microservices.users.entity.UserDTO;
 import juja.microservices.users.entity.UsersSlackIdsRequest;
-import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.service.UserService;
 import org.junit.Before;
@@ -37,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
 
     private List<UserDTO> users;
-    private String  expected;
+    private String expected;
 
     @Inject
     private MockMvc mockMvc;
@@ -46,14 +45,13 @@ public class UserControllerTest {
     private UserService service;
 
     @Before
-    public void setUpUsers() {
+    public void setUp() {
         users = new ArrayList<>();
         users.add(new UserDTO(new UUID(1L, 2L), "vasya", "vasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
         users.add(new UserDTO(new UUID(1L, 3L), "ivan", "ivanSlackID", "ivan.vasilieff", "Vasilieff Ivan"));
 
         expected = "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"slack\":\"vasya\",\"slackId\":\"vasyaSlackID\",\"skype\":\"vasya.ivanoff\",\"name\":\"Ivanoff Vasya\"}," +
                 " {\"uuid\":\"00000000-0000-0001-0000-000000000003\",\"slack\":\"ivan\",\"slackId\":\"ivanSlackID\",\"skype\":\"ivan.vasilieff\",\"name\":\"Vasilieff Ivan\"}]";
-
     }
 
     @Test
@@ -63,22 +61,6 @@ public class UserControllerTest {
 
         String result = mockMvc.perform(get("/v1/users")
                 .contentType(APPLICATION_JSON_UTF8))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        assertThatJson(result).isEqualTo(expected);
-    }
-
-    @Test
-    public void getUsersBySlackNamesShouldReturnOk() throws Exception {
-
-        String jsonRequest = "{\"slackNames\":[\"vasya\",\"ivan\"]}";
-
-        when(service.getUsersBySlackNames(any(UsersSlackNamesRequest.class))).thenReturn(users);
-
-        String result = mockMvc.perform(post("/v1/users/usersBySlackNames")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();

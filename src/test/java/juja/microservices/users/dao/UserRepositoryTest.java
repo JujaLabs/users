@@ -66,9 +66,9 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testFindOneUserBySlack() throws Exception {
+    public void testFindOneUserBySlackId() throws Exception {
         //when
-        List<User> users = repository.findBySlackIn(Collections.singletonList(user1.getSlack()));
+        List<User> users = repository.findBySlackIdIn(Collections.singletonList(user1.getSlackId()));
 
         //then
         assertEquals(1, users.size());
@@ -76,13 +76,13 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testFindTwoUsersByThreeSlackName() throws Exception {
+    public void testFindTwoUsersByThreeSlackIds() throws Exception {
         //given
         List<User> expected = Arrays.asList(user1, user2);
-        List<String> slackNames = Arrays.asList(user1.getSlack(), user2.getSlack(), "fake.user");
+        List<String> slackIds = Arrays.asList(user1.getSlackId(), user2.getSlackId(), "fake.user");
 
         //when
-        List<User> actual = repository.findBySlackIn(slackNames);
+        List<User> actual = repository.findBySlackIdIn(slackIds);
 
         //then
         assertThat(expected, is(actual));

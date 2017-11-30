@@ -40,7 +40,6 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
 
     private static final String USERS_URL = "/v1/users";
     private static final String USERS_BY_UUIDS_URL = "/v1/users/usersByUuids";
-    private static final String USERS_BY_SLACK_NAMES_URL = "/v1/users/usersBySlackNames";
     private static final String USERS_BY_SLACK_IDS_URL = "/v1/users/usersBySlackIds";
     private static final String USERS_UPDATE_URL = "/v1/users/update";
     private static final String FAKE_URL = "/fake";
@@ -87,25 +86,6 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
 
         //when
         String result = mockMvc.perform(post(USERS_BY_UUIDS_URL)
-                .content(jsonRequest)
-                .contentType(APPLICATION_JSON_UTF8))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        //then
-        assertThatJson(result).isEqualTo(expected);
-    }
-
-    @Test
-    @DatabaseSetup(value = "/datasets/usersData.xml")
-    public void getUsersBySlackNames() throws Exception {
-        //given
-        String jsonRequest = "{\"slackNames\":[\"alex.batman\"]}";
-        String expected = "[{\"uuid\":\"00000000-0000-0001-0000-000000000002\",\"name\":\"Batman Alex\",\"skype\":\"Alex\",\"slack\":\"alex.batman\",\"slackId\":\"AlexSlackID\"}]";
-
-        //when
-        String result = mockMvc.perform(post(USERS_BY_SLACK_NAMES_URL)
                 .content(jsonRequest)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -175,40 +155,39 @@ public class UsersIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void getUsersBySlackNamesUnsupportedMediaType() throws Exception {
+    public void getUsersBySlackIdsUnsupportedMediaType() throws Exception {
         //when
-        mockMvc.perform(post(USERS_BY_SLACK_NAMES_URL)
+        mockMvc.perform(post(USERS_BY_SLACK_IDS_URL)
                 .contentType(APPLICATION_PDF))
                 .andExpect(status().isUnsupportedMediaType());
     }
 
     @Test
-    public void getUsersBySlackNamesBadRequest() throws Exception {
+    public void getUsersBySlackIdsBadRequest() throws Exception {
         //given
-        String jsonRequest = "{\"slackkkkNames\":[\"vasya\"]}";
+        String jsonRequest = "{\"slackkkkIds\":[\"vasya\"]}";
 
         //when
-        mockMvc.perform(post(USERS_BY_SLACK_NAMES_URL)
+        mockMvc.perform(post(USERS_BY_SLACK_IDS_URL)
                 .content(jsonRequest)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void getUsersBySlackNamesMethodNotAllowed() throws Exception {
+    public void getUsersBySlackIdsMethodNotAllowed() throws Exception {
         //given
-        String jsonRequest = "{\"slackNames\":[\"vasya\"]}";
+        String jsonRequest = "{\"slackIds\":[\"vasya\"]}";
 
         //when
-        mockMvc.perform(get(USERS_BY_SLACK_NAMES_URL)
+        mockMvc.perform(get(USERS_BY_SLACK_IDS_URL)
                 .content(jsonRequest)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isMethodNotAllowed());
-
     }
 
     @Test
-    public void getUsersBySlackNamesNotFound() throws Exception {
+    public void getUsersBySlackIdsNotFound() throws Exception {
         //when
         mockMvc.perform(get(FAKE_URL)
                 .contentType(APPLICATION_JSON_UTF8))

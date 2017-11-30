@@ -6,7 +6,6 @@ import juja.microservices.users.dao.users.domain.User;
 import juja.microservices.users.dao.users.repository.UserRepository;
 import juja.microservices.users.entity.UserDTO;
 import juja.microservices.users.entity.UsersSlackIdsRequest;
-import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.exceptions.UserException;
 import org.junit.Rule;
@@ -67,49 +66,6 @@ public class UserServiceTest {
 
         //then
         assertEquals(expected, actual);
-    }
-
-    @Test
-    public void getUsersBySlackNamesWhenRepositoryReturnsCorrectUsersExecutedCorrectly() throws Exception {
-        //given
-        UUID uuid1 = new UUID(1L, 2L);
-        UUID uuid2 = new UUID(1L, 3L);
-        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "VasyaSlackID", "vasya.ivanoff", 777L);
-        User user2 = new User(uuid2, "Kolya", "Sidoroff", "kolya", "KolyaSlackID", "kolya.sidoroff", 888L);
-
-        List<UserDTO> expected = new ArrayList<>();
-        expected.add(new UserDTO(uuid1, "vasya", "VasyaSlackID", "vasya.ivanoff", "Ivanoff Vasya"));
-        expected.add(new UserDTO(uuid2, "kolya", "KolyaSlackID", "kolya.sidoroff", "Sidoroff Kolya"));
-        List<String> slackNames = Arrays.asList("vasya", "kolya");
-        UsersSlackNamesRequest request = new UsersSlackNamesRequest(slackNames);
-        given(repository.findBySlackIn(slackNames)).willReturn(Arrays.asList(user1, user2));
-
-        //when
-        List<UserDTO> actual = service.getUsersBySlackNames(request);
-
-        //then
-        assertEquals(expected, actual);
-        verify(repository).findBySlackIn(slackNames);
-        verifyNoMoreInteractions(repository);
-    }
-
-    @Test
-    public void getUsersBySlackNamesWhenRepositoryNotFoundSomeUsersThrowsException() throws Exception {
-        //given
-        UUID uuid1 = new UUID(1L, 2L);
-        User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "VasyaSlackID", "vasya.ivanoff", 777L);
-        List<String> slackNames = Arrays.asList("vasya", "kolya");
-        UsersSlackNamesRequest request = new UsersSlackNamesRequest(slackNames);
-        given(repository.findBySlackIn(slackNames)).willReturn(Arrays.asList(user1));
-        expectedException.expect(UserException.class);
-        expectedException.expectMessage("Slacknames '[kolya]' has not been found");
-
-        //when
-        service.getUsersBySlackNames(request);
-
-        //then
-        verify(repository).findBySlackIn(slackNames);
-        verifyNoMoreInteractions(repository);
     }
 
     @Test
