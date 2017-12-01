@@ -18,7 +18,6 @@ import java.util.UUID;
 @Repository
 @Transactional
 public interface UserRepository extends JpaRepository<User, UUID> {
-    List<User> findBySlackIn(List<String> slackNames);
 
     List<User> findByUuidIn(List<UUID> uuids);
 

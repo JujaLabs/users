@@ -6,7 +6,6 @@ import juja.microservices.users.dao.users.domain.User;
 import juja.microservices.users.dao.users.repository.UserRepository;
 import juja.microservices.users.entity.UserDTO;
 import juja.microservices.users.entity.UsersSlackIdsRequest;
-import juja.microservices.users.entity.UsersSlackNamesRequest;
 import juja.microservices.users.entity.UsersUuidRequest;
 import juja.microservices.users.exceptions.UserException;
 import org.slf4j.Logger;
@@ -70,29 +69,6 @@ public class UserService {
                 user.getSkype(),
                 user.getFullName()
         );
-    }
-
-    public List<UserDTO> getUsersBySlackNames(UsersSlackNamesRequest request) {
-        List<String> slackNames = request.getSlackNames();
-        List<User> users = repository.findBySlackIn(slackNames);
-        logger.debug("Received response from repository: {}", users.toString());
-        findAbsentUsersBySlackNames(slackNames, users);
-        return getConvertedResult(users);
-    }
-
-    private void findAbsentUsersBySlackNames(List<String> slackNames, List<User> users) {
-        logger.debug("Compare slackNames '{}' and users '{}'", slackNames.toString(), users.toString());
-        List<String> foundSlackNames = users.stream()
-                .map(User::getSlack)
-                .collect(Collectors.toList());
-        List<String> notFoundSlackNames = slackNames.stream()
-                .filter(s -> !foundSlackNames.contains(s))
-                .collect(Collectors.toList());
-        if (!notFoundSlackNames.isEmpty()) {
-            String message = String.format("Slacknames '%s' has not been found", notFoundSlackNames.toString());
-            logger.warn(message);
-            throw new UserException(message);
-        }
     }
 
     public List<UserDTO> getUsersByUuids(UsersUuidRequest request) {
