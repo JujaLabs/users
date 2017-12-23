@@ -37,6 +37,10 @@ public class User {
     @Column(name = "SLACK", nullable = false)
     private String slack;
 
+    @NonNull
+    @Column(name = "SLACK_ID", nullable = false)
+    private String slackId;
+
     @Column(name = "SKYPE")
     private String skype;
 

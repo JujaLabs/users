@@ -1,11 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-    <x2_contacts ID='1' firstName="Alex" lastName="Batman" skype="Alex" lastUpdated='100' c_slack="alex.batman"  c_isStudent='1' c_uuid="00000000-0000-0001-0000-000000000002" assignedTo="Someone" visibility ='1'/>
-    <x2_contacts ID='2' firstName="Max" lastName="Ironman" skype="Max" lastUpdated='200' c_slack="max.ironman" c_isStudent='1' c_uuid="00000000-0000-0001-0000-000000000003" assignedTo="Someone" visibility ='1'/>
-    <x2_contacts ID='3' firstName="Sergey" lastName="Spiderman" skype="Sergey" lastUpdated='250' c_slack="sergey.spiderman" c_isStudent='1' c_uuid="00000000-0000-0001-0000-000000000004" assignedTo="Someone" visibility ='1'/>
-    <x2_contacts ID='4' firstName="Kot" skype="Kot" lastUpdated='210' c_slack="kot" c_isStudent='1' assignedTo="Someone" visibility ='1'/>
-    <x2_contacts ID='5' firstName="Sem" lastName="Shark" skype="Sem" lastUpdated='100' c_slack="sem.shark" c_isStudent='0' c_uuid="00000000-0000-0001-0000-000000000005" assignedTo="Someone" visibility ='1'/>
-    <x2_contacts ID='6' firstName="Baduser" lastName="Bad" skype="Bad" lastUpdated='100' c_slack="bad.user" c_isStudent='1' c_uuid="00000000-0000-0001-0000-000000000006" assignedTo="Anyone" visibility ='0'/>
-    <x2_contacts ID='7' firstName="Student" lastName="Happy" skype="student" lastUpdated='100' c_slack="student" c_isStudent='1' c_uuid="00000000-0000-0001-0000-000000000007" assignedTo="Anyone" visibility ='1'/>
-    <x2_contacts ID='8' firstName="Boomer" lastName="MPower" skype="mpower" lastUpdated='100' c_slack="boomer" c_isStudent='1' c_uuid="00000000-0000-0001-0000-000000000008" assignedTo="Someone" visibility ='0'/>
+    <x2_contacts ID='1' firstName="Alex" lastName="Batman" skype="Alex" lastUpdated='100' c_slack_display="alex.batman"
+                 c_slack_id="AlexSlackID" c_isStudent='1'
+                 c_uuid="00000000-0000-0001-0000-000000000002"
+                 assignedTo="Someone"
+                 visibility='1'/>
+    <x2_contacts ID='2' firstName="Max" lastName="Ironman" skype="Max" lastUpdated='200' c_slack_display="max.ironman"
+                 c_slack_id="MaxSlackID" c_isStudent='1'
+                 c_uuid="00000000-0000-0001-0000-000000000003"
+                 assignedTo="Someone"
+                 visibility='1'/>
+    <x2_contacts ID='3' firstName="Sergey" lastName="Spiderman" skype="Sergey" lastUpdated='250'
+                 c_slack_display="sergey.spiderman" c_slack_id="SergeySlackID" c_isStudent='1'
+                 c_uuid="00000000-0000-0001-0000-000000000004"
+                 assignedTo="Someone"
+                 visibility='1'/>
+    <x2_contacts ID='4' firstName="Kot" skype="Kot" lastUpdated='210' c_slack_display="kot" c_slack_id="KotSlackID"
+                 c_isStudent='1'
+                 assignedTo="Someone"
+                 visibility='1'/>
+    <x2_contacts ID='5' firstName="Sem" lastName="Shark" skype="Sem" lastUpdated='100' c_slack_display="sem.shark"
+                 c_slack_id="SemSlackID" c_isStudent='0'
+                 c_uuid="00000000-0000-0001-0000-000000000005"
+                 assignedTo="Someone"
+                 visibility='1'/>
+    <x2_contacts ID='6' firstName="Baduser" lastName="Bad" skype="Bad" lastUpdated='100' c_slack_display="bad.user"
+                 c_slack_id="BaduserSlackID" c_isStudent='1'
+                 c_uuid="00000000-0000-0001-0000-000000000006"
+                 assignedTo="Anyone"
+                 visibility='0'/>
+    <x2_contacts ID='7' firstName="Student" lastName="Happy" skype="student" lastUpdated='100' c_slack_display="student"
+                 c_slack_id="StudentSlackID" c_isStudent='1'
+                 c_uuid="00000000-0000-0001-0000-000000000007"
+                 assignedTo="Anyone"
+                 visibility='1'/>
+    <x2_contacts ID='8' firstName="Boomer" lastName="MPower" skype="mpower" lastUpdated='100' c_slack_display="boomer"
+                 c_slack_id="BoomerSlackID" c_isStudent='1'
+                 c_uuid="00000000-0000-0001-0000-000000000008"
+                 assignedTo="Someone"
+                 visibility='0'/>
 </dataset>

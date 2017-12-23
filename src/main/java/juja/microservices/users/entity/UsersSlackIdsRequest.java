@@ -6,12 +6,16 @@ import lombok.Getter;
 
 import java.util.List;
 
+/**
+ * author Vadim Dyachenko
+ */
 @Getter
-public class UsersSlackNamesRequest {
-    private List<String> slackNames;
+public class UsersSlackIdsRequest {
+
+    private List<String> slackIds;
 
     @JsonCreator
-    public UsersSlackNamesRequest(@JsonProperty("slackNames") List<String> slackNames) {
-        this.slackNames = slackNames;
+    public UsersSlackIdsRequest(@JsonProperty("slackIds") List<String> slackIds) {
+        this.slackIds = slackIds;
     }
 }
