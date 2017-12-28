@@ -96,13 +96,16 @@ public class UserServiceTest {
     @Test
     public void getUsersBySlackIdsWhenRepositoryNotFoundSomeUsersThrowsException() throws Exception {
         //given
+        final String SLACK_ID_WRAPPER_PATTERN = "<@%s>";
         UUID uuid1 = new UUID(1L, 2L);
         User user1 = new User(uuid1, "Vasya", "Ivanoff", "vasya", "VasyaSlackID", "vasya.ivanoff", 777L);
-        List<String> slackIds = Arrays.asList("VasyaSlackID", "KolyaSlackID");
+        List<String> slackIds = Arrays.asList("VasyaSlackID", "KolyaSlackID", "PetyaSlackID");
         UsersSlackIdsRequest request = new UsersSlackIdsRequest(slackIds);
         given(repository.findBySlackIdIn(slackIds)).willReturn(Arrays.asList(user1));
         expectedException.expect(UserException.class);
-        expectedException.expectMessage("SlackId '[KolyaSlackID]' has not been found");
+        expectedException.expectMessage(String.format("SlackId '[%s, %s]' has not been found",
+                String.format(SLACK_ID_WRAPPER_PATTERN, "KolyaSlackID"),
+                String.format(SLACK_ID_WRAPPER_PATTERN, "PetyaSlackID")));
 
         //when
         service.getUsersBySlackIds(request);

@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
+    private static final String SLACK_ID_WRAPPER_PATTERN = "<@%s>";
+
     private final UserRepository repository;
     private final CRMRepository crmRepository;
     private final Logger wrongUserLogger = LoggerFactory.getLogger("Wrong User");
@@ -111,7 +113,11 @@ public class UserService {
                 .filter(s -> !foundSlackIds.contains(s))
                 .collect(Collectors.toList());
         if (!notFoundSlackIds.isEmpty()) {
-            String message = String.format("SlackId '%s' has not been found", notFoundSlackIds.toString());
+            String message = String.format("SlackId '%s' has not been found",
+                     notFoundSlackIds.stream()
+                             .map(slack->String.format(SLACK_ID_WRAPPER_PATTERN,slack))
+                             .collect(Collectors.toList())
+                                     .toString());
             logger.warn(message);
             throw new UserException(message);
         }
